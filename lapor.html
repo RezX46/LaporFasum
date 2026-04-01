@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Laporan Fasilitas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        #map {
+            height: 300px;
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            z-index: 1;
+        }
+        .koordinat-box {
+            display: flex;
+            gap: 10px;
+        }
+        .koordinat-box input {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+        .opsi-lokasi {
+            margin-bottom: 15px;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .opsi-lokasi label {
+            display: inline;
+            font-weight: normal;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+        /* Style tambahan untuk dropdown kategori */
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: inherit;
+            background-color: white;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Formulir Laporan Baru</h1>
+        <p style="margin-bottom: 20px; font-size: 0.9em;">Laporan Anda bersifat anonim. Silakan isi data di bawah ini.</p>
+        
+        <form action="proses_lapor.php" method="POST" enctype="multipart/form-data">
+            
+            <div class="form-group">
+                <label for="foto">1. Unggah Foto Kerusakan:</label>
+                <input type="file" id="foto" name="foto" accept="image/*" required>
+            </div>
+
+            <div class="form-group">
+                <label for="keluhan">2. Deskripsi Keluhan:</label>
+                <textarea id="keluhan" name="keluhan" rows="3" placeholder="Contoh: Ada lubang besar yang membahayakan..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="kategori">3. Jenis Fasilitas yang Bermasalah:</label>
+                <select id="kategori" name="kategori" onchange="cekKategori()" required>
+                    <option value="" disabled selected>-- Pilih Jenis Fasilitas --</option>
+                    <option value="Jalan Raya">Jalan Raya</option>
+                    <option value="Trotoar">Trotoar / Pedestrian</option>
+                    <option value="Lampu Jalan">Lampu Penerangan Jalan</option>
+                    <option value="Drainase">Drainase / Selokan</option>
+                    <option value="Taman">Taman / Fasilitas Sosial</option>
+                    <option value="Lainnya">Lainnya (Ketik Manual)</option>
+                </select>
+
+                <div id="kotak_kategori_manual" style="display: none;">
+                    <input type="text" id="kategori_manual" name="kategori_manual" placeholder="Sebutkan jenis fasilitas (misal: Jembatan, Halte)...">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>4. Detail Lokasi Kerusakan:</label>
+                <div class="opsi-lokasi">
+                    <input type="radio" id="pilih_peta" name="metode_lokasi" value="peta" checked onchange="aturOpsiLokasi()">
+                    <label for="pilih_peta">Tandai di Peta</label>
+                    
+                    <input type="radio" id="pilih_manual" name="metode_lokasi" value="manual" onchange="aturOpsiLokasi()">
+                    <label for="pilih_manual">Ketik Manual</label>
+                </div>
+
+                <div id="kotak_peta">
+                    <p style="font-size: 0.8em; color: #666; margin-bottom: 5px;">*Klik pada peta untuk menentukan titik koordinat.</p>
+                    <div id="map"></div>
+                    <div class="koordinat-box">
+                        <input type="text" id="latitude" name="latitude" placeholder="Latitude (Otomatis)" readonly required>
+                        <input type="text" id="longitude" name="longitude" placeholder="Longitude (Otomatis)" readonly required>
+                    </div>
+                </div>
+
+                <div id="kotak_manual" style="display: none;">
+                    <textarea id="alamat_manual" name="alamat_manual" rows="3" placeholder="Tuliskan nama jalan atau patokan lokasi dengan jelas..."></textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Kirim Laporan</button>
+        </form>
+
+        <a href="index.html" class="back-link">← Kembali ke Halaman Utama</a>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Logika untuk kategori manual
+        function cekKategori() {
+            var select = document.getElementById('kategori');
+            var kotakManual = document.getElementById('kotak_kategori_manual');
+            var inputManual = document.getElementById('kategori_manual');
+
+            if (select.value === 'Lainnya') {
+                kotakManual.style.display = 'block';
+                inputManual.required = true;
+            } else {
+                kotakManual.style.display = 'none';
+                inputManual.required = false;
+                inputManual.value = ""; // Reset isian jika pindah pilihan
+            }
+        }
+
+        function aturOpsiLokasi() {
+            var pakaiPeta = document.getElementById('pilih_peta').checked;
+            var kotakPeta = document.getElementById('kotak_peta');
+            var kotakManual = document.getElementById('kotak_manual');
+            var latInput = document.getElementById('latitude');
+            var lngInput = document.getElementById('longitude');
+            var alamatInput = document.getElementById('alamat_manual');
+
+            if (pakaiPeta) {
+                kotakPeta.style.display = 'block';
+                kotakManual.style.display = 'none';
+                latInput.required = true;
+                lngInput.required = true;
+                alamatInput.required = false;
+                setTimeout(function(){ map.invalidateSize() }, 100);
+            } else {
+                kotakPeta.style.display = 'none';
+                kotakManual.style.display = 'block';
+                latInput.required = false;
+                lngInput.required = false;
+                alamatInput.required = true;
+            }
+        }
+
+        var map = L.map('map').setView([-8.5877, 116.0965], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var marker;
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng).addTo(map);
+            }
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
+        });
+    </script>
+</body>
+</html>

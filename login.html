@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Internal - Login</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .login-container {
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container login-container">
+        <h1>Portal Internal</h1>
+        <p style="margin-bottom: 25px; font-size: 0.9em;">Silakan login untuk mengakses sistem pengelola.</p>
+        
+        <form action="proses_login.php" method="POST">
+            
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Masukkan username..." required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Masukkan password..." required>
+            </div>
+
+            <button type="submit" class="btn">Login ke Sistem</button>
+        </form>
+
+    </div>
+
+</body>
+</html>
