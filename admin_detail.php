@@ -3,7 +3,7 @@ require 'koneksi.php';
 
 // Mengecek apakah ada ID yang dikirim melalui URL
 if (!isset($_GET['id'])) {
-    die("Aduh! ID Laporan tidak ditemukan di URL.");
+    die("ID Laporan tidak ditemukan di URL.");
 }
 
 // Menangkap ID dan mencari datanya di database
@@ -88,8 +88,8 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
                 <?php if ($row['metode_lokasi'] == 'manual'): ?>
                     <?= $row['alamat_manual'] ?> (Ketik Manual)
                 <?php else: ?>
-                    Titik Koordinat Peta <br>
-                    <a href="https://www.google.com/maps?q=<?= $row['latitude'] ?>,<?= $row['longitude'] ?>" target="_blank" class="btn-map">🗺️ Buka Lokasi di Google Maps</a>
+                    Lokasi Peta <br>
+                    <a href="https://www.google.com/maps?q=<?= $row['latitude'] ?>,<?= $row['longitude'] ?>" target="_blank" class="btn-map"> Lihat lokasi</a>
                 <?php endif; ?>
             </div>
             <div class="detail-item">
@@ -101,7 +101,7 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
         <?php if ($row['status'] == 'menunggu'): ?>
         <div class="action-box">
             <h2 style="margin-top: 0;">Tindak Lanjut Admin</h2>
-            <p style="font-size: 0.9em; margin-bottom: 15px;">Silakan validasi laporan ini. Jika diterima, pilih petugas lapangan yang akan ditugaskan.</p>
+            <p style="font-size: 0.9em; margin-bottom: 15px;">Silakan validasi laporan ini.</p>
             
             <form action="proses_validasi.php" method="POST">
                 <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
@@ -112,6 +112,7 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
                     <option value="1">Tim Reaksi Cepat A (Jalan & Jembatan)</option>
                     <option value="2">Tim Reaksi Cepat B (Penerangan)</option>
                     <option value="3">Tim C (Drainase & Kebersihan)</option>
+                    //nanti tambah (atau hilangin aja)
                 </select>
 
                 <div class="btn-group">
