@@ -1,4 +1,13 @@
 <?php
+session_start(); // Mulai pengecekan kartu pengenal
+// Jika tidak ada kartu pengenal, atau jabatannya bukan admin, tendang keluar!
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
+    echo "<script>
+            alert('Akses Ditolak! Anda harus login sebagai Admin.');
+            window.location.href = 'login.html';
+          </script>";
+    exit(); // Hentikan eksekusi kode di bawahnya
+}
 // 1. Hubungkan ke database
 require 'koneksi.php';
 
@@ -44,7 +53,7 @@ $result = mysqli_query($koneksi, $query);
                 <h1 style="margin-bottom: 5px;">Dashboard Admin</h1>
                 <p style="margin: 0; font-size: 0.9em;">Selamat datang, <strong>Atmin</strong></p>
             </div>
-            <a href="login.html" class="btn-logout">Keluar</a>
+            <a href="logout.php" class="btn-logout">Keluar</a>
         </div>
 
         <h2>Daftar Laporan Masuk</h2>

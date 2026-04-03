@@ -1,4 +1,13 @@
 <?php
+session_start(); // Mulai pengecekan kartu pengenal
+// Jika tidak ada kartu pengenal, atau jabatannya bukan admin, tendang keluar!
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
+    echo "<script>
+            alert('Akses Ditolak! Anda harus login sebagai Admin.');
+            window.location.href = 'login.html';
+          </script>";
+    exit(); // Hentikan eksekusi kode di bawahnya
+}
 require 'koneksi.php';
 
 // Mengecek apakah ada ID yang dikirim melalui URL
