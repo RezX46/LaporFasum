@@ -27,7 +27,9 @@ if (mysqli_num_rows($result) == 0) {
 
 // Mengambil data dari database untuk dimasukkan ke variabel $row
 $row = mysqli_fetch_assoc($result);
-
+//Mengambil daftar semua akun yang jabatannya 'petugas'
+$query_petugas = "SELECT * FROM users WHERE role = 'petugas'";
+$daftar_petugas = mysqli_query($koneksi, $query_petugas);
 // Menentukan warna label (badge) berdasarkan status
 $badge_class = 'badge-kuning';
 if ($row['status'] == 'diproses') { $badge_class = 'badge-biru'; }
@@ -116,14 +118,14 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
                 <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
 
                 <label for="petugas"><strong>Tugaskan Kepada:</strong></label>
-                <select id="petugas" name="petugas" required>
-                    <option value="" disabled selected>-- Pilih Tim / Petugas Lapangan --</option>
-                    <option value="1">Tim Reaksi Cepat A (Jalan & Jembatan)</option>
-                    <option value="2">Tim Reaksi Cepat B (Penerangan)</option>
-                    <option value="3">Tim C (Drainase & Kebersihan)</option>
-                    //nanti tambah (atau hilangin aja)
-                </select>
+             <select id="petugas" name="petugas" required>
+                 <option value="" disabled selected>-- Pilih Tim / Petugas Lapangan --</option>
 
+                 <?php while($p = mysqli_fetch_assoc($daftar_petugas)): ?>
+                     <option value="<?= $p['id_user'] ?>"><?= $p['nama_lengkap'] ?></option>
+                 <?php endwhile; ?>
+
+             </select>
                 <div class="btn-group">
                     <button type="submit" name="aksi" value="terima" class="btn-terima">✔️ Terima & Tugaskan</button>
                     <button type="submit" name="aksi" value="tolak" class="btn-tolak" formnovalidate>❌ Tolak Laporan</button>
