@@ -42,6 +42,8 @@ $result = mysqli_query($koneksi, $query);
 
         .btn-detail { background-color: #2c3e50; padding: 6px 12px; font-size: 0.85em; margin-top: 0; width: auto; color: white; text-decoration: none; border-radius: 5px;}
         .btn-detail:hover { background-color: #1a252f; }
+        .btn-hapus { background-color: #e74c3c; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 0.85em; font-weight: bold; margin-left: 5px;}
+        .btn-hapus:hover { background-color: #c0392b; }
     </style>
 </head>
 <body>
@@ -91,6 +93,7 @@ $result = mysqli_query($koneksi, $query);
                     <td><span class="badge <?= $badge_class ?>"><?= ucfirst($row['status']) ?></span></td>
                     
                     <td><a href="admin_detail.php?id=<?= $row['id_laporan'] ?>" class="btn-detail">Lihat Detail</a></td>
+                    <a href="hapus.php?id=<?= $row['id_laporan'] ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus laporan ini secara permanen?');" class="btn-hapus"> Hapus</a>
                 </tr>
                 <?php } ?>
             </tbody>
