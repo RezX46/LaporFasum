@@ -69,6 +69,8 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
         .btn-tolak { background-color: #e74c3c; color: white; width: 100%; border: none; cursor: pointer; padding: 12px; border-radius: 5px; font-weight: bold;}
         .btn-tolak:hover { background-color: #c0392b; }
         .btn-kembali { background-color: #95a5a6; color: white; margin-top: 20px; display: inline-block; padding: 10px 20px; text-decoration: none; border-radius: 5px;}
+        .btn-hapus { background-color: #e74c3c; color: white; display: inline-block; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-left: 10px; font-weight: bold; }
+        .btn-hapus:hover { background-color: #c0392b; }
         select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-top: 10px; margin-bottom: 15px; font-family: inherit; }
     </style>
 </head>
@@ -138,7 +140,7 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
             <a href="admin.php" class="btn-kembali" style="margin-top: 0;">← Kembali ke Dashboard</a>
             
             <?php if ($row['status'] == 'selesai' || $row['status'] == 'ditolak'): ?>
-                <a href="hapus.php?id=<?= $row['id_laporan'] ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus laporan ini secara permanen?');" class="btn-hapus">🗑️ Hapus Laporan Permanen</a>
+                <a href="hapus.php?id=<?= $row['id_laporan'] ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus laporan ini secara permanen?');" class="btn-hapus"> Hapus Laporan </a>
             <?php endif; ?>
         </div>
 

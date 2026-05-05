@@ -92,10 +92,12 @@ $result = mysqli_query($koneksi, $query);
                     <td><?= $tampil_lokasi ?></td>
                     <td><span class="badge <?= $badge_class ?>"><?= ucfirst($row['status']) ?></span></td>
                     
-                    <td><a href="admin_detail.php?id=<?= $row['id_laporan'] ?>" class="btn-detail">Lihat Detail</a></td>
-                    <?php if ($row['status'] == 'selesai' || $row['status'] == 'ditolak'): ?>
-                        <a href="hapus.php?id=<?= $row['id_laporan'] ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus laporan ini secara permanen?');" class="btn-hapus" style="display: inline-block;">Hapus</a>
-                    <?php endif; ?>
+                    <td>
+                        <a href="admin_detail.php?id=<?= $row['id_laporan'] ?>" class="btn-detail">Lihat Detail</a>
+                        <?php if ($row['status'] == 'selesai' || $row['status'] == 'ditolak'): ?>
+                            <a href="hapus.php?id=<?= $row['id_laporan'] ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus laporan ini secara permanen?');" class="btn-hapus" style="display: inline-block;">Hapus</a>
+                        <?php endif; ?>
+                    </td>
                 </tr>
                 <?php } ?>
             </tbody>
