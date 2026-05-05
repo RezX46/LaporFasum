@@ -134,8 +134,14 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
         </div>
         <?php endif; ?>
 
-        <a href="admin.php" class="btn-kembali">← Kembali ke Dashboard</a>
-    </div>
+        <div style="margin-top: 20px;">
+            <a href="admin.php" class="btn-kembali" style="margin-top: 0;">← Kembali ke Dashboard</a>
+            
+            <?php if ($row['status'] == 'selesai' || $row['status'] == 'ditolak'): ?>
+                <a href="hapus.php?id=<?= $row['id_laporan'] ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus laporan ini secara permanen?');" class="btn-hapus">🗑️ Hapus Laporan Permanen</a>
+            <?php endif; ?>
+        </div>
 
+    </div>
 </body>
 </html>

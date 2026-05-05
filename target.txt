@@ -1,6 +1,6 @@
 target projek pemweb
 
-1\. prbaiki tampilan \& tambah java script (Halis \& Bayu)
+1\. prbaiki tampilan \& tambah java script
 
 2\. tambah fitur untuk admin \& petugas serta perabki page mereka
 
