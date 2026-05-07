@@ -34,7 +34,13 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
 // Logika pemisah peran
 if ($id_instansi_admin == 1) {
     // Admin Pusat
-    $query_opsi = mysqli_query($koneksi, "SELECT * FROM kategori WHERE id_instansi != 1 ORDER BY nama_kategori ASC");
+    $query_opsi = mysqli_query($koneksi, "
+        SELECT k.id_kategori, k.nama_kategori, i.nama_instansi 
+        FROM kategori k 
+        JOIN instansi i ON k.id_instansi = i.id_instansi 
+        WHERE k.id_instansi != 1 
+        ORDER BY i.nama_instansi ASC, k.nama_kategori ASC
+    ");
 } else {
     // Admin instansi
     $query_opsi = mysqli_query($koneksi, "
@@ -119,10 +125,22 @@ if ($id_instansi_admin == 1) {
                 <form action="proses_validasi.php" method="POST">
                     <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
                     <select name="id_kategori_baru" required>
-                        <option value="" disabled selected>-- Pilih Kategori --</option>
-                        <?php while($k = mysqli_fetch_assoc($query_opsi)): ?>
-                            <option value="<?= $k['id_kategori'] ?>"><?= $k['nama_kategori'] ?></option>
+                        <option value="" disabled selected>-- Pilih Instansi & Kategori Tujuan --</option>
+                        <?php 
+                        $current_instansi = '';
+                        while($k = mysqli_fetch_assoc($query_opsi)): 
+                            // Jika nama instansinya berbeda dari yang sebelumnya, buat grup baru
+                            if ($current_instansi != $k['nama_instansi']) {
+                                if ($current_instansi != '') {
+                                    echo "</optgroup>"; // Tutup grup sebelumnya
+                                }
+                                $current_instansi = $k['nama_instansi'];
+                                echo "<optgroup label='➡️ Teruskan ke: " . strtoupper($current_instansi) . "'>";
+                            }
+                        ?>
+                            <option value="<?= $k['id_kategori'] ?>">-- Kategori: <?= $k['nama_kategori'] ?></option>
                         <?php endwhile; ?>
+                        <?php if ($current_instansi != '') echo "</optgroup>"; // Tutup grup terakhir ?>
                     </select>
                     <button type="submit" name="aksi" value="forward" class="btn-terima">➡️ Teruskan ke Dinas Terkait</button>
                     <button type="submit" name="aksi" value="tolak" class="btn-tolak" style="margin-top: 10px;" formnovalidate>❌ Tolak </button>
