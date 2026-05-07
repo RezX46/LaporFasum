@@ -12,7 +12,6 @@ require 'koneksi.php';
 // Mengambil ID Instansi dari Admin yang sedang login
 $id_instansi_admin = $_SESSION['id_instansi'];
 
-//Hanya ambil laporan yang id_kategori-nya milik instansi admin saat ini
 $query = "SELECT l.*, k.nama_kategori 
           FROM laporan l 
           JOIN kategori k ON l.id_kategori = k.id_kategori 
@@ -37,12 +36,22 @@ $result = mysqli_query($koneksi, $query);
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background-color: #f8f9fa; color: #333; }
         tr:hover { background-color: #f1f1f1; }
-        .badge { padding: 5px 10px; border-radius: 20px; color: white; font-size: 0.85em; font-weight: bold; }
+        
+        .badge { 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            color: white; 
+            font-size: 0.85em; 
+            font-weight: bold; 
+            display: inline-block; 
+            white-space: nowrap; /* Mencegah teks turun ke bawah */
+        }
         .badge-kuning { background-color: #f1c40f; color: #333; }
         .badge-biru { background-color: #3498db; }
+        .badge-oranye { background-color: #e67e22; }
         .badge-hijau { background-color: #2ecc71; }
         .badge-merah { background-color: #e74c3c; }
-        .badge-oranye { background-color: #e67e22; }
+        
         .btn-detail { background-color: #2c3e50; padding: 6px 12px; font-size: 0.85em; margin-top: 0; width: auto; color: white; text-decoration: none; border-radius: 5px;}
         .btn-detail:hover { background-color: #1a252f; }
         .btn-hapus { background-color: #e74c3c; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 0.85em; font-weight: bold; margin-left: 5px;}
@@ -69,7 +78,6 @@ $result = mysqli_query($koneksi, $query);
                     <th>ID</th>
                     <th>Tanggal</th>
                     <th>Kategori</th>
-                    <th>Lokasi</th>
                     <th>Status</th>
                     <th>Aksi</th>
                 </tr>
@@ -77,21 +85,19 @@ $result = mysqli_query($koneksi, $query);
             <tbody>
                 <?php 
                 if(mysqli_num_rows($result) == 0){
-                    echo "<tr><td colspan='6' style='text-align:center;'>Belum ada laporan masuk untuk instansi Anda.</td></tr>";
+                    echo "<tr><td colspan='5' style='text-align:center;'>Belum ada laporan masuk untuk instansi Anda.</td></tr>";
                 }
                 while($row = mysqli_fetch_assoc($result)) { 
                     $badge_class = 'badge-kuning'; 
                     if ($row['status'] == 'diproses') { $badge_class = 'badge-biru'; }
-                    elseif ($row['status'] == 'menunggu verifikasi') { $badge_class = 'badge-oranye'; } 
+                    elseif ($row['status'] == 'menunggu verifikasi') { $badge_class = 'badge-oranye'; }
                     elseif ($row['status'] == 'selesai') { $badge_class = 'badge-hijau'; }
                     elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
-
-                    $patokan = (!empty($row['alamat_manual'])) ? $row['alamat_manual'] : 'GPS';
                 ?>
                 <tr>
                     <td>#<?= $row['id_laporan'] ?></td>
                     <td><?= date('d M Y', strtotime($row['tanggal_lapor'])) ?></td>
-                    <td><?= $row['nama_kategori'] ?></td> <td><?= $patokan ?></td>
+                    <td><?= $row['nama_kategori'] ?></td>
                     <td><span class="badge <?= $badge_class ?>"><?= ucfirst($row['status']) ?></span></td>
                     
                     <td>

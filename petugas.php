@@ -86,7 +86,7 @@ $result_selesai = mysqli_query($koneksi, $query_selesai);
                     <?= !empty($row['alamat_manual']) ? $row['alamat_manual'] : 'GPS / Titik Koordinat' ?>
                 </p>
                 
-                <a href="https://maps.google.com/?q=?q=<?= $row['latitude'] ?>,<?= $row['longitude'] ?>" target="_blank" class="btn-map">🗺️ Buka Maps</a>
+                <a href="https://www.google.com/maps?q=<?= $row['latitude'] ?>,<?= $row['longitude'] ?>" target="_blank" class="btn-map">🗺️ Buka Maps</a>
                 
                 <p style="margin-bottom: 10px; margin-top: 10px; font-size: 0.9em; color: #666;"><strong>Keluhan:</strong> <?= $row['keluhan'] ?></p>
                 <p style="margin-bottom: 5px; font-size: 0.9em;"><strong>Foto Kondisi Kerusakan:</strong></p>
