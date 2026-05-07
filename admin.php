@@ -1,18 +1,24 @@
 <?php
-session_start(); // Mulai pengecekan kartu pengenal
-// Jika tidak ada kartu pengenal, atau jabatannya bukan admin, tendang keluar!
+session_start();
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
     echo "<script>
             alert('Akses Ditolak! Anda harus login sebagai Admin.');
             window.location.href = 'login.html';
           </script>";
-    exit(); // Hentikan eksekusi kode di bawahnya
+    exit();
 }
-// 1. Hubungkan ke database
 require 'koneksi.php';
 
-// 2. Ambil semua data dari tabel laporan, urutkan dari yang terbaru (DESC)
-$query = "SELECT * FROM laporan ORDER BY id_laporan DESC";
+// Mengambil ID Instansi dari Admin yang sedang login
+$id_instansi_admin = $_SESSION['id_instansi'];
+
+//Hanya ambil laporan yang id_kategori-nya milik instansi admin saat ini
+$query = "SELECT l.*, k.nama_kategori 
+          FROM laporan l 
+          JOIN kategori k ON l.id_kategori = k.id_kategori 
+          WHERE k.id_instansi = '$id_instansi_admin' 
+          ORDER BY l.id_laporan DESC";
+          
 $result = mysqli_query($koneksi, $query);
 ?>
 
@@ -23,7 +29,6 @@ $result = mysqli_query($koneksi, $query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    
     <style>
         .admin-container { max-width: 1000px; margin-top: 20px; }
         .header-admin { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
@@ -32,14 +37,11 @@ $result = mysqli_query($koneksi, $query);
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background-color: #f8f9fa; color: #333; }
         tr:hover { background-color: #f1f1f1; }
-        
-        /* Desain Label Status */
         .badge { padding: 5px 10px; border-radius: 20px; color: white; font-size: 0.85em; font-weight: bold; }
         .badge-kuning { background-color: #f1c40f; color: #333; }
         .badge-biru { background-color: #3498db; }
         .badge-hijau { background-color: #2ecc71; }
         .badge-merah { background-color: #e74c3c; }
-
         .btn-detail { background-color: #2c3e50; padding: 6px 12px; font-size: 0.85em; margin-top: 0; width: auto; color: white; text-decoration: none; border-radius: 5px;}
         .btn-detail:hover { background-color: #1a252f; }
         .btn-hapus { background-color: #e74c3c; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 0.85em; font-weight: bold; margin-left: 5px;}
@@ -53,7 +55,7 @@ $result = mysqli_query($koneksi, $query);
         <div class="header-admin">
             <div>
                 <h1 style="margin-bottom: 5px;">Dashboard Admin</h1>
-                <p style="margin: 0; font-size: 0.9em;">Selamat datang, <strong>Atmin</strong></p>
+                <p style="margin: 0; font-size: 0.9em;">Selamat datang, <strong><?= $_SESSION['nama_lengkap'] ?></strong></p>
             </div>
             <a href="logout.php" class="btn-logout">Keluar</a>
         </div>
@@ -66,36 +68,34 @@ $result = mysqli_query($koneksi, $query);
                     <th>ID</th>
                     <th>Tanggal</th>
                     <th>Kategori</th>
-                    <th>Lokasi (Singkat)</th>
+                    <th>Lokasi</th>
                     <th>Status</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 <?php 
-                // 3. Looping (Perulangan) untuk menampilkan data satu per satu
+                if(mysqli_num_rows($result) == 0){
+                    echo "<tr><td colspan='6' style='text-align:center;'>Belum ada laporan masuk untuk instansi Anda.</td></tr>";
+                }
                 while($row = mysqli_fetch_assoc($result)) { 
-                    
-                    // Menentukan warna label (badge) berdasarkan status dari database
-                    $badge_class = 'badge-kuning'; // Default
+                    $badge_class = 'badge-kuning'; 
                     if ($row['status'] == 'diproses') { $badge_class = 'badge-biru'; }
                     elseif ($row['status'] == 'selesai') { $badge_class = 'badge-hijau'; }
                     elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
 
-                    // Menentukan format tampilan lokasi
-                    $tampil_lokasi = ($row['metode_lokasi'] == 'manual') ? $row['alamat_manual'] : '📍 Titik Koordinat Peta';
+                    $patokan = (!empty($row['alamat_manual'])) ? $row['alamat_manual'] : 'GPS';
                 ?>
                 <tr>
                     <td>#<?= $row['id_laporan'] ?></td>
                     <td><?= date('d M Y', strtotime($row['tanggal_lapor'])) ?></td>
-                    <td><?= $row['kategori'] ?></td>
-                    <td><?= $tampil_lokasi ?></td>
+                    <td><?= $row['nama_kategori'] ?></td> <td><?= $patokan ?></td>
                     <td><span class="badge <?= $badge_class ?>"><?= ucfirst($row['status']) ?></span></td>
                     
                     <td>
                         <a href="admin_detail.php?id=<?= $row['id_laporan'] ?>" class="btn-detail">Lihat Detail</a>
                         <?php if ($row['status'] == 'selesai' || $row['status'] == 'ditolak'): ?>
-                            <a href="hapus.php?id=<?= $row['id_laporan'] ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus laporan ini secara permanen?');" class="btn-hapus" style="display: inline-block;">Hapus</a>
+                            <a href="hapus.php?id=<?= $row['id_laporan'] ?>" onclick="return confirm('Yakin hapus permanen?');" class="btn-hapus">Hapus</a>
                         <?php endif; ?>
                     </td>
                 </tr>

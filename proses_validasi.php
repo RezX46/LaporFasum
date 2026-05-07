@@ -1,33 +1,36 @@
 <?php
-// 1. Panggil koneksi database
 require 'koneksi.php';
 
-// 2. Mengecek apakah file ini benar-benar diakses lewat form (ada tombol aksi yang ditekan)
 if (isset($_POST['aksi']) && isset($_POST['id_laporan'])) {
     
-    // Menangkap ID Laporan yang dikirim dari form tersembunyi
-    $id_laporan = $_POST['id_laporan'];
-    $aksi       = $_POST['aksi']; // Isinya bisa 'terima' atau 'tolak'
+    $id_laporan = mysqli_real_escape_string($koneksi, $_POST['id_laporan']);
+    $aksi       = $_POST['aksi']; 
 
-    // 3. Logika Percabangan Aksi
     if ($aksi == 'terima') {
-        // Jika Admin klik Terima, tangkap ID petugas yang dipilih dari dropdown
-        $id_petugas = $_POST['petugas'];
+        // Admin instansi
+        $id_petugas = mysqli_real_escape_string($koneksi, $_POST['id_petugas']);
         
-        // Perintah SQL: Ubah status jadi 'diproses' dan isi kolom id_petugas
+        // Ubah status jadi 'diproses' dan isi kolom id_petugas
         $query = "UPDATE laporan SET status = 'diproses', id_petugas = '$id_petugas' WHERE id_laporan = '$id_laporan'";
-        $pesan_sukses = "Sukses! Laporan telah diterima dan ditugaskan ke petugas.";
+        $pesan_sukses = "Sukses! Laporan telah diterima dan ditugaskan ke tim lapangan.";
         
+    } elseif ($aksi == 'forward') {
+        // atmin pusat
+        $id_kategori_baru = mysqli_real_escape_string($koneksi, $_POST['id_kategori_baru']);
+        
+        // Ubah id_kategori saja. Status tetap 'menunggu' agar tampil di dashboard Dinas yang baru.
+        $query = "UPDATE laporan SET id_kategori = '$id_kategori_baru' WHERE id_laporan = '$id_laporan'";
+        $pesan_sukses = "Sukses! Laporan berhasil diteruskan ke dinas terkait.";
+
     } elseif ($aksi == 'tolak') {
-        // Jika Admin klik Tolak, cukup ubah statusnya saja
         $query = "UPDATE laporan SET status = 'ditolak' WHERE id_laporan = '$id_laporan'";
         $pesan_sukses = "Laporan telah ditolak.";
     }
 
-    // 4. Eksekusi perintah SQL ke database
+    // Eksekusi perintah SQL ke database
     $update = mysqli_query($koneksi, $query);
 
-    // 5. Cek apakah update berhasil
+    // Cek apakah update berhasil
     if ($update) {
         echo "<script>
                 alert('$pesan_sukses');
@@ -38,7 +41,6 @@ if (isset($_POST['aksi']) && isset($_POST['id_laporan'])) {
     }
 
 } else {
-    // Jika seseorang iseng mencoba membuka file ini langsung lewat URL browser
     echo "Akses tidak sah!";
 }
 ?>

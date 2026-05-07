@@ -1,34 +1,48 @@
 <?php
 session_start();
-
 require 'koneksi.php';
 
-// ketikan dari form login
+// Menangkap inputan dari form login
 $username = mysqli_real_escape_string($koneksi, $_POST['username']);
 $password = mysqli_real_escape_string($koneksi, $_POST['password']);
 
-// cek di database
+// cek tabel user
 $query = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
 $result = mysqli_query($koneksi, $query);
 
-// Cek datanya ketemu 
+// Cek apakah datanya ketemu 
 if (mysqli_num_rows($result) > 0) {
     
-    // Ambil datanya
+    // Ambil data dasar
     $akun = mysqli_fetch_assoc($result);
+    $id_user = $akun['id_user'];
 
-    //Buat Session untuk pengguna ini
-    $_SESSION['id_user']      = $akun['id_user'];
+    // Buat Session 
+    $_SESSION['id_user']      = $id_user;
     $_SESSION['nama_lengkap'] = $akun['nama_lengkap'];
     $_SESSION['role']         = $akun['role'];
 
+    //  Ambil id_instansi dari tabel bawah kalau role-nya sesuai
     if ($akun['role'] == 'admin') {
-        // Jika dia admin, lempar ke dashboard admin
+        
+        $query_admin = mysqli_query($koneksi, "SELECT id_instansi FROM admin WHERE id_user = '$id_user'");
+        $data_admin = mysqli_fetch_assoc($query_admin);
+        
+        // Simpan id_instansi ke session agar bisa dipakai di halaman admin
+        $_SESSION['id_instansi'] = $data_admin['id_instansi'];
+        
         header("Location: admin.php");
-        exit(); // Hentikan eksekusi script di bawahnya
+        exit(); 
+
     } elseif ($akun['role'] == 'petugas') {
-        // Jika dia petugas, lempar ke dashboard petugas
-        header("Location: petugas.php"); // (nanti ubah)
+        
+        $query_petugas = mysqli_query($koneksi, "SELECT id_instansi FROM petugas WHERE id_user = '$id_user'");
+        $data_petugas = mysqli_fetch_assoc($query_petugas);
+        
+        // Simpan id_instansi ke session agar bisa dipakai di halaman petugas
+        $_SESSION['id_instansi'] = $data_petugas['id_instansi'];
+        
+        header("Location: petugas.php"); 
         exit();
     }
 

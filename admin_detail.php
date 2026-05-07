@@ -1,40 +1,49 @@
 <?php
-session_start(); // Mulai pengecekan kartu pengenal
-// Jika tidak ada kartu pengenal, atau jabatannya bukan admin, tendang keluar!
+session_start(); 
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
-    echo "<script>
-            alert('Akses Ditolak! Anda harus login sebagai Admin.');
-            window.location.href = 'login.html';
-          </script>";
-    exit(); // Hentikan eksekusi kode di bawahnya
+    echo "<script>alert('Akses Ditolak!'); window.location.href = 'login.html';</script>";
+    exit();
 }
 require 'koneksi.php';
 
-// Mengecek apakah ada ID yang dikirim melalui URL
-if (!isset($_GET['id'])) {
-    die("ID Laporan tidak ditemukan di URL.");
-}
+if (!isset($_GET['id'])) { die("ID Laporan tidak ditemukan."); }
 
-// Menangkap ID dan mencari datanya di database
-$id_laporan = $_GET['id'];
-$query = "SELECT * FROM laporan WHERE id_laporan = $id_laporan";
+$id_laporan = (int)$_GET['id'];
+$id_instansi_admin = $_SESSION['id_instansi'];
+
+// Ambil data laporan digabung dengan tabel kategori untuk mendapatkan id_instansi-nya
+$query = "SELECT l.*, k.nama_kategori, k.id_instansi 
+          FROM laporan l 
+          JOIN kategori k ON l.id_kategori = k.id_kategori 
+          WHERE l.id_laporan = $id_laporan";
 $result = mysqli_query($koneksi, $query);
 
-// Mengecek apakah data dengan ID tersebut benar-benar ada
-if (mysqli_num_rows($result) == 0) {
-    die("Data laporan tidak ditemukan di database.");
+if (mysqli_num_rows($result) == 0) { die("Data tidak ditemukan."); }
+$row = mysqli_fetch_assoc($result);
+
+// Pastikan Admin tidak mengintip laporan instansi lain dengan mengubah URL ID
+if ($row['id_instansi'] != $id_instansi_admin) {
+    die("Akses Ditolak! Laporan ini bukan wilayah kewenangan instansi Anda.");
 }
 
-// Mengambil data dari database untuk dimasukkan ke variabel $row
-$row = mysqli_fetch_assoc($result);
-//Mengambil daftar semua akun yang jabatannya 'petugas'
-$query_petugas = "SELECT * FROM users WHERE role = 'petugas'";
-$daftar_petugas = mysqli_query($koneksi, $query_petugas);
-// Menentukan warna label (badge) berdasarkan status
 $badge_class = 'badge-kuning';
 if ($row['status'] == 'diproses') { $badge_class = 'badge-biru'; }
 elseif ($row['status'] == 'selesai') { $badge_class = 'badge-hijau'; }
 elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
+
+// Logika pemisah peran
+if ($id_instansi_admin == 1) {
+    // Admin Pusat
+    $query_opsi = mysqli_query($koneksi, "SELECT * FROM kategori WHERE id_instansi != 1 ORDER BY nama_kategori ASC");
+} else {
+    // Admin instansi
+    $query_opsi = mysqli_query($koneksi, "
+        SELECT p.id_petugas, u.nama_lengkap 
+        FROM petugas p 
+        JOIN users u ON p.id_user = u.id_user 
+        WHERE p.id_instansi = '$id_instansi_admin'
+    ");
+}
 ?>
 
 <!DOCTYPE html>
@@ -44,7 +53,6 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Laporan - LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    
     <style>
         .admin-container { max-width: 800px; }
         .header-admin { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
@@ -53,15 +61,12 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
         .badge-biru { background-color: #3498db; }
         .badge-hijau { background-color: #2ecc71; }
         .badge-merah { background-color: #e74c3c; }
-        
         .detail-box { background-color: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #ddd; text-align: left; margin-bottom: 25px; }
         .detail-item { margin-bottom: 15px; }
         .detail-item strong { display: block; color: #2c3e50; margin-bottom: 5px; }
         .foto-laporan { max-width: 100%; height: auto; border-radius: 5px; margin-top: 10px; border: 1px solid #ccc; }
-        
         .btn-map { background-color: #e67e22; color: white; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 0.85em; display: inline-block; margin-top: 8px; font-weight: bold; }
         .btn-map:hover { background-color: #d35400; }
-
         .action-box { background-color: #fff; padding: 20px; border-radius: 8px; border: 2px dashed #3498db; text-align: left; }
         .btn-group { display: flex; gap: 15px; margin-top: 15px; }
         .btn-terima { background-color: #2ecc71; color: white; width: 100%; border: none; cursor: pointer; padding: 12px; border-radius: 5px; font-weight: bold;}
@@ -69,8 +74,6 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
         .btn-tolak { background-color: #e74c3c; color: white; width: 100%; border: none; cursor: pointer; padding: 12px; border-radius: 5px; font-weight: bold;}
         .btn-tolak:hover { background-color: #c0392b; }
         .btn-kembali { background-color: #95a5a6; color: white; margin-top: 20px; display: inline-block; padding: 10px 20px; text-decoration: none; border-radius: 5px;}
-        .btn-hapus { background-color: #e74c3c; color: white; display: inline-block; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-left: 10px; font-weight: bold; }
-        .btn-hapus:hover { background-color: #c0392b; }
         select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-top: 10px; margin-bottom: 15px; font-family: inherit; }
     </style>
 </head>
@@ -90,20 +93,16 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
             </div>
             <div class="detail-item">
                 <strong>Kategori Fasilitas:</strong>
-                <?= $row['kategori'] ?>
+                <?= $row['nama_kategori'] ?>
             </div>
             <div class="detail-item">
                 <strong>Deskripsi Keluhan:</strong>
                 <?= $row['keluhan'] ?>
             </div>
             <div class="detail-item">
-                <strong>Lokasi / Alamat:</strong>
-                <?php if ($row['metode_lokasi'] == 'manual'): ?>
-                    <?= $row['alamat_manual'] ?> (Ketik Manual)
-                <?php else: ?>
-                    Lokasi Peta <br>
-                    <a href="https://www.google.com/maps?q=<?= $row['latitude'] ?>,<?= $row['longitude'] ?>" target="_blank" class="btn-map"> Lihat lokasi</a>
-                <?php endif; ?>
+                <strong>Lokasi / Patokan:</strong>
+                <?php if(!empty($row['alamat_manual'])) { echo $row['alamat_manual'] . "<br>"; } ?>
+                <a href="https://www.google.com/maps?q=<?= $row['latitude'] ?>,<?= $row['longitude'] ?>" target="_blank" class="btn-map">📍 Buka di Google Maps</a>
             </div>
             <div class="detail-item">
                 <strong>Foto Bukti:</strong>
@@ -113,35 +112,45 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
 
         <?php if ($row['status'] == 'menunggu'): ?>
         <div class="action-box">
-            <h2 style="margin-top: 0;">Tindak Lanjut Admin</h2>
-            <p style="font-size: 0.9em; margin-bottom: 15px;">Silakan validasi laporan ini.</p>
             
-            <form action="proses_validasi.php" method="POST">
-                <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
+            <?php if ($id_instansi_admin == 1): ?>
+                <h2 style="margin-top: 0;">Teruskan Laporan</h2>
+                <p style="font-size: 0.9em; margin-bottom: 15px;">Pilih kategori yang tepat untuk meneruskan laporan ini ke dinas terkait.</p>
+                <form action="proses_validasi.php" method="POST">
+                    <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
+                    <select name="id_kategori_baru" required>
+                        <option value="" disabled selected>-- Pilih Kategori --</option>
+                        <?php while($k = mysqli_fetch_assoc($query_opsi)): ?>
+                            <option value="<?= $k['id_kategori'] ?>"><?= $k['nama_kategori'] ?></option>
+                        <?php endwhile; ?>
+                    </select>
+                    <button type="submit" name="aksi" value="forward" class="btn-terima">➡️ Teruskan ke Dinas Terkait</button>
+                    <button type="submit" name="aksi" value="tolak" class="btn-tolak" style="margin-top: 10px;" formnovalidate>❌ Tolak </button>
+                </form>
 
-                <label for="petugas"><strong>Tugaskan Kepada:</strong></label>
-             <select id="petugas" name="petugas" required>
-                 <option value="" disabled selected>-- Pilih Tim / Petugas Lapangan --</option>
+            <?php else: ?>
+                <h2 style="margin-top: 0;">Tindak Lanjut Laporan</h2>
+                <p style="font-size: 0.9em; margin-bottom: 15px;">Pilih tim lapangan untuk mengerjakan laporan ini.</p>
+                <form action="proses_validasi.php" method="POST">
+                    <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
+                    <select name="id_petugas" required>
+                        <option value="" disabled selected>-- Pilih Tim / Petugas Lapangan --</option>
+                        <?php while($p = mysqli_fetch_assoc($query_opsi)): ?>
+                            <option value="<?= $p['id_petugas'] ?>"><?= $p['nama_lengkap'] ?></option>
+                        <?php endwhile; ?>
+                    </select>
+                    <div class="btn-group">
+                        <button type="submit" name="aksi" value="terima" class="btn-terima">✔️ Terima & Tugaskan</button>
+                        <button type="submit" name="aksi" value="tolak" class="btn-tolak" formnovalidate>❌ Tolak Laporan</button>
+                    </div>
+                </form>
+            <?php endif; ?>
 
-                 <?php while($p = mysqli_fetch_assoc($daftar_petugas)): ?>
-                     <option value="<?= $p['id_user'] ?>"><?= $p['nama_lengkap'] ?></option>
-                 <?php endwhile; ?>
-
-             </select>
-                <div class="btn-group">
-                    <button type="submit" name="aksi" value="terima" class="btn-terima">✔️ Terima & Tugaskan</button>
-                    <button type="submit" name="aksi" value="tolak" class="btn-tolak" formnovalidate>❌ Tolak Laporan</button>
-                </div>
-            </form>
         </div>
         <?php endif; ?>
 
         <div style="margin-top: 20px;">
             <a href="admin.php" class="btn-kembali" style="margin-top: 0;">← Kembali ke Dashboard</a>
-            
-            <?php if ($row['status'] == 'selesai' || $row['status'] == 'ditolak'): ?>
-                <a href="hapus.php?id=<?= $row['id_laporan'] ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus laporan ini secara permanen?');" class="btn-hapus"> Hapus Laporan </a>
-            <?php endif; ?>
         </div>
 
     </div>
