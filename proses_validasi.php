@@ -25,8 +25,15 @@ if (isset($_POST['aksi']) && isset($_POST['id_laporan'])) {
     } elseif ($aksi == 'tolak') {
         $query = "UPDATE laporan SET status = 'ditolak' WHERE id_laporan = '$id_laporan'";
         $pesan_sukses = "Laporan telah ditolak.";
-    }
 
+    } elseif ($aksi == 'verifikasi_terima') {
+        $query = "UPDATE laporan SET status = 'selesai' WHERE id_laporan = '$id_laporan'";
+        $pesan_sukses = "Laporan berhasil diverifikasi ";
+
+    } elseif ($aksi == 'verifikasi_tolak') {
+        $query = "UPDATE laporan SET status = 'diproses' WHERE id_laporan = '$id_laporan'";
+        $pesan_sukses = "Bukti ditolak. Laporan dikembalikan ke petugas.";
+    }
     // Eksekusi perintah SQL ke database
     $update = mysqli_query($koneksi, $query);
 

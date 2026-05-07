@@ -42,6 +42,7 @@ $result = mysqli_query($koneksi, $query);
         .badge-biru { background-color: #3498db; }
         .badge-hijau { background-color: #2ecc71; }
         .badge-merah { background-color: #e74c3c; }
+        .badge-oranye { background-color: #e67e22; }
         .btn-detail { background-color: #2c3e50; padding: 6px 12px; font-size: 0.85em; margin-top: 0; width: auto; color: white; text-decoration: none; border-radius: 5px;}
         .btn-detail:hover { background-color: #1a252f; }
         .btn-hapus { background-color: #e74c3c; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 0.85em; font-weight: bold; margin-left: 5px;}
@@ -81,6 +82,7 @@ $result = mysqli_query($koneksi, $query);
                 while($row = mysqli_fetch_assoc($result)) { 
                     $badge_class = 'badge-kuning'; 
                     if ($row['status'] == 'diproses') { $badge_class = 'badge-biru'; }
+                    elseif ($row['status'] == 'menunggu verifikasi') { $badge_class = 'badge-oranye'; } 
                     elseif ($row['status'] == 'selesai') { $badge_class = 'badge-hijau'; }
                     elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
 

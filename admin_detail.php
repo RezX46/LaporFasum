@@ -67,6 +67,7 @@ if ($id_instansi_admin == 1) {
         .badge-biru { background-color: #3498db; }
         .badge-hijau { background-color: #2ecc71; }
         .badge-merah { background-color: #e74c3c; }
+        .badge-oranye { background-color: #e67e22; }
         .detail-box { background-color: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #ddd; text-align: left; margin-bottom: 25px; }
         .detail-item { margin-bottom: 15px; }
         .detail-item strong { display: block; color: #2c3e50; margin-bottom: 5px; }
@@ -111,10 +112,30 @@ if ($id_instansi_admin == 1) {
                 <a href="https://www.google.com/maps?q=<?= $row['latitude'] ?>,<?= $row['longitude'] ?>" target="_blank" class="btn-map">📍 Buka di Google Maps</a>
             </div>
             <div class="detail-item">
-                <strong>Foto Bukti:</strong>
+                <strong>Foto Laporan:</strong>
                 <img src="uploads/<?= $row['foto'] ?>" alt="Foto Laporan" class="foto-laporan">
             </div>
         </div>
+
+        <?php if ($row['status'] == 'menunggu verifikasi'): ?>
+        <div class="action-box" style="border-color: #e67e22;">
+            <h2 style="margin-top: 0; color: #e67e22;">Verifikasi Pekerjaan Petugas</h2>
+            <p>Petugas telah mengirimkan bukti perbaikan. Silakan periksa foto di bawah ini:</p>
+            
+            <div style="text-align: center; margin-bottom: 20px;">
+                <strong>Foto Bukti Perbaikan:</strong><br>
+                <img src="uploads/<?= $row['foto_bukti'] ?>" class="foto-laporan" style="border: 3px solid #2ecc71;">
+            </div>
+
+            <form action="proses_validasi.php" method="POST">
+                <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
+                <div class="btn-group">
+                    <button type="submit" name="aksi" value="verifikasi_terima" class="btn-terima">✔️ Verifikasi Benar (Selesai)</button>
+                    <button type="submit" name="aksi" value="verifikasi_tolak" class="btn-tolak">❌ Tolak Bukti (Kembali Diproses)</button>
+                </div>
+            </form>
+        </div>
+        <?php endif; ?>
 
         <?php if ($row['status'] == 'menunggu'): ?>
         <div class="action-box">
@@ -148,7 +169,7 @@ if ($id_instansi_admin == 1) {
 
             <?php else: ?>
                 <h2 style="margin-top: 0;">Tindak Lanjut Laporan</h2>
-                <p style="font-size: 0.9em; margin-bottom: 15px;">Pilih tim lapangan untuk mengerjakan laporan ini.</p>
+                <p style="font-size: 0.9em; margin-bottom: 15px;">Pilih petugas untuk mengerjakan laporan ini.</p>
                 <form action="proses_validasi.php" method="POST">
                     <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
                     <select name="id_petugas" required>

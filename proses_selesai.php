@@ -25,7 +25,7 @@ if (isset($_POST['id_laporan'])) {
     if (move_uploaded_file($tmp_file, $folder_tujuan)) {
         
         //  Ubah status menjadi 'selesai' dan simpan nama file buktinya
-        $query = "UPDATE laporan SET status = 'selesai', foto_bukti = '$nama_foto_baru' WHERE id_laporan = '$id_laporan'";
+        $query = "UPDATE laporan SET status = 'menunggu verifikasi', foto_bukti = '$nama_foto_baru' WHERE id_laporan = '$id_laporan'";
         
         $update = mysqli_query($koneksi, $query);
 
