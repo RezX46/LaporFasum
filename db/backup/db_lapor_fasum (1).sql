@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 07 Bulan Mei 2026 pada 12.18
+-- Waktu pembuatan: 07 Bulan Mei 2026 pada 11.40
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -20,31 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `db_lapor_fasum`
 --
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `admin`
---
-
-CREATE TABLE `admin` (
-  `id_admin` int(11) NOT NULL,
-  `id_user` int(11) NOT NULL,
-  `id_instansi` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data untuk tabel `admin`
---
-
-INSERT INTO `admin` (`id_admin`, `id_user`, `id_instansi`) VALUES
-(1, 1, 1),
-(2, 2, 2),
-(3, 3, 3),
-(4, 4, 4),
-(5, 5, 5),
-(6, 6, 6),
-(7, 7, 7);
 
 -- --------------------------------------------------------
 
@@ -127,43 +102,6 @@ CREATE TABLE `laporan` (
   `foto_bukti` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data untuk tabel `laporan`
---
-
-INSERT INTO `laporan` (`id_laporan`, `tanggal_lapor`, `foto`, `keluhan`, `id_kategori`, `metode_lokasi`, `latitude`, `longitude`, `alamat_manual`, `status`, `id_petugas`, `foto_bukti`) VALUES
-(1, '2026-05-07 10:16:01', '1778148961_triple_t.jpg', 'wwfwfwf', 14, 'peta', '-8.590716', '116.09301', NULL, 'menunggu', NULL, NULL);
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `petugas`
---
-
-CREATE TABLE `petugas` (
-  `id_petugas` int(11) NOT NULL,
-  `id_user` int(11) NOT NULL,
-  `id_instansi` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data untuk tabel `petugas`
---
-
-INSERT INTO `petugas` (`id_petugas`, `id_user`, `id_instansi`) VALUES
-(1, 8, 2),
-(2, 9, 2),
-(3, 10, 3),
-(4, 11, 3),
-(5, 12, 4),
-(6, 13, 4),
-(7, 14, 5),
-(8, 15, 5),
-(9, 16, 6),
-(10, 17, 6),
-(11, 18, 7),
-(12, 19, 7);
-
 -- --------------------------------------------------------
 
 --
@@ -175,45 +113,56 @@ CREATE TABLE `users` (
   `nama_lengkap` varchar(100) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('admin','petugas') NOT NULL
+  `role` enum('admin','petugas') NOT NULL,
+  `id_instansi` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `users`
 --
 
-INSERT INTO `users` (`id_user`, `nama_lengkap`, `username`, `password`, `role`) VALUES
-(1, 'Admin Operator Pusat', 'admin_pusat', '123', 'admin'),
-(2, 'Admin Dinas PU', 'admin_pu', '123', 'admin'),
-(3, 'Admin Dinas Perhubungan', 'admin_dishub', '123', 'admin'),
-(4, 'Admin Dinas Lingkungan Hidup', 'admin_dlh', '123', 'admin'),
-(5, 'Admin PLN', 'admin_pln', '123', 'admin'),
-(6, 'Admin PDAM', 'admin_pdam', '123', 'admin'),
-(7, 'Admin Telkom', 'admin_telkom', '123', 'admin'),
-(8, 'PU 1', 'petugas_pu1', '123', 'petugas'),
-(9, 'PU 2', 'petugas_pu2', '123', 'petugas'),
-(10, 'Dishub 1', 'petugas_dishub1', '123', 'petugas'),
-(11, 'Dishub 2', 'petugas_dishub2', '123', 'petugas'),
-(12, 'DLH 1', 'petugas_dlh1', '123', 'petugas'),
-(13, 'DLH 2', 'petugas_dlh2', '123', 'petugas'),
-(14, 'PLN 1', 'petugas_pln1', '123', 'petugas'),
-(15, 'PLN 2', 'petugas_pln2', '123', 'petugas'),
-(16, 'PDAM 1', 'petugas_pdam1', '123', 'petugas'),
-(17, 'PDAM 2', 'petugas_pdam2', '123', 'petugas'),
-(18, 'Telkom 1', 'petugas_telkom1', '123', 'petugas'),
-(19, 'Telkom 2', 'petugas_telkom2', '123', 'petugas');
+INSERT INTO `users` (`id_user`, `nama_lengkap`, `username`, `password`, `role`, `id_instansi`) VALUES
+(1, 'Admin Operator Pusat', 'admin_pusat', '123', 'admin', 1),
+(2, 'Admin Dinas PU', 'admin_pu', '123', 'admin', 2),
+(3, 'Admin Dinas Perhubungan', 'admin_dishub', '123', 'admin', 3),
+(4, 'Admin Dinas Lingkungan Hidup', 'admin_dlh', '123', 'admin', 4),
+(5, 'Admin PLN', 'admin_pln', '123', 'admin', 5),
+(6, 'Admin PDAM', 'admin_pdam', '123', 'admin', 6),
+(7, 'Admin Telkom', 'admin_telkom', '123', 'admin', 7),
+(8, 'PU 1', 'petugas_pu1', '123', 'petugas', 2),
+(9, 'PU 2', 'petugas_pu2', '123', 'petugas', 2),
+(10, 'PU 3', 'petugas_pu3', '123', 'petugas', 2),
+(11, 'PU 4', 'petugas_pu4', '123', 'petugas', 2),
+(12, 'PU 5', 'petugas_pu5', '123', 'petugas', 2),
+(13, 'Dishub 1', 'petugas_dishub1', '123', 'petugas', 3),
+(14, 'Dishub 2', 'petugas_dishub2', '123', 'petugas', 3),
+(15, 'Dishub 3', 'petugas_dishub3', '123', 'petugas', 3),
+(16, 'Dishub 4', 'petugas_dishub4', '123', 'petugas', 3),
+(17, 'Dishub 5', 'petugas_dishub5', '123', 'petugas', 3),
+(18, 'DLH 1', 'petugas_dlh1', '123', 'petugas', 4),
+(19, 'DLH 2', 'petugas_dlh2', '123', 'petugas', 4),
+(20, 'DLH 3', 'petugas_dlh3', '123', 'petugas', 4),
+(21, 'DLH 4', 'petugas_dlh4', '123', 'petugas', 4),
+(22, 'DLH 5', 'petugas_dlh5', '123', 'petugas', 4),
+(23, 'PLN 1', 'petugas_pln1', '123', 'petugas', 5),
+(24, 'PLN 2', 'petugas_pln2', '123', 'petugas', 5),
+(25, 'PLN 3', 'petugas_pln3', '123', 'petugas', 5),
+(26, 'PLN 4', 'petugas_pln4', '123', 'petugas', 5),
+(27, 'PLN 5', 'petugas_pln5', '123', 'petugas', 5),
+(28, 'PDAM 1', 'petugas_pdam1', '123', 'petugas', 6),
+(29, 'PDAM 2', 'petugas_pdam2', '123', 'petugas', 6),
+(30, 'PDAM 3', 'petugas_pdam3', '123', 'petugas', 6),
+(31, 'PDAM 4', 'petugas_pdam4', '123', 'petugas', 6),
+(32, 'PDAM 5', 'petugas_pdam5', '123', 'petugas', 6),
+(33, 'Telkom 1', 'petugas_telkom1', '123', 'petugas', 7),
+(34, 'Telkom 2', 'petugas_telkom2', '123', 'petugas', 7),
+(35, 'Telkom 3', 'petugas_telkom3', '123', 'petugas', 7),
+(36, 'Telkom 4', 'petugas_telkom4', '123', 'petugas', 7),
+(37, 'Telkom 5', 'petugas_telkom5', '123', 'petugas', 7);
 
 --
 -- Indexes for dumped tables
 --
-
---
--- Indeks untuk tabel `admin`
---
-ALTER TABLE `admin`
-  ADD PRIMARY KEY (`id_admin`),
-  ADD KEY `id_user` (`id_user`),
-  ADD KEY `id_instansi` (`id_instansi`);
 
 --
 -- Indeks untuk tabel `instansi`
@@ -237,28 +186,15 @@ ALTER TABLE `laporan`
   ADD KEY `id_petugas` (`id_petugas`);
 
 --
--- Indeks untuk tabel `petugas`
---
-ALTER TABLE `petugas`
-  ADD PRIMARY KEY (`id_petugas`),
-  ADD KEY `id_user` (`id_user`),
-  ADD KEY `id_instansi` (`id_instansi`);
-
---
 -- Indeks untuk tabel `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`id_user`);
+  ADD PRIMARY KEY (`id_user`),
+  ADD KEY `id_instansi` (`id_instansi`);
 
 --
 -- AUTO_INCREMENT untuk tabel yang dibuang
 --
-
---
--- AUTO_INCREMENT untuk tabel `admin`
---
-ALTER TABLE `admin`
-  MODIFY `id_admin` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT untuk tabel `instansi`
@@ -276,30 +212,17 @@ ALTER TABLE `kategori`
 -- AUTO_INCREMENT untuk tabel `laporan`
 --
 ALTER TABLE `laporan`
-  MODIFY `id_laporan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT untuk tabel `petugas`
---
-ALTER TABLE `petugas`
-  MODIFY `id_petugas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_laporan` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
-
---
--- Ketidakleluasaan untuk tabel `admin`
---
-ALTER TABLE `admin`
-  ADD CONSTRAINT `admin_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE CASCADE,
-  ADD CONSTRAINT `admin_ibfk_2` FOREIGN KEY (`id_instansi`) REFERENCES `instansi` (`id_instansi`) ON DELETE CASCADE;
 
 --
 -- Ketidakleluasaan untuk tabel `kategori`
@@ -312,14 +235,13 @@ ALTER TABLE `kategori`
 --
 ALTER TABLE `laporan`
   ADD CONSTRAINT `laporan_ibfk_1` FOREIGN KEY (`id_kategori`) REFERENCES `kategori` (`id_kategori`) ON DELETE CASCADE,
-  ADD CONSTRAINT `laporan_ibfk_2` FOREIGN KEY (`id_petugas`) REFERENCES `petugas` (`id_petugas`) ON DELETE SET NULL;
+  ADD CONSTRAINT `laporan_ibfk_2` FOREIGN KEY (`id_petugas`) REFERENCES `users` (`id_user`) ON DELETE SET NULL;
 
 --
--- Ketidakleluasaan untuk tabel `petugas`
+-- Ketidakleluasaan untuk tabel `users`
 --
-ALTER TABLE `petugas`
-  ADD CONSTRAINT `petugas_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE CASCADE,
-  ADD CONSTRAINT `petugas_ibfk_2` FOREIGN KEY (`id_instansi`) REFERENCES `instansi` (`id_instansi`) ON DELETE CASCADE;
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`id_instansi`) REFERENCES `instansi` (`id_instansi`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
