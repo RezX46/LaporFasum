@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// 1. Keamanan: Pastikan yang masuk adalah petugas
+// Pastikan yang masuk adalah petugas
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'petugas') {
     echo "<script>
             alert('Akses Ditolak! Anda harus login sebagai Petugas.');
@@ -12,15 +12,28 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'petugas') {
 
 require 'koneksi.php';
 
-// Ambil ID petugas yang sedang login dari session
-$id_petugas = $_SESSION['id_user'];
+// Ambil id_user dari session
+$id_user_induk = $_SESSION['id_user'];
 
-// 2. Ambil data tugas yang sedang "diproses" KHUSUS untuk petugas ini
-$query_aktif = "SELECT * FROM laporan WHERE id_petugas = '$id_petugas' AND status = 'diproses' ORDER BY id_laporan DESC";
+// Cari id_petugas yang sebenarnya di tabel petigas
+$query_cari_petugas = mysqli_query($koneksi, "SELECT id_petugas FROM petugas WHERE id_user = '$id_user_induk'");
+$data_petugas = mysqli_fetch_assoc($query_cari_petugas);
+$id_petugas_asli = $data_petugas['id_petugas'];
+
+// ambil data tugas aktif
+$query_aktif = "SELECT l.*, k.nama_kategori 
+                FROM laporan l 
+                JOIN kategori k ON l.id_kategori = k.id_kategori 
+                WHERE l.id_petugas = '$id_petugas_asli' AND l.status = 'diproses' 
+                ORDER BY l.id_laporan DESC";
 $result_aktif = mysqli_query($koneksi, $query_aktif);
 
-// 3. Ambil data tugas yang sudah "selesai" KHUSUS untuk petugas ini
-$query_selesai = "SELECT * FROM laporan WHERE id_petugas = '$id_petugas' AND status = 'selesai' ORDER BY id_laporan DESC";
+// Ambil data tugas selesai
+$query_selesai = "SELECT l.*, k.nama_kategori 
+                  FROM laporan l 
+                  JOIN kategori k ON l.id_kategori = k.id_kategori 
+                  WHERE l.id_petugas = '$id_petugas_asli' AND l.status = 'selesai' 
+                  ORDER BY l.id_laporan DESC";
 $result_selesai = mysqli_query($koneksi, $query_selesai);
 ?>
 
@@ -45,7 +58,7 @@ $result_selesai = mysqli_query($koneksi, $query_selesai);
         .btn-selesai { background-color: #2ecc71; width: 100%; margin-top: 15px; border: none; padding: 10px; color: white; font-weight: bold; border-radius: 5px; cursor: pointer;}
         .btn-selesai:hover { background-color: #27ae60; }
         .btn-detail { background-color: #3498db; width: 100%; padding: 8px; font-size: 0.9em; margin-top: 10px; color: white; border: none; border-radius: 5px; cursor: pointer;}
-        .btn-map { background-color: #e67e22; color: white; padding: 4px 10px; border-radius: 5px; text-decoration: none; font-size: 0.8em; display: inline-block; margin-bottom: 10px; font-weight: bold; }
+        .btn-map { background-color: #e67e22; color: white; padding: 6px 10px; border-radius: 5px; text-decoration: none; font-size: 0.85em; display: inline-block; margin-bottom: 10px; font-weight: bold; }
         .btn-map:hover { background-color: #d35400; }
     </style>
 </head>
@@ -67,25 +80,20 @@ $result_selesai = mysqli_query($koneksi, $query_selesai);
             <?php while($row = mysqli_fetch_assoc($result_aktif)): ?>
             <div class="task-card">
                 <div class="task-header">
-                    <strong>Laporan #<?= $row['id_laporan'] ?></strong>
+                    <strong>Laporan #<?= $row['id_laporan'] ?> (<?= $row['nama_kategori'] ?>)</strong>
                     <span class="badge-kuning">Perlu Tindakan</span>
                 </div>
                 
-                <p style="margin-bottom: 5px;"><strong>Lokasi:</strong> 
-                    <?php if ($row['metode_lokasi'] == 'manual'): ?>
-                        <?= $row['alamat_manual'] ?>
-                    <?php else: ?>
-                        Titik Koordinat Peta
-                    <?php endif; ?>
+                <p style="margin-bottom: 5px;"><strong>Patokan Lokasi:</strong> 
+                    <?= !empty($row['alamat_manual']) ? $row['alamat_manual'] : 'GPS / Titik Koordinat' ?>
                 </p>
                 
-                <?php if ($row['metode_lokasi'] == 'peta'): ?>
-                    <a href="https://www.google.com/maps?q=<?= $row['latitude'] ?>,<?= $row['longitude'] ?>" target="_blank" class="btn-map">🗺️ Buka Rute di Google Maps</a>
-                <?php endif; ?>
+                <a href="https://maps.google.com/?q=<?= $row['latitude'] ?>,<?= $row['longitude'] ?>" target="_blank" class="btn-map">🗺️ Buka Rute di Google Maps</a>
                 
-                <p style="margin-bottom: 10px; font-size: 0.9em; color: #666;"><strong>Keluhan:</strong> <?= $row['keluhan'] ?></p>
+                <p style="margin-bottom: 10px; margin-top: 10px; font-size: 0.9em; color: #666;"><strong>Keluhan:</strong> <?= $row['keluhan'] ?></p>
                 <p style="margin-bottom: 5px; font-size: 0.9em;"><strong>Foto Kondisi Kerusakan:</strong></p>
                 <img src="uploads/<?= $row['foto'] ?>" alt="Foto Kondisi Awal" style="max-width: 100%; height: auto; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 15px;">
+                
                 <form class="proof-section" action="proses_selesai.php" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
                     <p style="font-weight: bold; margin-bottom: 10px; font-size: 0.9em;">Tindakan Penyelesaian:</p>
@@ -112,7 +120,7 @@ $result_selesai = mysqli_query($koneksi, $query_selesai);
                     <strong>Laporan #<?= $row['id_laporan'] ?></strong>
                     <span class="badge-hijau">Selesai</span>
                 </div>
-                <p style="margin-bottom: 5px;"><strong>Kategori:</strong> <?= $row['kategori'] ?></p>
+                <p style="margin-bottom: 5px;"><strong>Kategori:</strong> <?= $row['nama_kategori'] ?></p>
                 <button class="btn-detail" onclick="alert('Tugas ini sudah selesai dilaporkan dengan bukti: <?= $row['foto_bukti'] ?>')">Lihat Bukti Tersimpan</button>
             </div>
             <?php endwhile; ?>
