@@ -64,31 +64,6 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Laporan - LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        .admin-container { max-width: 800px; }
-        .header-admin { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
-        .badge { padding: 5px 10px; border-radius: 20px; color: white; font-size: 0.85em; font-weight: bold; display: inline-block; margin-bottom: 15px; }
-        .badge-kuning { background-color: #f1c40f; color: #333;}
-        .badge-biru { background-color: #3498db; }
-        .badge-oranye { background-color: #e67e22; }
-        .badge-hijau { background-color: #2ecc71; }
-        .badge-merah { background-color: #e74c3c; }
-        .detail-box { background-color: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #ddd; text-align: left; margin-bottom: 25px; }
-        .detail-item { margin-bottom: 15px; }
-        .detail-item strong { display: block; color: #2c3e50; margin-bottom: 5px; }
-        .foto-laporan { max-width: 100%; height: auto; border-radius: 5px; margin-top: 10px; border: 1px solid #ccc; }
-        .btn-map { background-color: #e67e22; color: white; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 0.85em; display: inline-block; margin-top: 8px; font-weight: bold; }
-        .btn-map:hover { background-color: #d35400; }
-        .action-box { background-color: #fff; padding: 20px; border-radius: 8px; border: 2px dashed #3498db; text-align: left; margin-bottom: 20px;}
-        .btn-group { display: flex; gap: 15px; margin-top: 15px; }
-        .btn-terima { background-color: #2ecc71; color: white; width: 100%; border: none; cursor: pointer; padding: 12px; border-radius: 5px; font-weight: bold;}
-        .btn-terima:hover { background-color: #27ae60; }
-        .btn-tolak { background-color: #e74c3c; color: white; width: 100%; border: none; cursor: pointer; padding: 12px; border-radius: 5px; font-weight: bold;}
-        .btn-tolak:hover { background-color: #c0392b; }
-        .btn-update { background-color: #3498db; color: white; width: 100%; border: none; cursor: pointer; padding: 10px; border-radius: 5px; font-weight: bold; margin-top: 10px; }
-        .btn-kembali { background-color: #95a5a6; color: white; margin-top: 20px; display: inline-block; padding: 10px 20px; text-decoration: none; border-radius: 5px;}
-        select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-top: 10px; margin-bottom: 15px; font-family: inherit; }
-    </style>
 </head>
 <body>
 

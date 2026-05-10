@@ -28,35 +28,6 @@ $result = mysqli_query($koneksi, $query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        .admin-container { max-width: 1000px; margin-top: 20px; }
-        .header-admin { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
-        .btn-logout { background-color: #e74c3c; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 0.9em; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f8f9fa; color: #333; }
-        tr:hover { background-color: #f1f1f1; }
-        
-        .badge { 
-            padding: 5px 12px; 
-            border-radius: 20px; 
-            color: white; 
-            font-size: 0.85em; 
-            font-weight: bold; 
-            display: inline-block; 
-            white-space: nowrap; /* Mencegah teks turun ke bawah */
-        }
-        .badge-kuning { background-color: #f1c40f; color: #333; }
-        .badge-biru { background-color: #3498db; }
-        .badge-oranye { background-color: #e67e22; }
-        .badge-hijau { background-color: #2ecc71; }
-        .badge-merah { background-color: #e74c3c; }
-        
-        .btn-detail { background-color: #2c3e50; padding: 6px 12px; font-size: 0.85em; margin-top: 0; width: auto; color: white; text-decoration: none; border-radius: 5px;}
-        .btn-detail:hover { background-color: #1a252f; }
-        .btn-hapus { background-color: #e74c3c; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 0.85em; font-weight: bold; margin-left: 5px;}
-        .btn-hapus:hover { background-color: #c0392b; }
-    </style>
 </head>
 <body>
 

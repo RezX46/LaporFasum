@@ -46,30 +46,6 @@ if ($row['status'] == 'menunggu verifikasi') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Tugas - LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        .petugas-container { max-width: 800px; }
-        .header-petugas { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
-        
-        /* CSS Badge */
-        .badge-hijau { background-color: #2ecc71; padding: 5px 10px; border-radius: 20px; color: white; font-size: 0.85em; font-weight: bold; display: inline-block; margin-bottom: 15px; }
-        .badge-oranye { background-color: #e67e22; padding: 5px 10px; border-radius: 20px; color: white; font-size: 0.85em; font-weight: bold; display: inline-block; margin-bottom: 15px; }
-        
-        .detail-box { background-color: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; text-align: left; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .detail-item { margin-bottom: 15px; }
-        .detail-item strong { display: block; color: #2c3e50; margin-bottom: 5px; }
-        
-        /* Grid untuk membandingkan foto sebelum dan sesudah */
-        .foto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
-        .foto-box { background-color: #f8f9fa; padding: 10px; border-radius: 5px; border: 1px dashed #ccc; text-align: center; }
-        .foto-box span { display: block; font-weight: bold; margin-bottom: 10px; color: #555; }
-        .foto-laporan { max-width: 100%; height: auto; border-radius: 5px; border: 1px solid #ddd; }
-
-        .btn-kembali { background-color: #95a5a6; color: white; display: inline-block; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 10px;}
-        .btn-kembali:hover { background-color: #7f8c8d; }
-        
-        @media (max-width: 600px) {
-            .foto-grid { grid-template-columns: 1fr; } /* Foto bertumpuk ke bawah di layar HP */
-        }
     </style>
 </head>
 <body>

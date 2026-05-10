@@ -40,25 +40,6 @@ $result_selesai = mysqli_query($koneksi, $query_selesai);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Petugas - LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    
-    <style>
-        .petugas-container { max-width: 600px; }
-        .header-petugas { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
-        .btn-logout { background-color: #e74c3c; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 0.9em; }
-        .section-title { text-align: left; margin-bottom: 15px; color: #34495e; border-left: 4px solid #3498db; padding-left: 10px; }
-        .task-card { background-color: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 20px; text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .task-header { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; }
-        .badge-kuning { background-color: #f1c40f; color: #333; padding: 3px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold;}
-        .badge-oranye { background-color: #e67e22; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold;}
-        .badge-hijau { background-color: #2ecc71; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold;}
-        .proof-section { background-color: #f8f9fa; padding: 15px; border-radius: 5px; border: 1px dashed #3498db; margin-top: 15px; }
-        .btn-selesai { background-color: #2ecc71; width: 100%; margin-top: 15px; border: none; padding: 10px; color: white; font-weight: bold; border-radius: 5px; cursor: pointer;}
-        .btn-selesai:hover { background-color: #27ae60; }
-        .btn-detail { background-color: #3498db; width: 100%; padding: 8px; font-size: 0.9em; margin-top: 10px; color: white; border: none; border-radius: 5px; cursor: pointer; display: block; text-align: center; text-decoration: none; box-sizing: border-box;}
-        .btn-detail:hover { background-color: #2980b9; }
-        .btn-map { background-color: #e67e22; color: white; padding: 6px 10px; border-radius: 5px; text-decoration: none; font-size: 0.85em; display: inline-block; margin-bottom: 10px; font-weight: bold; }
-        .btn-map:hover { background-color: #d35400; }
-    </style>
 </head>
 <body>
 
