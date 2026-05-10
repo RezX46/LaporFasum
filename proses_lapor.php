@@ -16,9 +16,20 @@ if (!empty($_POST['alamat_manual'])) {
 
 $nama_file = $_FILES['foto']['name'];
 $tmp_file  = $_FILES['foto']['tmp_name'];
+$ukuran_file = $_FILES['foto']['size']; // Tangkap ukuran filenya
+
+$batas_ukuran = 2 * 1024 * 1024; //  2 MB
+if ($ukuran_file > $batas_ukuran) {
+    echo "<script>
+            alert('Gagal! Ukuran foto terlalu besar, pastikan foto tidak lebih besar dari 2 MB.');
+            window.history.back();
+          </script>";
+    exit(); 
+}
 
 $nama_foto_baru = time() . '_' . str_replace(" ", "_", $nama_file);
 $folder_tujuan  = "uploads/" . $nama_foto_baru;
+// ... (kode ke bawahnya tetap sama)
 
 if (!is_dir('uploads')) {
     mkdir('uploads', 0777, true);

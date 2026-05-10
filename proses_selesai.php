@@ -16,8 +16,17 @@ if (isset($_POST['id_laporan'])) {
     // urus file bukti
     $nama_file = $_FILES['foto_bukti']['name'];
     $tmp_file  = $_FILES['foto_bukti']['tmp_name'];
+    $ukuran_file = $_FILES['foto_bukti']['size']; // Tangkap ukuran filenya
 
-    // ganti nama file
+    $batas_ukuran = 5 * 1024 * 1024; // 5 MB
+    if ($ukuran_file > $batas_ukuran) {
+        echo "<script>
+                alert('Gagal! Ukuran foto bukti terlalu besar, pastikan foto tidak lebih besar dari 5 MB.');
+                window.history.back();
+              </script>";
+        exit(); 
+    }
+
     $nama_foto_baru = "bukti_" . time() . '_' . str_replace(" ", "_", $nama_file);
     $folder_tujuan  = "uploads/" . $nama_foto_baru;
 

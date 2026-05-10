@@ -66,7 +66,7 @@ require 'koneksi.php';
         <form action="proses_lapor.php" method="POST" enctype="multipart/form-data">
             
             <div class="form-group">
-                <label for="foto">1. Unggah Foto Kerusakan:</label>
+                <label for="foto">1. Unggah Foto Kerusakan (Maksimal 2 MB):</label>
                 <input type="file" id="foto" name="foto" accept="image/*" required>
             </div>
 
