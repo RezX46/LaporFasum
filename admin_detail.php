@@ -26,12 +26,6 @@ if ($row['id_instansi'] != $id_instansi_admin) {
     die("Akses Ditolak! Laporan ini bukan wilayah kewenangan instansi Anda.");
 }
 
-$badge_class = 'badge-kuning';
-if ($row['status'] == 'diproses') { $badge_class = 'badge-biru'; }
-elseif ($row['status'] == 'menunggu verifikasi') { $badge_class = 'badge-oranye'; }
-elseif ($row['status'] == 'selesai') { $badge_class = 'badge-hijau'; }
-elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
-
 if ($id_instansi_admin == 1) {
     // Jika Admin Pusat, ambil kategori beserta grup instansinya
     $query_opsi = mysqli_query($koneksi, "
@@ -42,7 +36,7 @@ if ($id_instansi_admin == 1) {
         ORDER BY i.nama_instansi ASC, k.nama_kategori ASC
     ");
 } else {
-    // Admin lainambil daftar petugas lapangannya
+    // Admin lain ambil daftar petugas lapangannya
     $query_opsi = mysqli_query($koneksi, "
         SELECT p.id_petugas, u.nama_lengkap 
         FROM petugas p 
@@ -50,6 +44,17 @@ if ($id_instansi_admin == 1) {
         WHERE p.id_instansi = '$id_instansi_admin'
     ");
 }
+// Simpan hasil query ke array agar bisa digunakan lebih dari satu kali di halaman ini
+$opsi_data = [];
+while($opt = mysqli_fetch_assoc($query_opsi)) {
+    $opsi_data[] = $opt;
+}
+
+$badge_class = 'badge-kuning';
+if ($row['status'] == 'diproses') { $badge_class = 'badge-biru'; }
+elseif ($row['status'] == 'menunggu verifikasi') { $badge_class = 'badge-oranye'; }
+elseif ($row['status'] == 'selesai') { $badge_class = 'badge-hijau'; }
+elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
 ?>
 
 <!DOCTYPE html>
@@ -80,6 +85,7 @@ if ($id_instansi_admin == 1) {
         .btn-terima:hover { background-color: #27ae60; }
         .btn-tolak { background-color: #e74c3c; color: white; width: 100%; border: none; cursor: pointer; padding: 12px; border-radius: 5px; font-weight: bold;}
         .btn-tolak:hover { background-color: #c0392b; }
+        .btn-update { background-color: #3498db; color: white; width: 100%; border: none; cursor: pointer; padding: 10px; border-radius: 5px; font-weight: bold; margin-top: 10px; }
         .btn-kembali { background-color: #95a5a6; color: white; margin-top: 20px; display: inline-block; padding: 10px 20px; text-decoration: none; border-radius: 5px;}
         select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-top: 10px; margin-bottom: 15px; font-family: inherit; }
     </style>
@@ -145,7 +151,7 @@ if ($id_instansi_admin == 1) {
                         <option value="" disabled selected>-- Pilih Instansi & Kategori Tujuan --</option>
                         <?php 
                         $current_instansi = '';
-                        while($k = mysqli_fetch_assoc($query_opsi)): 
+                        foreach($opsi_data as $k): 
                             if ($current_instansi != $k['nama_instansi']) {
                                 if ($current_instansi != '') { echo "</optgroup>"; }
                                 $current_instansi = $k['nama_instansi'];
@@ -153,7 +159,7 @@ if ($id_instansi_admin == 1) {
                             }
                         ?>
                             <option value="<?= $k['id_kategori'] ?>">-- Kategori: <?= $k['nama_kategori'] ?></option>
-                        <?php endwhile; ?>
+                        <?php endforeach; ?>
                         <?php if ($current_instansi != '') echo "</optgroup>"; ?>
                     </select>
                     <button type="submit" name="aksi" value="forward" class="btn-terima">➡️ Teruskan ke Dinas Terkait</button>
@@ -166,9 +172,9 @@ if ($id_instansi_admin == 1) {
                     <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
                     <select name="id_petugas" required>
                         <option value="" disabled selected>-- Pilih Tim / Petugas Lapangan --</option>
-                        <?php while($p = mysqli_fetch_assoc($query_opsi)): ?>
+                        <?php foreach($opsi_data as $p): ?>
                             <option value="<?= $p['id_petugas'] ?>"><?= $p['nama_lengkap'] ?></option>
-                        <?php endwhile; ?>
+                        <?php endforeach; ?>
                     </select>
                     <div class="btn-group">
                         <button type="submit" name="aksi" value="terima" class="btn-terima">✔️ Terima & Tugaskan</button>
@@ -179,24 +185,77 @@ if ($id_instansi_admin == 1) {
         </div>
         <?php endif; ?>
 
+        <?php if ($row['status'] == 'diproses' && $id_instansi_admin != 1): ?>
+        <div class="action-box" style="border-color: #3498db;">
+            <h2 style="margin-top: 0; color: #2980b9;">Ganti Penugasan</h2>
+            <p style="font-size: 0.9em; margin-bottom: 10px;">Gunakan formulir ini jika ingin mengalihkan laporan ke petugas lain sebelum pekerjaan selesai.</p>
+            <form action="proses_validasi.php" method="POST">
+                <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
+                <select name="id_petugas" required>
+                    <option value="" disabled selected>-- Pilih Petugas Baru --</option>
+                    <?php foreach($opsi_data as $p): ?>
+                        <option value="<?= $p['id_petugas'] ?>" <?= ($p['id_petugas'] == $row['id_petugas']) ? 'disabled' : '' ?>>
+                            <?= $p['nama_lengkap'] ?> <?= ($p['id_petugas'] == $row['id_petugas']) ? '(Petugas Saat Ini)' : '' ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="submit" name="aksi" value="update_petugas" class="btn-update">🔄 Simpan Perubahan Petugas</button>
+            </form>
+        </div>
+        <?php endif; ?>
+
         <?php if ($row['status'] == 'menunggu verifikasi'): ?>
         <div class="action-box" style="border-color: #e67e22;">
             <h2 style="margin-top: 0; color: #e67e22;">Verifikasi Pekerjaan Petugas</h2>
             <p>Petugas <strong><?= $row['nama_petugas'] ?></strong> telah mengirimkan bukti perbaikan. Silakan periksa foto di bawah ini:</p>
             
             <div style="text-align: center; margin-bottom: 20px;">
-                <strong>Foto Bukti Perbaikan:</strong><br>
                 <img src="uploads/<?= $row['foto_bukti'] ?>" class="foto-laporan" style="border: 3px solid #2ecc71;">
             </div>
 
             <form action="proses_validasi.php" method="POST">
                 <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
+                
                 <div class="btn-group">
-                    <button type="submit" name="aksi" value="verifikasi_terima" class="btn-terima">✔️ Verifikasi Benar (Selesai)</button>
-                    <button type="submit" name="aksi" value="verifikasi_tolak" class="btn-tolak">❌ Tolak Bukti (Kembali Diproses)</button>
+                    <button type="submit" name="aksi" value="verifikasi_terima" class="btn-terima">✔️ Verifikasi </button>
+                </div>
+
+                <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid #eee;">
+                    <label style="font-weight: bold; color: #e74c3c;">Opsi Tolak Bukti:</label>
+                    
+                    <select name="id_petugas_baru" id="select_petugas_baru" onchange="updateTombolTolak()">
+                        <option value="">-- Tetap di Petugas Lama (<?= $row['nama_petugas'] ?>) --</option>
+                        
+                        <?php foreach($opsi_data as $p): ?>
+                            <?php if($p['id_petugas'] == $row['id_petugas']): ?>
+                                <option value="" disabled><?= $p['nama_lengkap'] ?> (Petugas Saat Ini)</option>
+                            <?php else: ?>
+                                <option value="<?= $p['id_petugas'] ?>"><?= $p['nama_lengkap'] ?> (Alihkan Tugas)</option>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                        
+                    </select>
+                    
+                    <button type="submit" name="aksi" value="verifikasi_tolak" id="btn_tolak" class="btn-tolak">❌ Tolak Bukti & Kembalikan</button>
                 </div>
             </form>
         </div>
+
+        <script>
+        function updateTombolTolak() {
+            var select = document.getElementById('select_petugas_baru');
+            var btn = document.getElementById('btn_tolak');
+            
+            if (select.value === "") {
+                // Jika pilihannya kosong (Kembali ke petugas lama)
+                btn.innerHTML = "❌ Tolak Bukti & Kembalikan";
+            } else {
+                // Jika memilih petugas baru, ambil namanya dan pasang di tombol
+                var nama = select.options[select.selectedIndex].text.split(' (')[0];
+                btn.innerHTML = "❌ Tolak & Alihkan Tugas ke " + nama;
+            }
+        }
+        </script>
         <?php endif; ?>
 
         <div style="margin-top: 20px;">
