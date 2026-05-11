@@ -116,7 +116,7 @@ if ($row['status'] == 'menunggu verifikasi') {
                 <form action="proses_selesai.php" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
                     <div class="form-group">
-                        <label>Unggah Foto Bukti Perbaikan (Maks 5 MB):</label>
+                        <label>Unggah Foto Bukti Perbaikan (Maks 10 MB):</label>
                         <input type="file" name="foto_bukti" accept="image/*" required>
                     </div>
                     <button type="submit" class="btn-terima"> Kirim Bukti ke Admin</button>

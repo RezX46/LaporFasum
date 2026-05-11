@@ -1,60 +1,71 @@
 <?php
 session_start();
 
-// Pastikan hanya petugas yang bisa mengeksekusi file ini
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'petugas') {
-    die("Akses Ditolak! Anda bukan petugas.");
+    echo "<script>alert('Akses Ditolak!'); window.location.href = 'login.html';</script>";
+    exit();
 }
 
 require 'koneksi.php';
+require 'helper_gambar.php'; 
 
-// Mengecek apakah form benar-benar dikirim
-if (isset($_POST['id_laporan'])) {
+if (isset($_POST['id_laporan']) && isset($_FILES['foto_bukti'])) {
     
-    $id_laporan = mysqli_real_escape_string($koneksi, $_POST['id_laporan']);
-
-    // urus file bukti
-    $nama_file = $_FILES['foto_bukti']['name'];
-    $tmp_file  = $_FILES['foto_bukti']['tmp_name'];
-    $ukuran_file = $_FILES['foto_bukti']['size']; // Tangkap ukuran filenya
-
-    $batas_ukuran = 5 * 1024 * 1024; // 5 MB
+    $id_laporan  = mysqli_real_escape_string($koneksi, $_POST['id_laporan']);
+    $id_user     = $_SESSION['id_user']; // ID Petugas untuk keperluan Log Riwayat
+    
+    $tmp_file    = $_FILES['foto_bukti']['tmp_name'];
+    $ukuran_file = $_FILES['foto_bukti']['size'];
+    
+    $batas_ukuran = 10 * 1024 * 1024;
     if ($ukuran_file > $batas_ukuran) {
         echo "<script>
-                alert('Gagal! Ukuran foto bukti terlalu besar, pastikan foto tidak lebih besar dari 5 MB.');
+                alert('Ukuran foto terlalu besar! Maksimal unggahan adalah 5 MB.');
                 window.history.back();
               </script>";
-        exit(); 
+        exit();
     }
-
-    $nama_foto_baru = "bukti_" . time() . '_' . str_replace(" ", "_", $nama_file);
+    
+    $nama_foto_baru = 'bukti_' . time() . '_' . uniqid() . '.jpg';
     $folder_tujuan  = "uploads/" . $nama_foto_baru;
-
-    // pinfah ke folder tuujan
-    if (move_uploaded_file($tmp_file, $folder_tujuan)) {
+    
+    if (!is_dir('uploads')) { 
+        mkdir('uploads', 0777, true); 
+    }
+    
+    $upload_sukses = kompres_dan_resize_gambar($tmp_file, $folder_tujuan);
+    
+    if ($upload_sukses) {
+        // Jika upload & kompresi berhasil, update status laporan
+        $query = "UPDATE laporan 
+                  SET status = 'menunggu verifikasi', foto_bukti = '$nama_foto_baru' 
+                  WHERE id_laporan = '$id_laporan'";
+                  
+        $simpan = mysqli_query($koneksi, $query);
         
-        //  Ubah status menjadi 'selesai' dan simpan nama file buktinya
-        $query = "UPDATE laporan SET status = 'menunggu verifikasi', foto_bukti = '$nama_foto_baru' WHERE id_laporan = '$id_laporan'";
-        
-        $update = mysqli_query($koneksi, $query);
-
-        if ($update) {
+        if ($simpan) {
+            $log_keterangan = "Petugas telah menyelesaikan pekerjaan dan mengirimkan foto bukti perbaikan.";
+            $sql_log = "INSERT INTO riwayat_laporan (id_laporan, id_user, aksi, keterangan) 
+                        VALUES ('$id_laporan', '$id_user', 'kirim_bukti', '$log_keterangan')";
+            mysqli_query($koneksi, $sql_log);
+            
             echo "<script>
-                    alert('Kerja bagus! Tugas telah berhasil diselesaikan.');
-                    window.location.href = 'petugas.php'; // Kembali ke dashboard petugas
+                    alert('Bukti perbaikan berhasil dikirim! Menunggu verifikasi dari Admin.');
+                    window.location.href = 'petugas.php';
                   </script>";
         } else {
-            echo "Gagal menyimpan ke database: " . mysqli_error($koneksi);
+            echo "Gagal memperbarui data: " . mysqli_error($koneksi);
         }
-
     } else {
         echo "<script>
-                alert('Gagal mengunggah foto bukti! Pastikan ukuran gambar tidak terlalu besar.');
+                alert('Gagal memproses foto! Pastikan format file adalah gambar yang valid.');
                 window.history.back();
               </script>";
     }
-
 } else {
-    echo "Akses tidak sah!";
+    echo "<script>
+            alert('Data tidak lengkap!');
+            window.history.back();
+          </script>";
 }
 ?>

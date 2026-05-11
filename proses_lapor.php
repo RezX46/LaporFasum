@@ -1,5 +1,6 @@
 <?php
 require 'koneksi.php';
+require 'helper_gambar.php'; // untuk kecilkan ukuruan file
 
 $keluhan       = mysqli_real_escape_string($koneksi, $_POST['keluhan']);
 $id_kategori   = (int)$_POST['id_kategori']; 
@@ -14,29 +15,30 @@ if (!empty($_POST['alamat_manual'])) {
     $alamat_manual = "NULL";
 }
 
-$nama_file = $_FILES['foto']['name'];
-$tmp_file  = $_FILES['foto']['tmp_name'];
-$ukuran_file = $_FILES['foto']['size']; // Tangkap ukuran filenya
+$nama_file   = $_FILES['foto']['name'];
+$tmp_file    = $_FILES['foto']['tmp_name'];
+$ukuran_file = $_FILES['foto']['size']; 
 
-$batas_ukuran = 2 * 1024 * 1024; //  2 MB
+// Batas ukuran awal 4 MB
+$batas_ukuran = 5 * 1024 * 1024; 
 if ($ukuran_file > $batas_ukuran) {
     echo "<script>
-            alert('Gagal! Ukuran foto terlalu besar, pastikan foto tidak lebih besar dari 2 MB.');
+            alert('Gagal! Ukuran foto terlalu besar, pastikan foto tidak lebih besar dari 4 MB.');
             window.history.back();
           </script>";
     exit(); 
 }
 
-$nama_foto_baru = time() . '_' . str_replace(" ", "_", $nama_file);
+$nama_foto_baru = time() . '_' . uniqid() . '.jpg';
 $folder_tujuan  = "uploads/" . $nama_foto_baru;
-// ... (kode ke bawahnya tetap sama)
 
 if (!is_dir('uploads')) {
     mkdir('uploads', 0777, true);
 }
 
-if (move_uploaded_file($tmp_file, $folder_tujuan)) {
-    
+$upload_sukses = kompres_dan_resize_gambar($tmp_file, $folder_tujuan);
+
+if ($upload_sukses) {
     $query = "INSERT INTO laporan (foto, keluhan, id_kategori, metode_lokasi, latitude, longitude, alamat_manual) 
               VALUES ('$nama_foto_baru', '$keluhan', $id_kategori, '$metode_lokasi', '$latitude', '$longitude', $alamat_manual)";
     
@@ -53,7 +55,7 @@ if (move_uploaded_file($tmp_file, $folder_tujuan)) {
 
 } else {
     echo "<script>
-            alert('Gagal mengunggah foto! Pastikan file dipilih benar dan ukurannya tidak terlalu besar.');
+            alert('Gagal memproses foto! Pastikan file yang diunggah berupa citra yang valid.');
             window.history.back();
           </script>";
 }
