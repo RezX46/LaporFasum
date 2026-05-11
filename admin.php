@@ -73,7 +73,7 @@ $result = mysqli_query($koneksi, $query);
                     
                     <td>
                         <a href="admin_detail.php?id=<?= $row['id_laporan'] ?>" class="btn-detail">Lihat Detail</a>
-                        <?php if ($row['status'] == 'selesai' || $row['status'] == 'ditolak'): ?>
+                        <?php if ($row['status'] == 'ditolak'): ?>
                             <a href="hapus.php?id=<?= $row['id_laporan'] ?>" onclick="return confirm('Yakin hapus permanen?');" class="btn-hapus">Hapus</a>
                         <?php endif; ?>
                     </td>
