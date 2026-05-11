@@ -1,65 +1,89 @@
 <?php
+session_start();
 require 'koneksi.php';
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
+    die("Akses Ditolak!");
+}
 
 if (isset($_POST['aksi']) && isset($_POST['id_laporan'])) {
     
     $id_laporan = mysqli_real_escape_string($koneksi, $_POST['id_laporan']);
+    $id_admin   = $_SESSION['id_user']; // ID Admin yang sedang login
     $aksi       = $_POST['aksi']; 
+    
+    // Tangkap keterangan jika ada
+    $keterangan = isset($_POST['keterangan']) ? mysqli_real_escape_string($koneksi, $_POST['keterangan']) : '-';
+
+    // Ambil data laporan lama sebelum diubah untuk identifikasi petugas sebelumnya
+    $data_lama = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT id_petugas FROM laporan WHERE id_laporan = '$id_laporan'"));
+    $id_petugas_lama = $data_lama['id_petugas'];
+    
+    $id_petugas_penerima = NULL; // Default: Tidak ada notifikasi untuk petugas di dashboard mereka
+    $query = "";
 
     if ($aksi == 'terima') {
-        // Admin instansi menerima laporan
         $id_petugas = mysqli_real_escape_string($koneksi, $_POST['id_petugas']);
-        
-        $query = "UPDATE laporan SET status = 'diproses', id_petugas = '$id_petugas' WHERE id_laporan = '$id_laporan'";
-        $pesan_sukses = "Sukses! Laporan telah diterima dan ditugaskan ke tim lapangan.";
-        
+        // Terima laporan: Status diproses, tentukan petugas, hapus pesan lama agar petugas baru mulai bersih
+        $query = "UPDATE laporan SET status = 'diproses', id_petugas = '$id_petugas', pesan_admin = NULL WHERE id_laporan = '$id_laporan'";
+        $log_keterangan = "Laporan diterima dan ditugaskan ke petugas.";
+
     } elseif ($aksi == 'forward') {
-        // Admin pusat meneruskan laporan
-        $id_kategori_baru = mysqli_real_escape_string($koneksi, $_POST['id_kategori_baru']);
-        
-        $query = "UPDATE laporan SET id_kategori = '$id_kategori_baru' WHERE id_laporan = '$id_laporan'";
-        $pesan_sukses = "Sukses! Laporan berhasil diteruskan ke dinas terkait.";
+        $id_kat = mysqli_real_escape_string($koneksi, $_POST['id_kategori_baru']);
+        // Teruskan laporan ke dinas lain
+        $query = "UPDATE laporan SET id_kategori = '$id_kat' WHERE id_laporan = '$id_laporan'";
+        $log_keterangan = "Laporan diteruskan ke kategori/dinas baru.";
 
     } elseif ($aksi == 'tolak') {
-        // Laporan awal ditolak
+        // Tolak laporan awal
         $query = "UPDATE laporan SET status = 'ditolak' WHERE id_laporan = '$id_laporan'";
-        $pesan_sukses = "Laporan telah ditolak.";
+        $log_keterangan = "Laporan ditolak oleh admin.";
+
+    } elseif ($aksi == 'kembalikan') {
+        // Balikkan ke Pusat 
+        $query = "UPDATE laporan SET id_kategori = 1, status = 'menunggu', id_petugas = NULL, pesan_admin = '$keterangan' WHERE id_laporan = '$id_laporan'";
+        $log_keterangan = $keterangan;
 
     } elseif ($aksi == 'update_petugas') {
-        // Mengganti petugas saat laporan sedang diproses
-        $id_petugas = mysqli_real_escape_string($koneksi, $_POST['id_petugas']);
-        
-        $query = "UPDATE laporan SET id_petugas = '$id_petugas' WHERE id_laporan = '$id_laporan'";
-        $pesan_sukses = "Sukses! Petugas lapangan berhasil diganti.";
+        $id_petugas_baru = mysqli_real_escape_string($koneksi, $_POST['id_petugas']);
+        // Ganti petugas, hapus pesan_admin di laporan (petugas baru tidak melihat pesan lama)
+        $query = "UPDATE laporan SET id_petugas = '$id_petugas_baru', pesan_admin = NULL WHERE id_laporan = '$id_laporan'";
+        $log_keterangan = "Tugas dialihkan. Alasan: " . $keterangan;
+        // Kirim notifikasi alasan ke petugas lama agar muncul di kotak pesan dashboard mereka
+        $id_petugas_penerima = $id_petugas_lama;
 
     } elseif ($aksi == 'verifikasi_terima') {
-        // Bukti diterima
-        $query = "UPDATE laporan SET status = 'selesai' WHERE id_laporan = '$id_laporan'";
-        $pesan_sukses = "Laporan berhasil diverifikasi dan diselesaikan.";
+        // Status selesai, hapus pesan instruksi
+        $query = "UPDATE laporan SET status = 'selesai', pesan_admin = NULL WHERE id_laporan = '$id_laporan'";
+        $log_keterangan = "Bukti perbaikan disetujui. Tugas selesai.";
 
     } elseif ($aksi == 'verifikasi_tolak') {
-        // Bukti ditolak, cek apakah dialihkan ke petugas baru
         $id_petugas_baru = isset($_POST['id_petugas_baru']) ? mysqli_real_escape_string($koneksi, $_POST['id_petugas_baru']) : '';
         
         if (!empty($id_petugas_baru)) {
-            $query = "UPDATE laporan SET status = 'diproses', id_petugas = '$id_petugas_baru' WHERE id_laporan = '$id_laporan'";
-            $pesan_sukses = "Bukti ditolak. Laporan kini dialihkan ke petugas baru.";
+            // Tolak bukti & ganti petugas
+            $query = "UPDATE laporan SET status = 'diproses', id_petugas = '$id_petugas_baru', pesan_admin = NULL WHERE id_laporan = '$id_laporan'";
+            $id_petugas_penerima = $id_petugas_lama;
         } else {
-            $query = "UPDATE laporan SET status = 'diproses' WHERE id_laporan = '$id_laporan'";
-            $pesan_sukses = "Bukti ditolak. Laporan dikembalikan ke petugas semula untuk diperbaiki.";
+            // Tolak bukti tapi tetap petugas lama
+            $query = "UPDATE laporan SET status = 'diproses', pesan_admin = '$keterangan' WHERE id_laporan = '$id_laporan'";
         }
+        $log_keterangan = "Bukti ditolak. Alasan: " . $keterangan;
     }
 
-    // Eksekusi perintah SQL ke database
-    $update = mysqli_query($koneksi, $query);
-
-    if ($update) {
-        echo "<script>
-                alert('$pesan_sukses');
-                window.location.href = 'admin.php'; 
-              </script>";
+    if (!empty($query)) {
+        if (mysqli_query($koneksi, $query)) {
+            // Masukkan data ke tabel riwayat_laporan untuk Audit Log dan Notifikasi Petugas
+            $sql_log = "INSERT INTO riwayat_laporan (id_laporan, id_user, id_petugas_penerima, aksi, keterangan) 
+                        VALUES ('$id_laporan', '$id_admin', " . ($id_petugas_penerima ? "'$id_petugas_penerima'" : "NULL") . ", '$aksi', '$log_keterangan')";
+            mysqli_query($koneksi, $sql_log);
+            
+            echo "<script>alert('Aksi berhasil diproses!'); window.location.href = 'admin.php';</script>";
+        } else {
+            echo "Gagal memperbarui data: " . mysqli_error($koneksi);
+        }
     } else {
-        echo "Gagal memproses validasi: " . mysqli_error($koneksi);
+        echo "Aksi tidak dikenal.";
     }
 
 } else {

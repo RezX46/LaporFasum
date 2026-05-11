@@ -1,9 +1,12 @@
 <?php
 session_start();
+
+// Hanya petugas yang boleh masuk
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'petugas') {
     echo "<script>alert('Akses Ditolak!'); window.location.href = 'login.html';</script>";
     exit();
 }
+
 require 'koneksi.php';
 
 if (!isset($_GET['id'])) { die("ID Laporan tidak ditemukan."); }
@@ -20,18 +23,29 @@ $query = "SELECT l.*, k.nama_kategori
           JOIN kategori k ON l.id_kategori = k.id_kategori 
           WHERE l.id_laporan = $id_laporan";
 $result = mysqli_query($koneksi, $query);
-
-if (mysqli_num_rows($result) == 0) { die("Data tidak ditemukan."); }
 $row = mysqli_fetch_assoc($result);
 
-if ($row['id_petugas'] != $id_petugas_asli) {
-    die("Akses Ditolak! Laporan ini bukan riwayat tugas Anda.");
+if (!$row || $row['id_petugas'] != $id_petugas_asli) {
+    die("Akses Ditolak! Laporan ini bukan wilayah tugas Anda.");
 }
 
-$badge_class = 'badge-kuning';
-if ($row['status'] == 'diproses') { $badge_class = 'badge-biru'; }
-elseif ($row['status'] == 'menunggu verifikasi') { $badge_class = 'badge-oranye'; }
-elseif ($row['status'] == 'selesai') { $badge_class = 'badge-hijau'; }
+$query_riwayat = "SELECT r.*, u.nama_lengkap 
+                  FROM riwayat_laporan r 
+                  JOIN users u ON r.id_user = u.id_user 
+                  WHERE r.id_laporan = $id_laporan 
+                  ORDER BY r.tanggal_aksi DESC";
+$riwayat = mysqli_query($koneksi, $query_riwayat);
+
+$badge_class = 'badge-biru';
+$teks_status = 'Sedang Diproses';
+
+if ($row['status'] == 'menunggu verifikasi') {
+    $badge_class = 'badge-oranye';
+    $teks_status = 'Menunggu Verifikasi Admin';
+} elseif ($row['status'] == 'selesai') {
+    $badge_class = 'badge-hijau';
+    $teks_status = 'Selesai (Diverifikasi)';
+}
 ?>
 
 <!DOCTYPE html>
@@ -46,18 +60,27 @@ elseif ($row['status'] == 'selesai') { $badge_class = 'badge-hijau'; }
 
     <div class="container admin-detail-container">
         
-        <div class="header-petugas">
+        <div class="header-admin">
             <h1 style="margin-bottom: 0;">Tugas #<?= $row['id_laporan'] ?></h1>
-            <span class="badge <?= $badge_class ?>">Status: <?= ucfirst($row['status']) ?></span>
+            <span class="badge <?= $badge_class ?>">Status: <?= $teks_status ?></span>
         </div>
+
+        <?php if (!empty($row['pesan_admin'])): ?>
+            <div class="action-box" style="border-color: #e74c3c; background-color: #fff5f5; border-style: solid;">
+                <h3 style="color: #e74c3c; margin-top: 0;">Catatan Admin:</h3>
+                <p style="color: #333; font-weight: bold; font-style: italic; margin-top: 10px;">
+                    "<?= $row['pesan_admin'] ?>"
+                </p>
+            </div>
+        <?php endif; ?>
 
         <div class="detail-box">
             <div class="detail-item">
-                <strong>Tanggal Laporan Masuk:</strong>
+                <strong>Tanggal Laporan:</strong>
                 <?= date('d M Y, H:i', strtotime($row['tanggal_lapor'])) ?> WITA
             </div>
             <div class="detail-item">
-                <strong>Kategori Fasilitas:</strong>
+                <strong>Kategori:</strong>
                 <?= $row['nama_kategori'] ?>
             </div>
             <div class="detail-item">
@@ -65,50 +88,44 @@ elseif ($row['status'] == 'selesai') { $badge_class = 'badge-hijau'; }
                 <?= $row['keluhan'] ?>
             </div>
             <div class="detail-item">
-                <strong>Lokasi / Patokan:</strong>
-                <?= !empty($row['alamat_manual']) ? $row['alamat_manual'] : 'Titik Koordinat Peta (GPS)' ?>
+                <strong>Lokasi:</strong>
+                <?= !empty($row['alamat_manual']) ? $row['alamat_manual'] : 'Lihat di Peta (GPS)' ?>
                 <br>
                 <?php if($row['latitude'] != NULL && $row['longitude'] != NULL): ?>
-                    <a href="https://www.google.com/maps?q=<?= $row['latitude'] ?>,<?= $row['longitude'] ?>" target="_blank" class="btn-map">📍 Buka di Google Maps</a>
+                    <a href="https://www.google.com/maps?q=<?= $row['latitude'] ?>,<?= $row['longitude'] ?>" target="_blank" class="btn-map"> Buka Lokasi di Maps</a>
                 <?php endif; ?>
             </div>
 
-            <div class="detail-item">
-                <strong>Foto Kondisi Kerusakan (Awal):</strong>
-                <img src="uploads/<?= $row['foto'] ?>" alt="Foto Kondisi Awal" class="foto-laporan">
+            <div class="foto-grid">
+                <div class="foto-box">
+                    <span>🔴 Kondisi Kerusakan</span>
+                    <img src="uploads/<?= $row['foto'] ?>" class="foto-laporan">
+                </div>
+                <?php if (!empty($row['foto_bukti'])): ?>
+                <div class="foto-box" style="border-color: #2ecc71; background-color: #f0fdf4;">
+                    <span style="color: #27ae60;">🟢 Hasil Perbaikan Anda</span>
+                    <img src="uploads/<?= $row['foto_bukti'] ?>" class="foto-laporan">
+                </div>
+                <?php endif; ?>
             </div>
         </div>
 
         <?php if ($row['status'] == 'diproses'): ?>
-            <div class="action-box" style="border-color: #3498db;">
-                <h2 style="margin-top: 0; color: #2980b9;">Tindakan Penyelesaian</h2>
-                <p style="font-size: 0.9em; margin-bottom: 15px;">Pekerjaan telah selesai? Silakan unggah foto hasil perbaikan di bawah ini untuk diverifikasi oleh Admin.</p>
-                
+            <div class="action-box">
+                <h2 style="margin-top: 0; color: #2ecc71;">Kirim Laporan Selesai</h2>
                 <form action="proses_selesai.php" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
-                    
-                    <div class="form-group" style="margin-bottom: 10px;">
-                        <label style="font-size: 0.9em; font-weight: bold;">Unggah Foto Hasil Perbaikan:</label>
-                        <input type="file" name="foto_bukti" accept="image/*" required style="margin-bottom: 0;">
+                    <div class="form-group">
+                        <label>Unggah Foto Bukti Perbaikan (Maks 5 MB):</label>
+                        <input type="file" name="foto_bukti" accept="image/*" required>
                     </div>
-
-                    <button type="submit" class="btn-selesai">✔️ Kirim Bukti dan Selesaikan Tugas</button>
+                    <button type="submit" class="btn-terima"> Kirim Bukti ke Admin</button>
                 </form>
             </div>
-            
-        <?php elseif ($row['status'] == 'menunggu verifikasi' || $row['status'] == 'selesai'): ?>
-            <div class="action-box" style="border-color: #2ecc71;">
-                <h2 style="margin-top: 0; color: #27ae60;">Bukti Perbaikan yang Dikirim</h2>
-                <div style="text-align: center; margin-top: 15px;">
-                    <img src="uploads/<?= $row['foto_bukti'] ?>" alt="Foto Bukti Perbaikan" class="foto-laporan" style="border: 3px solid #2ecc71;">
-                </div>
-            </div>
         <?php endif; ?>
-
-        <div style="margin-top: 20px; text-align: left;">
-            <a href="petugas.php" class="btn-kembali" style="margin-top: 0;">← Kembali ke Dashboard</a>
+        <div style="margin-top: 20px;">
+            <a href="petugas.php" class="btn-kembali">← Kembali ke Dashboard</a>
         </div>
-
     </div>
 </body>
 </html>

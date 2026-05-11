@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 09 Bulan Mei 2026 pada 14.13
+-- Waktu pembuatan: 11 Bulan Mei 2026 pada 10.22
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -124,49 +124,57 @@ CREATE TABLE `laporan` (
   `alamat_manual` text DEFAULT NULL,
   `status` enum('menunggu','diproses','menunggu verifikasi','selesai','ditolak') DEFAULT 'menunggu',
   `id_petugas` int(11) DEFAULT NULL,
-  `foto_bukti` varchar(255) DEFAULT NULL
+  `foto_bukti` varchar(255) DEFAULT NULL,
+  `pesan_admin` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `laporan`
 --
 
-INSERT INTO `laporan` (`id_laporan`, `tanggal_lapor`, `foto`, `keluhan`, `id_kategori`, `metode_lokasi`, `latitude`, `longitude`, `alamat_manual`, `status`, `id_petugas`, `foto_bukti`) VALUES
-(1, '2026-05-07 10:16:01', '1778148961_triple_t.jpg', 'wwfwfwf', 14, 'peta', '-8.590716', '116.09301', NULL, 'selesai', 8, 'bukti_1778152024_triple_t.jpg'),
-(2, '2026-05-07 10:34:28', '1778150068_IMG_20251211_193012.jpg', 'bjnkmoi', 10, 'peta', '-8.590716', '116.09301', NULL, 'menunggu', NULL, NULL),
-(3, '2026-05-07 11:03:37', 'dummy_pusat1.jpg', 'Saya tidak tahu ini lapor ke mana, ada tiang miring mau roboh.', 3, 'peta', '-8.5877', '116.0965', NULL, 'menunggu', NULL, NULL),
-(4, '2026-05-07 11:03:37', 'dummy_pusat2.jpg', 'Tolong ini ada fasilitas umum yang rusak parah di pertigaan.', 4, 'manual', NULL, NULL, 'Pertigaan lampu merah pasar', 'menunggu', NULL, NULL),
-(5, '2026-05-07 11:03:37', 'dummy_pu1.jpg', 'Jalan berlubang cukup dalam, sangat bahaya kalau malam.', 2, 'peta', '-8.5880', '116.0970', NULL, 'diproses', 1, NULL),
-(6, '2026-05-07 11:03:37', 'dummy_pu2.jpg', 'Trotoar amblas akibat galian yang tidak ditutup.', 3, 'peta', '-8.5890', '116.0980', NULL, 'selesai', 2, 'bukti_pu2.jpg'),
-(7, '2026-05-07 11:03:37', 'dummy_pu3.jpg', 'Jembatan retak di bagian penyangganya.', 4, 'manual', NULL, NULL, 'Jembatan dekat alun-alun', 'menunggu', NULL, NULL),
-(8, '2026-05-07 11:03:37', 'dummy_pu4.jpg', 'Saluran air mampet dan bau.', 5, 'peta', '-8.5860', '116.0950', NULL, 'ditolak', NULL, NULL),
-(9, '2026-05-07 11:03:37', 'dummy_dishub1.jpg', 'Lampu jalan mati sudah 3 hari, jalanan jadi sangat gelap.', 6, 'peta', '-8.5850', '116.0940', NULL, 'diproses', 3, NULL),
-(10, '2026-05-07 11:03:37', 'dummy_dishub2.jpg', 'Rambu dilarang parkir hilang dicabut orang.', 7, 'manual', NULL, NULL, 'Jalan utama depan SMA 1', 'selesai', 4, 'bukti_dishub2.jpg'),
-(11, '2026-05-07 11:03:37', 'dummy_dishub3.jpg', 'Lampu lalu lintas error, hijau semua jadi macet.', 8, 'peta', '-8.5840', '116.0930', NULL, 'menunggu', NULL, NULL),
-(12, '2026-05-07 11:03:37', 'dummy_dlh1.jpg', 'Ayunan di taman kota rusak dan rantainya putus.', 10, 'peta', '-8.5830', '116.0920', NULL, 'diproses', 5, NULL),
-(13, '2026-05-07 11:03:37', 'dummy_dlh2.jpg', 'Pohon tumbang menghalangi sebagian jalan raya.', 11, 'peta', '-8.5820', '116.0910', NULL, 'selesai', 6, 'bukti_dlh2.jpg'),
-(14, '2026-05-07 11:03:37', 'dummy_dlh3.jpg', 'Tempat sampah umum sudah hancur dan tumpah berserakan.', 12, 'manual', NULL, NULL, 'Taman bermain komplek', 'menunggu', NULL, NULL),
-(15, '2026-05-07 11:03:37', 'dummy_pln1.jpg', 'Tiang listrik hampir roboh tertabrak truk.', 13, 'peta', '-8.5810', '116.0900', NULL, 'selesai', 7, 'bukti_1778160716_green.png'),
-(16, '2026-05-07 11:03:37', 'dummy_pln2.jpg', 'Kabel listrik menjuntai ke jalan, rawan tersangkut kendaraan.', 14, 'peta', '-8.5800', '116.0890', NULL, 'selesai', 8, 'bukti_pln2.jpg'),
-(17, '2026-05-07 11:03:37', 'dummy_pln3.jpg', 'Gardu listrik mengeluarkan suara letupan kecil.', 15, 'manual', NULL, NULL, 'Gang mawar Ujung', 'selesai', 8, 'bukti_1778152009_triple_t.jpg'),
-(18, '2026-05-07 11:03:37', 'dummy_pdam1.jpg', 'Pipa air bersih bocor deras membanjiri jalan raya.', 16, 'peta', '-8.5790', '116.0880', NULL, 'diproses', 9, NULL),
-(19, '2026-05-07 11:03:37', 'dummy_pdam2.jpg', 'Fasilitas air siap minum di taman tidak keluar airnya.', 17, 'peta', '-8.5780', '116.0870', NULL, 'selesai', 10, 'bukti_pdam2.jpg'),
-(20, '2026-05-07 11:03:37', 'dummy_pdam3.jpg', 'Ada galian pipa yang ditinggalkan begitu saja.', 16, 'manual', NULL, NULL, 'Depan masjid raya', 'menunggu', NULL, NULL),
-(21, '2026-05-07 11:03:37', 'dummy_telkom1.jpg', 'Tiang internet miring ke arah rumah warga.', 18, 'peta', '-8.5770', '116.0860', NULL, 'diproses', 11, NULL),
-(22, '2026-05-07 11:03:37', 'dummy_telkom2.jpg', 'Kabel fiber optik putus dan menghalangi trotoar.', 18, 'peta', '-8.5760', '116.0850', NULL, 'selesai', 12, 'bukti_telkom2.jpg'),
-(23, '2026-05-07 13:20:20', '1778160020_triple_t.jpg', 'efwfewfwf', 1, 'peta', '-8.590716', '116.09301', NULL, 'ditolak', NULL, NULL),
-(24, '2026-05-07 14:02:09', 'pu_verif1.jpg', 'Ada lubang menganga di tengah jalan raya bypass, sangat rawan kecelakaan.', 2, 'peta', '-8.5810', '116.0910', NULL, 'menunggu verifikasi', 1, 'bukti_pu_verif1.jpg'),
-(25, '2026-05-07 14:02:09', 'pu_verif2.jpg', 'Penutup gorong-gorong hilang dicuri, lubangnya berbahaya bagi pejalan kaki.', 5, 'manual', NULL, NULL, 'Trotoar depan Bank NTB Syariah', 'menunggu verifikasi', 2, 'bukti_pu_verif2.jpg'),
-(26, '2026-05-07 14:02:09', 'dishub_verif1.jpg', 'Lampu penerangan jalan di tikungan tajam mati, gelap gulita saat malam.', 6, 'peta', '-8.5822', '116.0922', NULL, 'menunggu verifikasi', 3, 'bukti_dishub_verif1.jpg'),
-(27, '2026-05-07 14:02:09', 'dishub_verif2.jpg', 'Rambu penunjuk arah tertutup dahan pohon tebal dan catnya sudah pudar.', 7, 'peta', '-8.5833', '116.0933', NULL, 'menunggu verifikasi', 4, 'bukti_dishub_verif2.jpg'),
-(28, '2026-05-07 14:02:09', 'dlh_verif1.jpg', 'Tumpukan sampah liar menutupi sebagian bahu jalan dan berbau busuk.', 12, 'manual', NULL, NULL, 'Jalan Lingkar Selatan dekat tanah kosong', 'menunggu verifikasi', 5, 'bukti_dlh_verif1.jpg'),
-(29, '2026-05-07 14:02:09', 'dlh_verif2.jpg', 'Fasilitas bangku di taman kota patah dan kayunya lapuk.', 10, 'peta', '-8.5844', '116.0944', NULL, 'menunggu verifikasi', 6, 'bukti_dlh_verif2.jpg'),
-(30, '2026-05-07 14:02:09', 'pln_verif1.jpg', 'Kabel jaringan listrik putus tersangkut truk besar yang lewat.', 14, 'peta', '-8.5855', '116.0955', NULL, 'menunggu verifikasi', 7, 'bukti_pln_verif1.jpg'),
-(31, '2026-05-07 14:02:09', 'pln_verif2.jpg', 'Tiang listrik keropos di bagian bawah, takut roboh menimpa rumah warga.', 13, 'manual', NULL, NULL, 'Gang Kamboja No 5, Majeluk', 'selesai', 8, 'bukti_1778162605_triple_t.webp'),
-(32, '2026-05-07 14:02:09', 'pdam_verif1.jpg', 'Pipa air bersih utama bocor, airnya membanjiri jalan aspal.', 16, 'peta', '-8.5866', '116.0966', NULL, 'menunggu verifikasi', 9, 'bukti_pdam_verif1.jpg'),
-(33, '2026-05-07 14:02:09', 'telkom_verif1.jpg', 'Tiang jaringan Telkom miring dan kabel fiber optiknya menjuntai rendah.', 18, 'peta', '-8.5877', '116.0977', NULL, 'menunggu verifikasi', 11, 'bukti_telkom_verif1.jpg'),
-(34, '2026-05-07 14:16:34', '1778163394_28.png', 'dewfrfe', 13, 'peta', '-8.592475825435136', '116.09810829162599', NULL, 'selesai', 7, 'bukti_1778163483_triple_t.jpg'),
-(35, '2026-05-07 14:34:17', '1778164457_triple_t.jpg', 'jalan ketimpa pohon', 2, 'peta', '-8.596692564350878', '116.09347075223924', NULL, 'selesai', 2, 'bukti_1778164903_IMG_20251211_193012.jpg');
+INSERT INTO `laporan` (`id_laporan`, `tanggal_lapor`, `foto`, `keluhan`, `id_kategori`, `metode_lokasi`, `latitude`, `longitude`, `alamat_manual`, `status`, `id_petugas`, `foto_bukti`, `pesan_admin`) VALUES
+(1, '2026-05-07 10:16:01', '1778148961_triple_t.jpg', 'wwfwfwf', 14, 'peta', '-8.590716', '116.09301', NULL, 'selesai', 8, 'bukti_1778152024_triple_t.jpg', NULL),
+(2, '2026-05-07 10:34:28', '1778150068_IMG_20251211_193012.jpg', 'bjnkmoi', 10, 'peta', '-8.590716', '116.09301', NULL, 'ditolak', NULL, NULL, NULL),
+(3, '2026-05-07 11:03:37', 'dummy_pusat1.jpg', 'Saya tidak tahu ini lapor ke mana, ada tiang miring mau roboh.', 3, 'peta', '-8.5877', '116.0965', NULL, 'diproses', 2, 'bukti_1778484712_triple_t.jpg', 'asdqwdqdqdqdqwdwq'),
+(4, '2026-05-07 11:03:37', 'dummy_pusat2.jpg', 'Tolong ini ada fasilitas umum yang rusak parah di pertigaan.', 1, 'manual', NULL, NULL, 'Pertigaan lampu merah pasar', 'menunggu', NULL, NULL, NULL),
+(5, '2026-05-07 11:03:37', 'dummy_pu1.jpg', 'Jalan berlubang cukup dalam, sangat bahaya kalau malam.', 2, 'peta', '-8.5880', '116.0970', NULL, 'diproses', 1, NULL, NULL),
+(6, '2026-05-07 11:03:37', 'dummy_pu2.jpg', 'Trotoar amblas akibat galian yang tidak ditutup.', 3, 'peta', '-8.5890', '116.0980', NULL, 'selesai', 2, 'bukti_pu2.jpg', NULL),
+(7, '2026-05-07 11:03:37', 'dummy_pu3.jpg', 'Jembatan retak di bagian penyangganya.', 4, 'manual', NULL, NULL, 'Jembatan dekat alun-alun', 'diproses', 2, NULL, NULL),
+(8, '2026-05-07 11:03:37', 'dummy_pu4.jpg', 'Saluran air mampet dan bau.', 5, 'peta', '-8.5860', '116.0950', NULL, 'ditolak', NULL, NULL, NULL),
+(9, '2026-05-07 11:03:37', 'dummy_dishub1.jpg', 'Lampu jalan mati sudah 3 hari, jalanan jadi sangat gelap.', 6, 'peta', '-8.5850', '116.0940', NULL, 'diproses', 3, NULL, NULL),
+(10, '2026-05-07 11:03:37', 'dummy_dishub2.jpg', 'Rambu dilarang parkir hilang dicabut orang.', 7, 'manual', NULL, NULL, 'Jalan utama depan SMA 1', 'selesai', 4, 'bukti_dishub2.jpg', NULL),
+(11, '2026-05-07 11:03:37', 'dummy_dishub3.jpg', 'Lampu lalu lintas error, hijau semua jadi macet.', 8, 'peta', '-8.5840', '116.0930', NULL, 'menunggu', NULL, NULL, NULL),
+(12, '2026-05-07 11:03:37', 'dummy_dlh1.jpg', 'Ayunan di taman kota rusak dan rantainya putus.', 10, 'peta', '-8.5830', '116.0920', NULL, 'diproses', 5, NULL, NULL),
+(13, '2026-05-07 11:03:37', 'dummy_dlh2.jpg', 'Pohon tumbang menghalangi sebagian jalan raya.', 11, 'peta', '-8.5820', '116.0910', NULL, 'selesai', 6, 'bukti_dlh2.jpg', NULL),
+(14, '2026-05-07 11:03:37', 'dummy_dlh3.jpg', 'Tempat sampah umum sudah hancur dan tumpah berserakan.', 1, 'manual', NULL, NULL, 'Taman bermain komplek', 'menunggu', NULL, NULL, NULL),
+(15, '2026-05-07 11:03:37', 'dummy_pln1.jpg', 'Tiang listrik hampir roboh tertabrak truk.', 13, 'peta', '-8.5810', '116.0900', NULL, 'selesai', 7, 'bukti_1778160716_green.png', NULL),
+(16, '2026-05-07 11:03:37', 'dummy_pln2.jpg', 'Kabel listrik menjuntai ke jalan, rawan tersangkut kendaraan.', 14, 'peta', '-8.5800', '116.0890', NULL, 'selesai', 8, 'bukti_pln2.jpg', NULL),
+(17, '2026-05-07 11:03:37', 'dummy_pln3.jpg', 'Gardu listrik mengeluarkan suara letupan kecil.', 15, 'manual', NULL, NULL, 'Gang mawar Ujung', 'selesai', 8, 'bukti_1778152009_triple_t.jpg', NULL),
+(18, '2026-05-07 11:03:37', 'dummy_pdam1.jpg', 'Pipa air bersih bocor deras membanjiri jalan raya.', 16, 'peta', '-8.5790', '116.0880', NULL, 'diproses', 9, NULL, NULL),
+(19, '2026-05-07 11:03:37', 'dummy_pdam2.jpg', 'Fasilitas air siap minum di taman tidak keluar airnya.', 17, 'peta', '-8.5780', '116.0870', NULL, 'selesai', 10, 'bukti_pdam2.jpg', NULL),
+(20, '2026-05-07 11:03:37', 'dummy_pdam3.jpg', 'Ada galian pipa yang ditinggalkan begitu saja.', 16, 'manual', NULL, NULL, 'Depan masjid raya', 'menunggu', NULL, NULL, NULL),
+(21, '2026-05-07 11:03:37', 'dummy_telkom1.jpg', 'Tiang internet miring ke arah rumah warga.', 18, 'peta', '-8.5770', '116.0860', NULL, 'diproses', 11, NULL, NULL),
+(22, '2026-05-07 11:03:37', 'dummy_telkom2.jpg', 'Kabel fiber optik putus dan menghalangi trotoar.', 18, 'peta', '-8.5760', '116.0850', NULL, 'selesai', 12, 'bukti_telkom2.jpg', NULL),
+(23, '2026-05-07 13:20:20', '1778160020_triple_t.jpg', 'efwfewfwf', 1, 'peta', '-8.590716', '116.09301', NULL, 'ditolak', NULL, NULL, NULL),
+(24, '2026-05-07 14:02:09', 'pu_verif1.jpg', 'Ada lubang menganga di tengah jalan raya bypass, sangat rawan kecelakaan.', 2, 'peta', '-8.5810', '116.0910', NULL, 'diproses', 1, 'bukti_pu_verif1.jpg', NULL),
+(25, '2026-05-07 14:02:09', 'pu_verif2.jpg', 'Penutup gorong-gorong hilang dicuri, lubangnya berbahaya bagi pejalan kaki.', 5, 'manual', NULL, NULL, 'Trotoar depan Bank NTB Syariah', 'diproses', 2, 'bukti_pu_verif2.jpg', NULL),
+(26, '2026-05-07 14:02:09', 'dishub_verif1.jpg', 'Lampu penerangan jalan di tikungan tajam mati, gelap gulita saat malam.', 6, 'peta', '-8.5822', '116.0922', NULL, 'menunggu verifikasi', 3, 'bukti_dishub_verif1.jpg', NULL),
+(27, '2026-05-07 14:02:09', 'dishub_verif2.jpg', 'Rambu penunjuk arah tertutup dahan pohon tebal dan catnya sudah pudar.', 7, 'peta', '-8.5833', '116.0933', NULL, 'menunggu verifikasi', 4, 'bukti_dishub_verif2.jpg', NULL),
+(28, '2026-05-07 14:02:09', 'dlh_verif1.jpg', 'Tumpukan sampah liar menutupi sebagian bahu jalan dan berbau busuk.', 12, 'manual', NULL, NULL, 'Jalan Lingkar Selatan dekat tanah kosong', 'menunggu verifikasi', 5, 'bukti_dlh_verif1.jpg', NULL),
+(29, '2026-05-07 14:02:09', 'dlh_verif2.jpg', 'Fasilitas bangku di taman kota patah dan kayunya lapuk.', 10, 'peta', '-8.5844', '116.0944', NULL, 'selesai', 6, 'bukti_dlh_verif2.jpg', NULL),
+(30, '2026-05-07 14:02:09', 'pln_verif1.jpg', 'Kabel jaringan listrik putus tersangkut truk besar yang lewat.', 14, 'peta', '-8.5855', '116.0955', NULL, 'selesai', 8, 'bukti_1778416865_triple_t.jpg', NULL),
+(31, '2026-05-07 14:02:09', 'pln_verif2.jpg', 'Tiang listrik keropos di bagian bawah, takut roboh menimpa rumah warga.', 13, 'manual', NULL, NULL, 'Gang Kamboja No 5, Majeluk', 'selesai', 8, 'bukti_1778162605_triple_t.webp', NULL),
+(32, '2026-05-07 14:02:09', 'pdam_verif1.jpg', 'Pipa air bersih utama bocor, airnya membanjiri jalan aspal.', 16, 'peta', '-8.5866', '116.0966', NULL, 'menunggu verifikasi', 9, 'bukti_pdam_verif1.jpg', NULL),
+(33, '2026-05-07 14:02:09', 'telkom_verif1.jpg', 'Tiang jaringan Telkom miring dan kabel fiber optiknya menjuntai rendah.', 18, 'peta', '-8.5877', '116.0977', NULL, 'menunggu verifikasi', 11, 'bukti_telkom_verif1.jpg', NULL),
+(34, '2026-05-07 14:16:34', '1778163394_28.png', 'dewfrfe', 13, 'peta', '-8.592475825435136', '116.09810829162599', NULL, 'selesai', 7, 'bukti_1778163483_triple_t.jpg', NULL),
+(35, '2026-05-07 14:34:17', '1778164457_triple_t.jpg', 'jalan ketimpa pohon', 2, 'peta', '-8.596692564350878', '116.09347075223924', NULL, 'selesai', 2, 'bukti_1778164903_IMG_20251211_193012.jpg', NULL),
+(36, '2026-05-11 01:44:43', '1778463883_triple_t.jpg', 'wlbwgjw4gn', 4, 'peta', '', '', NULL, 'diproses', 2, 'bukti_1778463978_triple_t.jpg', NULL),
+(37, '2026-05-11 03:09:21', '1778468961_triple_t.jpg', 'ngiunenn', 2, 'peta', '-8.586877', '116.096839', NULL, 'diproses', 1, NULL, NULL),
+(38, '2026-05-11 05:25:43', '1778477142_triple_t.jpg', 'jalan rusak', 4, 'peta', '-8.580254733695252', '116.10291481018068', NULL, 'selesai', 1, 'bukti_1778477294_triple_t.jpg', NULL),
+(39, '2026-05-11 05:53:30', '1778478810_triple_t.jpg', 'hhtyrhrht', 10, 'peta', '-8.587460018980236', '116.09719205139162', NULL, 'diproses', 5, NULL, NULL),
+(40, '2026-05-11 06:12:13', '1778479933_triple_t.jpg', 'jrgnkjaakngkjssk.e', 15, 'peta', '-8.587462522722806', '116.09719176978331', NULL, 'diproses', 7, NULL, NULL),
+(41, '2026-05-11 07:22:51', '1778484171_triple_t.jpg', 'gearesgrseg', 2, 'peta', '-8.590922', '116.093062', NULL, 'selesai', 1, 'bukti_1778484558_IMG_20251211_193012.jpg', NULL),
+(42, '2026-05-11 08:08:36', '1778486916_triple_t.jpg', 'sdffefw', 3, 'peta', '-8.590922', '116.093062', NULL, 'selesai', 2, 'bukti_1778487295_IMG_20251211_193012.jpg', NULL);
 
 -- --------------------------------------------------------
 
@@ -197,6 +205,51 @@ INSERT INTO `petugas` (`id_petugas`, `id_user`, `id_instansi`) VALUES
 (10, 17, 6),
 (11, 18, 7),
 (12, 19, 7);
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `riwayat_laporan`
+--
+
+CREATE TABLE `riwayat_laporan` (
+  `id_riwayat` int(11) NOT NULL,
+  `id_laporan` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `id_petugas_penerima` int(11) DEFAULT NULL,
+  `aksi` varchar(100) NOT NULL,
+  `keterangan` text NOT NULL,
+  `tanggal_aksi` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `riwayat_laporan`
+--
+
+INSERT INTO `riwayat_laporan` (`id_riwayat`, `id_laporan`, `id_user`, `id_petugas_penerima`, `aksi`, `keterangan`, `tanggal_aksi`) VALUES
+(1, 14, 4, NULL, 'kembalikan', 'dkjgnegrkgmekgm', '2026-05-11 06:11:28'),
+(2, 40, 2, NULL, 'kembalikan', 'e kjsnvsm;l', '2026-05-11 06:12:31'),
+(3, 40, 1, NULL, 'forward', 'Diteruskan ke kategori baru (ID Kategori: 15).', '2026-05-11 06:13:33'),
+(4, 40, 5, NULL, 'terima', 'Menugaskan petugas lapangan (ID: 7).', '2026-05-11 06:14:05'),
+(5, 7, 2, NULL, 'terima', 'Menugaskan petugas lapangan (ID: 2).', '2026-05-11 06:42:52'),
+(6, 4, 2, NULL, 'kembalikan', 'esvbdgnfh', '2026-05-11 06:43:03'),
+(7, 41, 1, NULL, 'forward', 'Diteruskan ke kategori baru (ID Kategori: 2).', '2026-05-11 07:24:11'),
+(8, 41, 2, NULL, 'kembalikan', 'bukan wewenang kami', '2026-05-11 07:25:11'),
+(9, 41, 1, NULL, 'forward', 'Diteruskan ke kategori baru (ID Kategori: 2).', '2026-05-11 07:25:29'),
+(10, 41, 2, NULL, 'terima', 'Menugaskan petugas lapangan (ID: 1).', '2026-05-11 07:25:48'),
+(11, 41, 2, NULL, 'verifikasi_tolak', 'Bukti ditolak. Dikembalikan ke petugas semula. Alasan: salah woi', '2026-05-11 07:27:34'),
+(12, 41, 2, NULL, 'verifikasi_tolak', 'Bukti ditolak. Dikembalikan ke petugas semula. Alasan: masih salah', '2026-05-11 07:28:44'),
+(13, 41, 2, NULL, 'verifikasi_terima', 'Bukti disetujui. Tugas selesai.', '2026-05-11 07:29:39'),
+(14, 3, 2, NULL, 'terima', 'Menugaskan petugas lapangan (ID: 1).', '2026-05-11 07:31:29'),
+(15, 3, 2, NULL, 'verifikasi_tolak', 'Bukti ditolak. Tugas dialihkan ke petugas baru. Alasan: asdqwdqdqdqdqwdwq', '2026-05-11 07:32:23'),
+(16, 2, 4, NULL, 'tolak', 'Laporan ditolak (Dianggap Spam / Tidak Valid).', '2026-05-11 07:42:36'),
+(17, 42, 1, NULL, 'forward', 'Laporan diteruskan ke kategori/dinas baru.', '2026-05-11 08:09:13'),
+(18, 42, 4, NULL, 'kembalikan', 'sgwegwrg', '2026-05-11 08:10:05'),
+(19, 42, 1, NULL, 'forward', 'Laporan diteruskan ke kategori/dinas baru.', '2026-05-11 08:10:23'),
+(20, 42, 2, NULL, 'terima', 'Laporan diterima dan ditugaskan ke petugas.', '2026-05-11 08:10:44'),
+(21, 42, 2, NULL, 'verifikasi_tolak', 'Bukti ditolak. Alasan: asdfegwr', '2026-05-11 08:12:57'),
+(22, 42, 2, 1, 'verifikasi_tolak', 'Bukti ditolak. Alasan: absaefwarbg', '2026-05-11 08:13:53'),
+(23, 42, 2, NULL, 'verifikasi_terima', 'Bukti perbaikan disetujui. Tugas selesai.', '2026-05-11 08:15:17');
 
 -- --------------------------------------------------------
 
@@ -279,6 +332,14 @@ ALTER TABLE `petugas`
   ADD KEY `id_instansi` (`id_instansi`);
 
 --
+-- Indeks untuk tabel `riwayat_laporan`
+--
+ALTER TABLE `riwayat_laporan`
+  ADD PRIMARY KEY (`id_riwayat`),
+  ADD KEY `id_laporan` (`id_laporan`),
+  ADD KEY `id_user` (`id_user`);
+
+--
 -- Indeks untuk tabel `users`
 --
 ALTER TABLE `users`
@@ -310,13 +371,19 @@ ALTER TABLE `kategori`
 -- AUTO_INCREMENT untuk tabel `laporan`
 --
 ALTER TABLE `laporan`
-  MODIFY `id_laporan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id_laporan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT untuk tabel `petugas`
 --
 ALTER TABLE `petugas`
   MODIFY `id_petugas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT untuk tabel `riwayat_laporan`
+--
+ALTER TABLE `riwayat_laporan`
+  MODIFY `id_riwayat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
@@ -354,6 +421,13 @@ ALTER TABLE `laporan`
 ALTER TABLE `petugas`
   ADD CONSTRAINT `petugas_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE CASCADE,
   ADD CONSTRAINT `petugas_ibfk_2` FOREIGN KEY (`id_instansi`) REFERENCES `instansi` (`id_instansi`) ON DELETE CASCADE;
+
+--
+-- Ketidakleluasaan untuk tabel `riwayat_laporan`
+--
+ALTER TABLE `riwayat_laporan`
+  ADD CONSTRAINT `riwayat_laporan_ibfk_1` FOREIGN KEY (`id_laporan`) REFERENCES `laporan` (`id_laporan`) ON DELETE CASCADE,
+  ADD CONSTRAINT `riwayat_laporan_ibfk_2` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
