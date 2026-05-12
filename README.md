@@ -4,9 +4,9 @@
 **LaporFasum** is a web-based platform designed to streamline the reporting of public facility damages such as roads, streetlights, and drainage systems. The system provides an accessible reporting channel for citizens, allowing reports to be routed to specific government agencies and assigned directly to field officers for repair. It features GPS-based location tagging and real-time status tracking to ensure transparency and efficiency in infrastructure maintenance.
 
 ## Team
-* **Reza Muthahhari Purnomo (F1D02410088)** - Project Leader : Backend Developer
-* **Lalu Taufik Dewo Bayuaji (F1D02410069)** - Team Member: Frontend Developer
-* **Halis Ibrahim Kumala Chandra (F1D02410049)** - Team Member: Frontend Developer
+* **Reza Muthahhari Purnomo (F1D02410088)**       - Project Leader: Backend Developer
+* **Lalu Taufik Dewo Bayuaji (F1D02410069)**      - Team Member:    Frontend Developer
+* **Halis Ibrahim Kumala Chandra (F1D02410049)**  - Team Member:    Frontend Developer
 
 ## Sitemap and Features
 
