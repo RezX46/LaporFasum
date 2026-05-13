@@ -23,7 +23,7 @@ $ukuran_file = $_FILES['foto']['size'];
 $batas_ukuran = 5 * 1024 * 1024; 
 if ($ukuran_file > $batas_ukuran) {
     echo "<script>
-            alert('Gagal! Ukuran foto terlalu besar, pastikan foto tidak lebih besar dari 4 MB.');
+            alert('Gagal! Ukuran foto terlalu besar, pastikan foto tidak lebih besar dari 5 MB.');
             window.history.back();
           </script>";
     exit(); 

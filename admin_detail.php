@@ -11,11 +11,10 @@ if (!isset($_GET['id'])) { die("ID Laporan tidak ditemukan."); }
 $id_laporan = (int)$_GET['id'];
 $id_instansi_admin = $_SESSION['id_instansi'];
 
-$query = "SELECT l.*, k.nama_kategori, k.id_instansi, u.nama_lengkap as nama_petugas 
+$query = "SELECT l.*, k.nama_kategori, k.id_instansi, u_petugas.nama_lengkap as nama_petugas 
           FROM laporan l 
           JOIN kategori k ON l.id_kategori = k.id_kategori 
-          LEFT JOIN petugas p ON l.id_petugas = p.id_petugas
-          LEFT JOIN users u ON p.id_user = u.id_user
+          LEFT JOIN users u_petugas ON l.id_petugas = u_petugas.id_user
           WHERE l.id_laporan = $id_laporan";
 $result = mysqli_query($koneksi, $query);
 
@@ -36,10 +35,9 @@ if ($id_instansi_admin == 1) {
     ");
 } else {
     $query_opsi = mysqli_query($koneksi, "
-        SELECT p.id_petugas, u.nama_lengkap 
-        FROM petugas p 
-        JOIN users u ON p.id_user = u.id_user 
-        WHERE p.id_instansi = '$id_instansi_admin'
+        SELECT id_user as id_petugas, nama_lengkap 
+        FROM users 
+        WHERE role = 'petugas' AND id_instansi = '$id_instansi_admin'
     ");
 }
 

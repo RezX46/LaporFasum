@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Hanya petugas yang boleh masuk
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'petugas') {
     echo "<script>alert('Akses Ditolak!'); window.location.href = 'login.html';</script>";
     exit();
@@ -12,11 +11,7 @@ require 'koneksi.php';
 if (!isset($_GET['id'])) { die("ID Laporan tidak ditemukan."); }
 
 $id_laporan = (int)$_GET['id'];
-$id_user_induk = $_SESSION['id_user'];
-
-$query_cari_petugas = mysqli_query($koneksi, "SELECT id_petugas FROM petugas WHERE id_user = '$id_user_induk'");
-$data_petugas = mysqli_fetch_assoc($query_cari_petugas);
-$id_petugas_asli = $data_petugas['id_petugas'];
+$id_petugas_asli = $_SESSION['id_user'];
 
 $query = "SELECT l.*, k.nama_kategori 
           FROM laporan l 
