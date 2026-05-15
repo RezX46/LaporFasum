@@ -40,7 +40,10 @@ $result = mysqli_query($koneksi, $query);
     <div class="container admin-container">
         <div class="header-admin">
             <h1 style="margin: 0; font-size: 1.5em;"><?= $judul_halaman ?></h1>
-            <a href="admin.php" class="btn-detail" style="background-color: #95a5a6; width: auto; padding: 8px 15px;">Kembali</a>
+            <div style="display: flex; gap: 10px;">
+                <a href="personil_tambah.php" class="btn-terima" style="margin: 0; width: auto; padding: 8px 15px;">+ Tambah Personil</a>
+                <a href="admin.php" class="btn-detail" style="background-color: #95a5a6; margin: 0; width: auto; padding: 8px 15px;">Kembali</a>
+            </div>
         </div>
 
         <table>
