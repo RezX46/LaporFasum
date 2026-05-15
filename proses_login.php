@@ -12,9 +12,14 @@ if (mysqli_num_rows($result) > 0) {
     
     $akun = mysqli_fetch_assoc($result);
     
-    // Proses Verifikasi Hashing
     if (password_verify($password_input, $akun['password'])) {
-        
+        if ($akun['status_akun'] == 'nonaktif') {
+            echo "<script>
+                    alert('Akun Anda telah dinonaktifkan. Silakan hubungi Admin Pusat.');
+                    window.location.href = 'login.html';
+                  </script>";
+            exit();
+}
         // Jika password cocok, buat sesi
         $_SESSION['id_user']      = $akun['id_user'];
         $_SESSION['nama_lengkap'] = $akun['nama_lengkap'];

@@ -38,6 +38,8 @@ $result = mysqli_query($koneksi, $query);
                 <h1 style="margin-bottom: 5px;">Dashboard Admin</h1>
                 <p style="margin: 0; font-size: 0.9em;">Selamat datang, <strong><?= $_SESSION['nama_lengkap'] ?></strong></p>
             </div>
+            <a href="personil.php" class="btn-logout">Manajemen Personil</a>
+            <a href="pengaturan_akun.php" class="btn-detail" style="background-color: #3498db;">Pengaturan Akun</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
         </div>
 

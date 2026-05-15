@@ -47,6 +47,7 @@ $jumlah_notif = mysqli_num_rows($q_notif);
                 <button class="btn-notif" onclick="bukaNotif()">
                      Notifikasi (<?= $jumlah_notif ?>)
                 </button>
+                <a href="pengaturan_akun.php" class="btn-detail" style="background-color: #3498db;">Pengaturan Akun</a>
                 <a href="logout.php" class="btn-logout">Keluar</a>
             </div>
         </div>
