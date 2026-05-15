@@ -37,26 +37,21 @@ if (!is_dir('uploads')) {
 }
 
 $upload_sukses = kompres_dan_resize_gambar($tmp_file, $folder_tujuan);
+// Membuat kode lacak unik (Contoh: LP-202605-A1B2)
+$kode_lacak = "LP-" . date('Ym') . "-" . strtoupper(substr(uniqid(), -4));
 
 if ($upload_sukses) {
-    $query = "INSERT INTO laporan (foto, keluhan, id_kategori, metode_lokasi, latitude, longitude, alamat_manual) 
-              VALUES ('$nama_foto_baru', '$keluhan', $id_kategori, '$metode_lokasi', '$latitude', '$longitude', $alamat_manual)";
+    $query = "INSERT INTO laporan (kode_lacak, foto, keluhan, id_kategori, metode_lokasi, latitude, longitude, alamat_manual) 
+              VALUES ('$kode_lacak', '$nama_foto_baru', '$keluhan', $id_kategori, '$metode_lokasi', '$latitude', '$longitude', $alamat_manual)";
     
     $simpan = mysqli_query($koneksi, $query);
-
     if ($simpan) {
         echo "<script>
-                alert('Terima kasih! Laporan Anda berhasil dikirim dan akan segera diproses.');
-                window.location.href = 'index.html';
-              </script>";
+                alert('Terima kasih! Laporan berhasil dikirim. CATAT KODE LACAK ANDA: $kode_lacak');
+                window.location.href = 'cek_status.php?kode=$kode_lacak';
+            </script>";
     } else {
         echo "Gagal menyimpan data ke database: " . mysqli_error($koneksi);
     }
-
-} else {
-    echo "<script>
-            alert('Gagal memproses foto! Pastikan file yang diunggah berupa citra yang valid.');
-            window.history.back();
-          </script>";
 }
 ?>

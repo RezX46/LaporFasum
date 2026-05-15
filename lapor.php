@@ -63,8 +63,8 @@ require 'koneksi.php';
         <h1>Formulir Laporan Baru</h1>
         <p style="margin-bottom: 20px; font-size: 0.9em;">Laporan Anda bersifat anonim. Silakan isi data di bawah ini.</p>
         
-        <form action="proses_lapor.php" method="POST" enctype="multipart/form-data">
-            
+        <form action="proses_lapor.php" method="POST" enctype="multipart/form-data" onsubmit="return validasiForm()">
+        
             <div class="form-group">
                 <label for="foto">1. Unggah Foto Kerusakan (Maksimal 5 MB):</label>
                 <input type="file" id="foto" name="foto" accept="image/*" required>
@@ -161,7 +161,6 @@ require 'koneksi.php';
             }
         }
 
-        // Fungsi untuk menempatkan pin dan mengisi input
         function setMarker(lat, lng) {
             if (marker) {
                 marker.setLatLng([lat, lng]);
@@ -170,6 +169,31 @@ require 'koneksi.php';
             }
             document.getElementById('latitude').value = lat;
             document.getElementById('longitude').value = lng;
+        }
+
+        function validasiForm() {
+            var lat = document.getElementById('latitude').value;
+            var lng = document.getElementById('longitude').value;
+            var fotoInput = document.getElementById('foto');
+
+            if (fotoInput.files.length > 0) {
+                var ukuranFile = fotoInput.files[0].size;
+                var batasUkuran = 5 * 1024 * 1024; 
+
+                if (ukuranFile > batasUkuran) {
+                    alert("Gagal! Ukuran foto terlalu besar. Pastikan ukuran foto maksimal 5 MB.");
+                    // Kosongkan input file agar user harus memilih ulang
+                    fotoInput.value = ""; 
+                    return false; // Hentikan pengiriman form
+                }
+            }
+
+            if (lat === "" || lng === "") {
+                alert("Gagal! Anda belum menentukan titik lokasi.");
+                return false; 
+            }
+
+            return true; 
         }
     </script>
 </body>

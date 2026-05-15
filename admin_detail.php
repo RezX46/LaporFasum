@@ -84,7 +84,7 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
             <div class="detail-item">
                 <strong>Lokasi / Patokan:</strong>
                 <?php if(!empty($row['alamat_manual'])) { echo $row['alamat_manual'] . "<br>"; } ?>
-                <?php if($row['latitude'] != NULL && $row['longitude'] != NULL): ?>
+                <?php if(!empty($row['latitude']) && !empty($row['longitude'])): ?>
                     <a href="https://www.google.com/maps?q=<?= $row['latitude'] ?>,<?= $row['longitude'] ?>" target="_blank" class="btn-map"> Buka di Google Maps</a>
                 <?php endif; ?>
             </div>

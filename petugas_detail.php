@@ -86,7 +86,7 @@ if ($row['status'] == 'menunggu verifikasi') {
                 <strong>Lokasi:</strong>
                 <?= !empty($row['alamat_manual']) ? $row['alamat_manual'] : 'Lihat di Peta (GPS)' ?>
                 <br>
-                <?php if($row['latitude'] != NULL && $row['longitude'] != NULL): ?>
+                <?php if(!empty($row['latitude']) && !empty($row['longitude'])): ?>
                     <a href="https://www.google.com/maps?q=<?= $row['latitude'] ?>,<?= $row['longitude'] ?>" target="_blank" class="btn-map"> Buka Lokasi di Maps</a>
                 <?php endif; ?>
             </div>
