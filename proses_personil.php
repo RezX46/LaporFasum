@@ -52,7 +52,32 @@ if ($aksi == 'setujui') {
             echo "<script>alert('Status akun berhasil diperbarui menjadi $status_baru!'); window.location.href='personil_detail.php?id=$id_target';</script>";
         }
     }
-} else {
-    header("Location: personil.php");
+
+}  elseif ($aksi == 'update_manual') {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $nama = mysqli_real_escape_string($koneksi, trim($_POST['nama_lengkap']));
+        $user_baru = mysqli_real_escape_string($koneksi, trim($_POST['username']));
+        $password_baru = trim($_POST['password_baru']);
+
+        $query_dasar = "UPDATE users SET 
+                  nama_lengkap = '$nama', 
+                  username = '$user_baru', 
+                  pending_nama = NULL, 
+                  pending_username = NULL 
+                  WHERE id_user = $id_target";
+        
+        $sukses = mysqli_query($koneksi, $query_dasar);
+
+        if ($sukses && !empty($password_baru)) {
+            $pw_hash = password_hash($password_baru, PASSWORD_DEFAULT);
+            mysqli_query($koneksi, "UPDATE users SET password = '$pw_hash' WHERE id_user = $id_target");
+        }
+
+        if ($sukses) {
+            echo "<script>alert('Data personil berhasil diperbarui!'); window.location.href='personil_detail.php?id=$id_target';</script>";
+        } else {
+            echo "<script>alert('Gagal memperbarui data.'); window.history.back();</script>";
+        }
+    }
 }
 ?>

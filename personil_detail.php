@@ -105,6 +105,7 @@ $tugas_selesai = $stat_selesai['total'];
                 </div>
             </div>
 
+            <?php if ($user['role'] == 'petugas'): ?>
             <div class="stat-container">
                 <div class="stat-card">
                     <span class="stat-angka"><?= $total_tugas ?></span>
@@ -115,14 +116,15 @@ $tugas_selesai = $stat_selesai['total'];
                     <span class="stat-teks" style="color: #22c55e;">Laporan Selesai</span>
                 </div>
             </div>
+            <?php endif; ?>
         </div>
 
-       <div class="action-box" style="border-style: solid; background-color: #f8f9fa; border-color: #bdc3c7;">
+        <div class="action-box" style="border-style: solid; background-color: #f8f9fa; border-color: #bdc3c7;">
             <h3 style="margin-top: 0; color: #2c3e50;">Opsi Manajemen Akun</h3>
             <p style="font-size: 0.9em; color: #555;">Status Akun Saat Ini: <strong><?= strtoupper($user['status_akun']) ?></strong></p>
             
             <div class="btn-group" style="gap: 10px;">
-                <button class="btn-update" style="background-color: #3498db; width: auto; flex: 1;">Edit</button>
+                <a href="personil_edit.php?id=<?= $user['id_user'] ?>" class="btn-update" style="background-color: #3498db; width: auto; flex: 1; text-decoration: none; text-align: center;">Edit Data</a>
                 
                 <?php 
                 $bisa_dinonaktifkan = true;
@@ -135,7 +137,7 @@ $tugas_selesai = $stat_selesai['total'];
                     <?php if ($user['status_akun'] == 'aktif'): ?>
                         <a href="proses_personil.php?aksi=status&status=nonaktif&id=<?= $user['id_user'] ?>" 
                            class="btn-tolak" style="width: auto; flex: 1; margin-top: 0; text-decoration: none; text-align: center;"
-                           onclick="return confirm('Yakin ingin MENONAKTIFKAN akun ini?')">
+                           onclick="return confirm('Yakin ingin MENONAKTIFKAN akun ini? ')">
                            Nonaktifkan Akun
                         </a>
                     <?php else: ?>
@@ -144,12 +146,8 @@ $tugas_selesai = $stat_selesai['total'];
                            Aktifkan Kembali
                         </a>
                     <?php endif; ?>
-                <?php else: ?>
-                    <button class="btn-tolak" style="width: auto; flex: 1; margin-top: 0; background-color: #bdc3c7; border-color: #bdc3c7; cursor: not-allowed;" disabled title="Admin Pusat tidak memiliki wewenang menonaktifkan Admin Dinas">
-                       Akses Dibatasi
-                    </button>
                 <?php endif; ?>
-            </div>
+                </div>
         </div>
 
     </div>
