@@ -41,6 +41,51 @@ if (isset($_GET['kode'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cek Status Laporan – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
+    <style>
+        .info-grid-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 20px;
+            margin-bottom: 14px;
+        }
+        .info-grid-detail .full-width { grid-column: 1 / -1; }
+        .info-row {
+            background: var(--blue-pale);
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+        .info-row strong {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--blue-dark);
+            margin-bottom: 3px;
+        }
+        .info-row span { font-size: 0.92rem; color: var(--gray-text); }
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .status-bar h2 { margin: 0; font-size: 1rem; color: #0d47a1; }
+        .compact-result-box {
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid #dbeafe;
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow-sm);
+        }
+        .page-body-narrow { padding: 24px 40px; }
+        @media (max-width: 600px) {
+            .info-grid-detail { grid-template-columns: 1fr; }
+            .info-grid-detail .full-width { grid-column: 1; }
+            .page-body-narrow { padding: 16px; }
+        }
+    </style>
 </head>
 <body>
 
@@ -55,8 +100,8 @@ if (isset($_GET['kode'])) {
     </nav>
 
     <!-- PAGE HEADER -->
-    <div class="page-header">
-        <h1>&#128269; Cek Status Laporan</h1>
+    <div class="page-header" style="padding:20px 40px;">
+        <h1 style="font-size:1.4rem;">&#128269; Cek Status Laporan</h1>
         <p>Masukkan kode lacak yang Anda terima setelah membuat laporan.</p>
     </div>
 
@@ -64,41 +109,54 @@ if (isset($_GET['kode'])) {
     <div class="page-body-narrow">
 
         <!-- FORM CEK -->
-        <div class="card">
-            <form action="" method="GET" style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div class="card" style="padding:14px 18px;margin-bottom:14px;">
+            <form action="" method="GET" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
                 <input type="text" name="kode" placeholder="Masukkan Kode Lacak (Contoh: LP-XXXXXX)" required
                        value="<?= isset($_GET['kode']) ? htmlspecialchars($_GET['kode']) : '' ?>"
                        style="flex:1;min-width:200px;margin-bottom:0;">
-                <button type="submit" class="btn" style="width:auto;margin-top:0;padding:11px 28px;">&#128269; Cari</button>
+                <button type="submit" class="btn" style="width:auto;margin-top:0;padding:11px 24px;">&#128269; Cari</button>
             </form>
         </div>
 
         <?php if ($error): ?>
-            <div style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:14px 18px;border-radius:10px;font-weight:600;margin-bottom:20px;">
+            <div style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:12px 16px;border-radius:10px;font-weight:600;margin-bottom:14px;font-size:0.92rem;">
                 &#9888; <?= $error ?>
             </div>
         <?php endif; ?>
 
         <?php if ($data_laporan): ?>
-            <div class="detail-box">
-                <div class="header-admin" style="border:none;padding:0;margin-bottom:16px;">
-                    <h2 style="margin:0;color:#0d47a1;">Laporan #<?= $data_laporan['kode_lacak'] ?></h2>
+            <div class="compact-result-box">
+                <div class="status-bar">
+                    <h2>Laporan #<?= $data_laporan['kode_lacak'] ?></h2>
                     <span class="badge <?= $badge_class ?>"><?= $tampilan_status ?></span>
                 </div>
-                <hr style="margin:0 0 18px;border:0;border-top:1px solid #dbeafe;">
-                
-                <div class="detail-item"><strong>Instansi Penanggung Jawab:</strong> <?= $data_laporan['nama_instansi'] ?></div>
-                <div class="detail-item"><strong>Kategori:</strong> <?= $data_laporan['nama_kategori'] ?></div>
-                <div class="detail-item"><strong>Keluhan Anda:</strong> <?= $data_laporan['keluhan'] ?></div>
-                
-                <div class="detail-item">
-                    <strong>Lokasi / Alamat:</strong>
-                    <?= !empty($data_laporan['alamat_manual']) ? $data_laporan['alamat_manual'] : 'Lokasi berdasarkan titik GPS' ?>
-                    <?php if(!empty($data_laporan['latitude']) && !empty($data_laporan['longitude'])): ?>
-                        <a href="https://www.google.com/maps?q=<?= $data_laporan['latitude'] ?>,<?= $data_laporan['longitude'] ?>" target="_blank" class="btn-map"> Buka Lokasi di Google Maps</a>
-                    <?php endif; ?>
+                <hr style="margin:0 0 14px;border:0;border-top:1px solid #dbeafe;">
+
+                <div class="info-grid-detail">
+                    <div class="info-row">
+                        <strong>Instansi Penanggung Jawab</strong>
+                        <span><?= $data_laporan['nama_instansi'] ?></span>
+                    </div>
+                    <div class="info-row">
+                        <strong>Kategori</strong>
+                        <span><?= $data_laporan['nama_kategori'] ?></span>
+                    </div>
+                    <div class="info-row full-width">
+                        <strong>Keluhan Anda</strong>
+                        <span><?= $data_laporan['keluhan'] ?></span>
+                    </div>
+                    <div class="info-row full-width">
+                        <strong>Lokasi / Alamat</strong>
+                        <span>
+                            <?= !empty($data_laporan['alamat_manual']) ? $data_laporan['alamat_manual'] : 'Lokasi berdasarkan titik GPS' ?>
+                            <?php if(!empty($data_laporan['latitude']) && !empty($data_laporan['longitude'])): ?>
+                                <a href="https://www.google.com/maps?q=<?= $data_laporan['latitude'] ?>,<?= $data_laporan['longitude'] ?>" target="_blank" class="btn-map" style="margin-top:5px;padding:4px 10px;font-size:0.8rem;display:inline-block;"> Buka di Google Maps</a>
+                            <?php endif; ?>
+                        </span>
+                    </div>
                 </div>
 
+                <!-- FOTO GRID — posisi tetap sama -->
                 <div class="foto-grid">
                     <div class="foto-box">
                         <span>Foto Laporan</span>
