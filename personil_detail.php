@@ -35,15 +35,25 @@ $tugas_selesai = $stat_selesai['total'];
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Detail Personil - LaporFasum</title>
+    <title>Detail Personil – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
 </head>
 <body>
-    <div class="container admin-detail-container" style="max-width: 800px;">
-        <div class="header-admin">
-            <h1 style="margin: 0;">Profil Personil</h1>
-            <a href="personil.php" class="btn-detail" style="background-color: #95a5a6; width: auto; padding: 8px 15px;">Kembali</a>
-        </div>
+    <nav class="site-navbar">
+        <a href="admin.php" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <nav>
+            <a href="admin.php">&#128203; Dashboard</a>
+            <a href="personil.php">&#128101; Personil</a>
+            <a href="logout.php" class="btn-logout">Keluar</a>
+        </nav>
+    </nav>
+
+    <div class="page-header">
+        <h1>&#128101; Profil Personil</h1>
+        <p>Detail informasi dan manajemen akun personil.</p>
+    </div>
+
+    <div class="page-body-narrow">
 
         <?php if (!empty($user['pending_nama']) || !empty($user['pending_username'])): ?>
         <div class="action-box" style="border-style: solid; background-color: #fff9db; border-color: #f1c40f; margin-bottom: 25px;">
@@ -151,5 +161,7 @@ $tugas_selesai = $stat_selesai['total'];
         </div>
 
     </div>
+
+    <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
 </body>
 </html>
