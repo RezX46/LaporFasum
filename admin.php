@@ -48,8 +48,34 @@ $result = mysqli_query($koneksi, $query);
     <div class="page-body" style="max-width:1100px;">
         <div class="card">
             <div class="card-title">Daftar Laporan Masuk</div>
+
+            <!-- Toolbar Search / Filter / Sort -->
+            <div class="table-toolbar">
+                <div class="toolbar-search">
+                    <span class="search-icon">&#128269;</span>
+                    <input type="text" id="adminSearch" placeholder="Cari ID, kategori, status...">
+                </div>
+                <select class="toolbar-select" id="adminFilterStatus">
+                    <option value="">&#127937; Semua Status</option>
+                    <option value="menunggu">Menunggu</option>
+                    <option value="diproses">Diproses</option>
+                    <option value="menunggu verifikasi">Menunggu Verifikasi</option>
+                    <option value="selesai">Selesai</option>
+                    <option value="ditolak">Ditolak</option>
+                </select>
+                <select class="toolbar-select" id="adminSort">
+                    <option value="">&#8645; Urutan Default</option>
+                    <option value="id-desc">ID Terbaru</option>
+                    <option value="id-asc">ID Terlama</option>
+                    <option value="tanggal-desc">Tanggal Terbaru</option>
+                    <option value="tanggal-asc">Tanggal Terlama</option>
+                    <option value="kategori-asc">Kategori A-Z</option>
+                    <option value="kategori-desc">Kategori Z-A</option>
+                </select>
+            </div>
+
             <div style="overflow-x:auto;">
-            <table>
+            <table id="adminTable">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -86,10 +112,67 @@ $result = mysqli_query($koneksi, $query);
                     <?php } ?>
                 </tbody>
             </table>
+            <p class="toolbar-empty-msg" id="adminEmptyMsg">&#128270; Tidak ada data yang cocok dengan pencarian/filter Anda.</p>
             </div>
         </div>
     </div>
 
     <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
+
+<script>
+(function(){
+    const searchInput  = document.getElementById('adminSearch');
+    const filterSelect = document.getElementById('adminFilterStatus');
+    const sortSelect   = document.getElementById('adminSort');
+    const table        = document.getElementById('adminTable');
+    const emptyMsg     = document.getElementById('adminEmptyMsg');
+
+    function getRows() {
+        return Array.from(table.querySelectorAll('tbody tr'));
+    }
+
+    function applyAll() {
+        const keyword = searchInput.value.toLowerCase().trim();
+        const status  = filterSelect.value.toLowerCase();
+        const sort    = sortSelect.value;
+
+        let rows = getRows();
+
+        // Filter & Search
+        rows.forEach(function(row) {
+            const text = row.textContent.toLowerCase();
+            const matchSearch = !keyword || text.includes(keyword);
+            const matchStatus = !status  || text.includes(status);
+            row.style.display = (matchSearch && matchStatus) ? '' : 'none';
+        });
+
+        // Sort
+        if (sort) {
+            const tbody = table.querySelector('tbody');
+            const visible = rows.filter(r => r.style.display !== 'none');
+            visible.sort(function(a, b) {
+                const cells_a = a.querySelectorAll('td');
+                const cells_b = b.querySelectorAll('td');
+                if (sort === 'id-asc')          return parseInt(cells_a[0].textContent.replace('#','')) - parseInt(cells_b[0].textContent.replace('#',''));
+                if (sort === 'id-desc')         return parseInt(cells_b[0].textContent.replace('#','')) - parseInt(cells_a[0].textContent.replace('#',''));
+                if (sort === 'tanggal-asc')     return cells_a[1].textContent.localeCompare(cells_b[1].textContent);
+                if (sort === 'tanggal-desc')    return cells_b[1].textContent.localeCompare(cells_a[1].textContent);
+                if (sort === 'kategori-asc')    return cells_a[2].textContent.trim().localeCompare(cells_b[2].textContent.trim());
+                if (sort === 'kategori-desc')   return cells_b[2].textContent.trim().localeCompare(cells_a[2].textContent.trim());
+                return 0;
+            });
+            visible.forEach(function(r) { tbody.appendChild(r); });
+        }
+
+        // Empty message
+        const anyVisible = rows.some(r => r.style.display !== 'none');
+        emptyMsg.style.display = anyVisible ? 'none' : 'block';
+    }
+
+    searchInput.addEventListener('input', applyAll);
+    filterSelect.addEventListener('change', applyAll);
+    sortSelect.addEventListener('change', applyAll);
+})();
+</script>
 </body>
 </html>
