@@ -121,6 +121,84 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
         .compact-action-box select,
         .compact-action-box textarea { margin-bottom: 8px; }
         .compact-action-box textarea { min-height: 70px; }
+
+        /* ── Tombol Tindak Lanjut ── */
+        .action-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .btn-terima-hijau {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: #fff; border: none; border-radius: 10px;
+            padding: 12px 18px; font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; width: 100%;
+            box-shadow: 0 3px 10px rgba(39,174,96,0.35);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .btn-terima-hijau:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(39,174,96,0.45); }
+
+        .btn-tolak-merah {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            color: #fff; border: none; border-radius: 10px;
+            padding: 12px 18px; font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; width: 100%;
+            box-shadow: 0 3px 10px rgba(192,57,43,0.35);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .btn-tolak-merah:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(192,57,43,0.45); }
+
+        .btn-serahkan-kuning {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: linear-gradient(135deg, #f39c12, #f1c40f);
+            color: #7d5a00; border: none; border-radius: 10px;
+            padding: 12px 18px; font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; width: 100%;
+            box-shadow: 0 3px 10px rgba(243,156,18,0.35);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .btn-serahkan-kuning:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(243,156,18,0.45); }
+
+        /* Panel tersembunyi serahkan ke pusat */
+        .serahkan-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.3s ease;
+            opacity: 0;
+            background: #fffde7;
+            border: 1.5px dashed #f39c12;
+            border-radius: 10px;
+            padding: 0 14px;
+        }
+        .serahkan-panel.open {
+            max-height: 300px;
+            opacity: 1;
+            padding: 14px 14px;
+        }
+        .serahkan-panel label {
+            font-size: 0.83rem; font-weight: 700;
+            color: #7d5a00; display: block; margin-bottom: 6px;
+        }
+        .serahkan-panel textarea {
+            width: 100%; box-sizing: border-box;
+            border: 1.5px solid #f39c12; border-radius: 8px;
+            padding: 10px 12px; font-size: 0.9rem;
+            resize: vertical; min-height: 80px;
+            background: #fff;
+        }
+        .btn-kirim-serahkan {
+            display: flex; align-items: center; justify-content: center; gap: 7px;
+            background: linear-gradient(135deg, #e67e22, #f39c12);
+            color: #fff; border: none; border-radius: 9px;
+            padding: 10px 18px; font-size: 0.9rem; font-weight: 700;
+            cursor: pointer; margin-top: 10px; width: 100%;
+            box-shadow: 0 3px 8px rgba(230,126,34,0.35);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .btn-kirim-serahkan:hover { transform: translateY(-2px); box-shadow: 0 5px 14px rgba(230,126,34,0.45); }
         .foto-compact { max-width: 100%; height: auto; border-radius: 8px; margin-top: 8px; border: 2px solid #dbeafe; }
         .foto-section { margin-top: 10px; }
         .foto-section strong { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--blue-dark); display: block; margin-bottom: 6px; }
@@ -238,26 +316,76 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
                 </form>
             <?php else: ?>
                 <h2>Tindak Lanjut Laporan</h2>
-                <form action="proses_validasi.php" method="POST">
+
+                <!-- PILIH PETUGAS -->
+                <form action="proses_validasi.php" method="POST" id="form-terima-tugaskan">
                     <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
-                    <select name="id_petugas" required>
+                    <select name="id_petugas" required style="margin-bottom:10px;">
                         <option value="" disabled selected>-- Pilih Tim / Petugas Lapangan --</option>
                         <?php foreach($opsi_data as $p): ?>
                             <option value="<?= $p['id_petugas'] ?>"><?= $p['nama_lengkap'] ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <button type="submit" name="aksi" value="terima" class="btn-terima"> Terima &amp; Tugaskan</button>
+
+                    <div class="action-btn-group">
+                        <!-- TERIMA & TUGASKAN (hijau) -->
+                        <button type="submit" name="aksi" value="terima" class="btn-terima-hijau">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Terima &amp; Tugaskan
+                        </button>
+                    </div>
                 </form>
-                <form action="proses_validasi.php" method="POST" style="margin-top:8px;">
+
+                <!-- TOLAK LAPORAN (merah) -->
+                <form action="proses_validasi.php" method="POST" style="margin-top:10px;">
                     <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
-                    <button type="submit" name="aksi" value="tolak" class="btn-tolak"> Tolak Laporan</button>
+                    <button type="submit" name="aksi" value="tolak" class="btn-tolak-merah"
+                        onclick="return confirm('Yakin ingin menolak laporan ini?')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        Tolak Laporan
+                    </button>
                 </form>
-                <form action="proses_validasi.php" method="POST" style="margin-top:12px;padding-top:12px;border-top:1px solid #eee;">
-                    <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
-                    <label style="font-weight:700;color:#e74c3c;font-size:0.88rem;">Alasan Pengembalian Ke Pusat:</label>
-                    <textarea name="keterangan" placeholder="Alasan dikembalikan..." required></textarea>
-                    <button type="submit" name="aksi" value="kembalikan" class="btn-tolak"> Kembalikan ke Pusat</button>
-                </form>
+
+                <!-- SERAHKAN KE PUSAT (kuning toggle) -->
+                <div style="margin-top:10px;">
+                    <button type="button" class="btn-serahkan-kuning" id="btn-toggle-serahkan"
+                        onclick="toggleSerahkan()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 10 20 15 15 20"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/></svg>
+                        Serahkan ke Pusat
+                    </button>
+
+                    <div class="serahkan-panel" id="panel-serahkan" style="margin-top:8px;">
+                        <form action="proses_validasi.php" method="POST">
+                            <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
+                            <label>&#9888; Alasan menyerahkan ke pusat:</label>
+                            <textarea name="keterangan" id="textarea-serahkan"
+                                placeholder="Tuliskan alasan menyerahkan laporan ini ke pusat..."
+                                required></textarea>
+                            <button type="submit" name="aksi" value="kembalikan" class="btn-kirim-serahkan">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                Kirim ke Pusat
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <script>
+                function toggleSerahkan() {
+                    var panel = document.getElementById('panel-serahkan');
+                    var btn   = document.getElementById('btn-toggle-serahkan');
+                    var isOpen = panel.classList.contains('open');
+                    if (isOpen) {
+                        panel.classList.remove('open');
+                        btn.style.opacity = '1';
+                    } else {
+                        panel.classList.add('open');
+                        btn.style.opacity = '0.8';
+                        setTimeout(function(){
+                            document.getElementById('textarea-serahkan').focus();
+                        }, 420);
+                    }
+                }
+                </script>
             <?php endif; ?>
         </div>
         <?php endif; ?>
