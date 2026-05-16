@@ -48,17 +48,26 @@ if ($row['status'] == 'menunggu verifikasi') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Tugas - LaporFasum</title>
+    <title>Detail Tugas – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
 </head>
 <body>
 
-    <div class="container admin-detail-container">
-        
-        <div class="header-admin">
-            <h1 style="margin-bottom: 0;">Tugas #<?= $row['id_laporan'] ?></h1>
-            <span class="badge <?= $badge_class ?>">Status: <?= $teks_status ?></span>
-        </div>
+    <nav class="site-navbar">
+        <a href="petugas.php" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <nav>
+            <a href="petugas.php">&#128203; Dashboard</a>
+            <a href="pengaturan_akun.php">&#9881; Akun</a>
+            <a href="logout.php" class="btn-logout">Keluar</a>
+        </nav>
+    </nav>
+
+    <div class="page-header">
+        <h1>&#128203; Tugas #<?= $row['id_laporan'] ?></h1>
+        <p>Tinjau detail dan kirim bukti penyelesaian pekerjaan.</p>
+    </div>
+
+    <div class="page-body-narrow">
 
         <?php if (!empty($row['pesan_admin'])): ?>
             <div class="action-box" style="border-color: #e74c3c; background-color: #fff5f5; border-style: solid;">
@@ -118,9 +127,12 @@ if ($row['status'] == 'menunggu verifikasi') {
                 </form>
             </div>
         <?php endif; ?>
-        <div style="margin-top: 20px;">
-            <a href="petugas.php" class="btn-kembali">← Kembali ke Dashboard</a>
+        <div style="margin-top:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <span class="badge <?= $badge_class ?>">Status: <?= $teks_status ?></span>
+            <a href="petugas.php" class="btn-kembali" style="margin-top:0;">← Kembali ke Dashboard</a>
         </div>
     </div>
+
+    <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
 </body>
 </html>
