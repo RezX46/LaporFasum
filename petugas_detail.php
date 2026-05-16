@@ -50,6 +50,65 @@ if ($row['status'] == 'menunggu verifikasi') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Tugas – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
+    <style>
+        .info-grid-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 20px;
+        }
+        .info-grid-detail .full-width { grid-column: 1 / -1; }
+        .info-row {
+            background: var(--blue-pale);
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+        .info-row strong {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--blue-dark);
+            margin-bottom: 3px;
+        }
+        .info-row span { font-size: 0.92rem; color: var(--gray-text); }
+        .compact-detail-box {
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid #dbeafe;
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow-sm);
+        }
+        .compact-action-box {
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 2px dashed var(--blue-mid);
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow-sm);
+        }
+        .compact-action-box h2 { margin: 0 0 12px; font-size: 1rem; }
+        .compact-action-box textarea { min-height: 70px; }
+        .foto-compact { max-width: 100%; height: auto; border-radius: 8px; margin-top: 8px; border: 2px solid #dbeafe; }
+        .foto-section { margin-top: 10px; }
+        .foto-section strong { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--blue-dark); display: block; margin-bottom: 4px; }
+        .catatan-admin-box {
+            background: #fff5f5;
+            border: 1.5px solid #e74c3c;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+        }
+        .catatan-admin-box h3 { color: #e74c3c; margin: 0 0 6px; font-size: 0.92rem; }
+        .catatan-admin-box p { color: #333; font-weight: 600; font-style: italic; margin: 0; font-size: 0.92rem; }
+        .page-body-narrow { padding: 24px 40px; }
+        @media (max-width: 600px) {
+            .info-grid-detail { grid-template-columns: 1fr; }
+            .info-grid-detail .full-width { grid-column: 1; }
+            .page-body-narrow { padding: 16px; }
+        }
+    </style>
 </head>
 <body>
 
@@ -62,75 +121,83 @@ if ($row['status'] == 'menunggu verifikasi') {
         </nav>
     </nav>
 
-    <div class="page-header">
-        <h1>&#128203; Tugas #<?= $row['id_laporan'] ?></h1>
+    <div class="page-header" style="padding:20px 40px;">
+        <h1 style="font-size:1.4rem;">&#128203; Tugas #<?= $row['id_laporan'] ?></h1>
         <p>Tinjau detail dan kirim bukti penyelesaian pekerjaan.</p>
     </div>
 
     <div class="page-body-narrow">
 
+        <!-- CATATAN ADMIN -->
         <?php if (!empty($row['pesan_admin'])): ?>
-            <div class="action-box" style="border-color: #e74c3c; background-color: #fff5f5; border-style: solid;">
-                <h3 style="color: #e74c3c; margin-top: 0;">Catatan Admin:</h3>
-                <p style="color: #333; font-weight: bold; font-style: italic; margin-top: 10px;">
-                    "<?= $row['pesan_admin'] ?>"
-                </p>
-            </div>
+        <div class="catatan-admin-box">
+            <h3>&#9888; Catatan Admin:</h3>
+            <p>"<?= $row['pesan_admin'] ?>"</p>
+        </div>
         <?php endif; ?>
 
-        <div class="detail-box">
-            <div class="detail-item">
-                <strong>Tanggal Laporan:</strong>
-                <?= date('d M Y, H:i', strtotime($row['tanggal_lapor'])) ?> WITA
-            </div>
-            <div class="detail-item">
-                <strong>Kategori:</strong>
-                <?= $row['nama_kategori'] ?>
-            </div>
-            <div class="detail-item">
-                <strong>Keluhan Warga:</strong>
-                <?= $row['keluhan'] ?>
-            </div>
-            <div class="detail-item">
-                <strong>Lokasi:</strong>
-                <?= !empty($row['alamat_manual']) ? $row['alamat_manual'] : 'Lihat di Peta (GPS)' ?>
-                <br>
-                <?php if(!empty($row['latitude']) && !empty($row['longitude'])): ?>
-                    <a href="https://www.google.com/maps?q=<?= $row['latitude'] ?>,<?= $row['longitude'] ?>" target="_blank" class="btn-map"> Buka Lokasi di Maps</a>
-                <?php endif; ?>
+        <!-- INFO LAPORAN -->
+        <div class="compact-detail-box">
+            <div class="info-grid-detail">
+                <div class="info-row">
+                    <strong>Tanggal Laporan</strong>
+                    <span><?= date('d M Y, H:i', strtotime($row['tanggal_lapor'])) ?> WITA</span>
+                </div>
+                <div class="info-row">
+                    <strong>Kategori</strong>
+                    <span><?= $row['nama_kategori'] ?></span>
+                </div>
+                <div class="info-row full-width">
+                    <strong>Keluhan Warga</strong>
+                    <span><?= $row['keluhan'] ?></span>
+                </div>
+                <div class="info-row full-width">
+                    <strong>Lokasi</strong>
+                    <span>
+                        <?= !empty($row['alamat_manual']) ? $row['alamat_manual'] : 'Lihat di Peta (GPS)' ?>
+                        <?php if(!empty($row['latitude']) && !empty($row['longitude'])): ?>
+                            <a href="https://www.google.com/maps?q=<?= $row['latitude'] ?>,<?= $row['longitude'] ?>" target="_blank" class="btn-map" style="margin-top:5px;padding:4px 10px;font-size:0.8rem;display:inline-block;"> Buka Lokasi di Maps</a>
+                        <?php endif; ?>
+                    </span>
+                </div>
             </div>
 
-            <div class="foto-grid">
+            <!-- FOTO GRID — posisi tetap sama -->
+            <div class="foto-grid" style="margin-top:14px;">
                 <div class="foto-box">
                     <span>🔴 Kondisi Kerusakan</span>
                     <img src="uploads/<?= $row['foto'] ?>" class="foto-laporan">
                 </div>
                 <?php if (!empty($row['foto_bukti'])): ?>
-                <div class="foto-box" style="border-color: #2ecc71; background-color: #f0fdf4;">
-                    <span style="color: #27ae60;">🟢 Hasil Perbaikan Anda</span>
+                <div class="foto-box" style="border-color:#2ecc71;background:#f0fdf4;">
+                    <span style="color:#27ae60;">🟢 Hasil Perbaikan Anda</span>
                     <img src="uploads/<?= $row['foto_bukti'] ?>" class="foto-laporan">
                 </div>
                 <?php endif; ?>
             </div>
         </div>
 
+        <!-- ACTION: KIRIM BUKTI -->
         <?php if ($row['status'] == 'diproses'): ?>
-            <div class="action-box">
-                <h2 style="margin-top: 0; color: #2ecc71;">Kirim Laporan Selesai</h2>
-                <form action="proses_selesai.php" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
-                    <div class="form-group">
-                        <label>Unggah Foto Bukti Perbaikan (Maks 10 MB):</label>
-                        <input type="file" name="foto_bukti" accept="image/*" required>
-                    </div>
-                    <button type="submit" class="btn-terima"> Kirim Bukti ke Admin</button>
-                </form>
-            </div>
+        <div class="compact-action-box">
+            <h2 style="color:#27ae60;">Kirim Laporan Selesai</h2>
+            <form action="proses_selesai.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
+                <div class="form-group" style="margin-bottom:10px;">
+                    <label style="font-size:0.88rem;">Unggah Foto Bukti Perbaikan (Maks 10 MB):</label>
+                    <input type="file" name="foto_bukti" accept="image/*" required>
+                </div>
+                <button type="submit" class="btn-terima"> Kirim Bukti ke Admin</button>
+            </form>
+        </div>
         <?php endif; ?>
-        <div style="margin-top:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+
+        <!-- STATUS + KEMBALI -->
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px;">
             <span class="badge <?= $badge_class ?>">Status: <?= $teks_status ?></span>
             <a href="petugas.php" class="btn-kembali" style="margin-top:0;">← Kembali ke Dashboard</a>
         </div>
+
     </div>
 
     <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
