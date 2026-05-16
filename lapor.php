@@ -6,115 +6,81 @@ require 'koneksi.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulir Laporan Fasilitas</title>
+    <title>Formulir Laporan – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
-    <style>
-        #map {
-            height: 300px;
-            width: 100%;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            z-index: 1;
-        }
-        .koordinat-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .koordinat-box input {
-            background-color: #e9ecef;
-            cursor: not-allowed;
-            width: 50%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        select, textarea, input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-family: inherit;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-        }
-        .btn-gps {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 10px;
-            width: 100%;
-            font-weight: bold;
-        }
-        .btn-gps:hover {
-            background-color: #218838;
-        }
-    </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Formulir Laporan Baru</h1>
-        <p style="margin-bottom: 20px; font-size: 0.9em;">Laporan Anda bersifat anonim. Silakan isi data di bawah ini.</p>
-        
-        <form action="proses_lapor.php" method="POST" enctype="multipart/form-data" onsubmit="return validasiForm()">
-        
-            <div class="form-group">
-                <label for="foto">1. Unggah Foto Kerusakan (Maksimal 5 MB):</label>
-                <input type="file" id="foto" name="foto" accept="image/*" required>
-            </div>
+    <!-- NAVBAR -->
+    <nav class="site-navbar">
+        <a href="index.html" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <nav>
+            <a href="lapor.php" class="active">Buat Laporan</a>
+            <a href="cek_status.php">Cek Status</a>
+            <a href="login.html">Login Petugas</a>
+        </nav>
+    </nav>
 
-            <div class="form-group">
-                <label for="keluhan">2. Deskripsi Keluhan:</label>
-                <textarea id="keluhan" name="keluhan" rows="3" placeholder="Contoh: Ada lubang besar yang membahayakan..." required></textarea>
-            </div>
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h1>&#128204; Formulir Laporan Baru</h1>
+        <p>Laporan Anda bersifat anonim. Isi data di bawah ini dengan lengkap dan benar.</p>
+    </div>
 
-            <div class="form-group">
-                <label for="kategori">3. Jenis Fasilitas yang Bermasalah:</label>
-                <select id="kategori" name="id_kategori" required>
-                    <option value="" disabled selected>-- Pilih Jenis Fasilitas --</option>
-                    <?php
-                    // Mengambil data kategori dari database
-                    $query_kategori = mysqli_query($koneksi, "SELECT * FROM kategori ORDER BY nama_kategori ASC");
-                    while($data = mysqli_fetch_assoc($query_kategori)){
-                        echo "<option value='{$data['id_kategori']}'>{$data['nama_kategori']}</option>";
-                    }
-                    ?>
-                </select>
-            </div>
+    <!-- CONTENT -->
+    <div class="page-body-narrow">
+        <div class="card">
+            <form action="proses_lapor.php" method="POST" enctype="multipart/form-data" onsubmit="return validasiForm()">
 
-            <div class="form-group">
-                <label>4. Titik Lokasi :</label>
-                <p style="font-size: 0.8em; color: #666; margin-bottom: 5px;">*Klik tombol GPS di bawah atau tandai manual pada peta.</p>
-                
-                <button type="button" class="btn-gps" onclick="getLocation()"> Gunakan Lokasi Saya Saat Ini </button>
-
-                <div id="map"></div>
-                
-                <div class="koordinat-box">
-                    <input type="text" id="latitude" name="latitude" placeholder="Latitude" readonly required>
-                    <input type="text" id="longitude" name="longitude" placeholder="Longitude" readonly required>
+                <div class="form-group">
+                    <label for="foto">1. Unggah Foto Kerusakan <small style="font-weight:400;color:#78909c;">(Maks. 5 MB)</small></label>
+                    <input type="file" id="foto" name="foto" accept="image/*" required>
                 </div>
 
-                <label for="alamat_manual" style="margin-top: 10px; display: block;">5. Lokasi / Alamat (Opsional):</label>
-                <textarea id="alamat_manual" name="alamat_manual" rows="2" placeholder="Contoh: Jalan Serayu V/08...."></textarea>
-            </div>
+                <div class="form-group">
+                    <label for="keluhan">2. Deskripsi Keluhan</label>
+                    <textarea id="keluhan" name="keluhan" rows="3" placeholder="Contoh: Ada lubang besar di tengah jalan yang membahayakan..." required></textarea>
+                </div>
 
-            <button type="submit" class="btn">Kirim Laporan</button>
-        </form>
+                <div class="form-group">
+                    <label for="kategori">3. Jenis Fasilitas yang Bermasalah</label>
+                    <select id="kategori" name="id_kategori" required>
+                        <option value="" disabled selected>-- Pilih Jenis Fasilitas --</option>
+                        <?php
+                        $query_kategori = mysqli_query($koneksi, "SELECT * FROM kategori ORDER BY nama_kategori ASC");
+                        while($data = mysqli_fetch_assoc($query_kategori)){
+                            echo "<option value='{$data['id_kategori']}'>{$data['nama_kategori']}</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>4. Titik Lokasi</label>
+                    <p style="font-size:0.82rem;color:#78909c;margin-bottom:10px;">*Klik tombol GPS atau tandai manual pada peta.</p>
+                    <button type="button" class="btn-gps" onclick="getLocation()">&#128204; Gunakan Lokasi Saya Saat Ini</button>
+                    <div id="map"></div>
+                    <div class="koordinat-box">
+                        <input type="text" id="latitude" name="latitude" placeholder="Latitude" readonly required>
+                        <input type="text" id="longitude" name="longitude" placeholder="Longitude" readonly required>
+                    </div>
+
+                    <label for="alamat_manual" style="margin-top:10px;">5. Lokasi / Alamat <small style="font-weight:400;color:#78909c;">(Opsional)</small></label>
+                    <textarea id="alamat_manual" name="alamat_manual" rows="2" placeholder="Contoh: Jalan Serayu V/08...."></textarea>
+                </div>
+
+                <button type="submit" class="btn">&#128228; Kirim Laporan</button>
+            </form>
+        </div>
 
         <a href="index.html" class="back-link">← Kembali ke Halaman Utama</a>
     </div>
 
+    <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // mataram
         var map = L.map('map').setView([-8.5877, 116.0965], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
@@ -122,18 +88,13 @@ require 'koneksi.php';
 
         var marker;
 
-        // Fungsi klik pada peta
         map.on('click', function(e) {
             setMarker(e.latlng.lat, e.latlng.lng);
         });
 
-        // Fungsi Fitur GPS
         function getLocation() {
             if (navigator.geolocation) {
-                // Meminta akses lokasi
-                navigator.geolocation.getCurrentPosition(showPosition, showError, {
-                    enableHighAccuracy: true
-                });
+                navigator.geolocation.getCurrentPosition(showPosition, showError, { enableHighAccuracy: true });
             } else {
                 alert("GPS tidak didukung oleh browser Anda.");
             }
@@ -143,7 +104,6 @@ require 'koneksi.php';
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
             setMarker(lat, lng);
-            // Menggeser peta ke lokasi pengguna
             map.setView([lat, lng], 16);
         }
 
@@ -178,22 +138,18 @@ require 'koneksi.php';
 
             if (fotoInput.files.length > 0) {
                 var ukuranFile = fotoInput.files[0].size;
-                var batasUkuran = 5 * 1024 * 1024; 
-
+                var batasUkuran = 5 * 1024 * 1024;
                 if (ukuranFile > batasUkuran) {
                     alert("Gagal! Ukuran foto terlalu besar. Pastikan ukuran foto maksimal 5 MB.");
-                    // Kosongkan input file agar user harus memilih ulang
-                    fotoInput.value = ""; 
-                    return false; // Hentikan pengiriman form
+                    fotoInput.value = "";
+                    return false;
                 }
             }
-
             if (lat === "" || lng === "") {
                 alert("Gagal! Anda belum menentukan titik lokasi.");
-                return false; 
+                return false;
             }
-
-            return true; 
+            return true;
         }
     </script>
 </body>
