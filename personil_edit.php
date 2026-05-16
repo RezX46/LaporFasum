@@ -23,15 +23,26 @@ if (!$user || ($id_instansi_admin != 1 && $user['id_instansi'] != $id_instansi_a
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Personil - LaporFasum</title>
+    <title>Edit Personil – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
 </head>
 <body>
-    <div class="container admin-detail-container" style="max-width: 600px;">
-        <div class="header-admin">
-            <h1 style="margin: 0;">Edit Data Personil</h1>
-            <a href="personil_detail.php?id=<?= $id_target ?>" class="btn-detail" style="background-color: #95a5a6;">Batal</a>
-        </div>
+    <nav class="site-navbar">
+        <a href="admin.php" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <nav>
+            <a href="admin.php">&#128203; Dashboard</a>
+            <a href="personil.php">&#128101; Personil</a>
+            <a href="logout.php" class="btn-logout">Keluar</a>
+        </nav>
+    </nav>
+
+    <div class="page-header">
+        <h1>&#9998; Edit Data Personil</h1>
+        <p>Ubah informasi akun personil: <strong><?= htmlspecialchars($user['nama_lengkap']) ?></strong></p>
+    </div>
+
+    <div class="page-body-narrow">
+    <div class="card">
 
         <div class="form-section" style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #eee;">
             <form action="proses_personil.php?aksi=update_manual&id=<?= $id_target ?>" method="POST">
@@ -56,9 +67,9 @@ if (!$user || ($id_instansi_admin != 1 && $user['id_instansi'] != $id_instansi_a
             </form>
         </div>
         
-        <p style="font-size: 0.8em; color: #7f8c8d; margin-top: 15px; text-align: center;">
-
-        </p>
     </div>
+    </div>
+
+    <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
 </body>
 </html>

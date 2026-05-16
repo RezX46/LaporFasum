@@ -30,31 +30,30 @@ $jumlah_notif = mysqli_num_rows($q_notif);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Petugas - LaporFasum</title>
+    <title>Dashboard Petugas – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
 </head>
 <body>
 
-    <div class="container admin-container">
-        
-        <div class="header-petugas">
-            <div style="text-align: left;">
-                <h1 style="margin-bottom: 5px; font-size: 1.5em;">Dashboard Petugas</h1>
-                <p style="margin: 0; font-size: 0.9em;">Selamat datang, <strong><?= $_SESSION['nama_lengkap'] ?></strong></p>
-            </div>
-            
-            <div style="display: flex; align-items: center;">
-                <button class="btn-notif" onclick="bukaNotif()">
-                     Notifikasi (<?= $jumlah_notif ?>)
-                </button>
-                <a href="pengaturan_akun.php" class="btn-detail" style="background-color: #3498db;">Pengaturan Akun</a>
-                <a href="logout.php" class="btn-logout">Keluar</a>
-            </div>
-        </div>
+    <nav class="site-navbar">
+        <a href="petugas.php" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <nav>
+            <button class="btn-notif" onclick="bukaNotif()">&#128276; Notifikasi (<?= $jumlah_notif ?>)</button>
+            <a href="pengaturan_akun.php">&#9881; Pengaturan Akun</a>
+            <a href="logout.php" class="btn-logout">Keluar</a>
+        </nav>
+    </nav>
 
-        <h2 style="text-align: center; margin-bottom: 20px;">Daftar Tugas Lapangan</h2>
+    <div class="page-header">
+        <h1>&#128203; Dashboard Petugas</h1>
+        <p>Selamat datang, <strong><?= $_SESSION['nama_lengkap'] ?></strong></p>
+    </div>
 
-        <div style="overflow-x: auto;">
+    <div class="page-body" style="max-width:1100px;">
+        <div class="card">
+            <div class="card-title">Daftar Tugas Lapangan</div>
+
+            <div style="overflow-x:auto;">
             <table>
                 <thead>
                     <tr>
@@ -68,7 +67,7 @@ $jumlah_notif = mysqli_num_rows($q_notif);
                 <tbody>
                     <?php 
                     if(mysqli_num_rows($result) == 0){
-                        echo "<tr><td colspan='5' style='text-align:center;'>Belum ada tugas untuk Anda.</td></tr>";
+                        echo "<tr><td colspan='5' style='text-align:center;padding:30px;color:#78909c;'>Belum ada tugas untuk Anda.</td></tr>";
                     }
                     while($row = mysqli_fetch_assoc($result)) { 
                         $badge_class = 'badge-kuning'; 
@@ -81,16 +80,16 @@ $jumlah_notif = mysqli_num_rows($q_notif);
                         <td><?= date('d M Y', strtotime($row['tanggal_lapor'])) ?></td>
                         <td><?= $row['nama_kategori'] ?></td>
                         <td><span class="badge <?= $badge_class ?>"><?= ucfirst($row['status']) ?></span></td>
-                        <td>
-                            <a href="petugas_detail.php?id=<?= $row['id_laporan'] ?>" class="btn-detail">Lihat Detail </a>
-                        </td>
+                        <td><a href="petugas_detail.php?id=<?= $row['id_laporan'] ?>" class="btn-detail">Lihat Detail</a></td>
                     </tr>
                     <?php } ?>
                 </tbody>
             </table>
+            </div>
         </div>
-
     </div>
+
+    <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
 
     <div id="notifModal" class="modal">
         <div class="modal-content">

@@ -33,18 +33,28 @@ $result = mysqli_query($koneksi, $query);
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title><?= $judul_halaman ?> - LaporFasum</title>
+    <title><?= $judul_halaman ?> – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
 </head>
 <body>
-    <div class="container admin-container">
-        <div class="header-admin">
-            <h1 style="margin: 0; font-size: 1.5em;"><?= $judul_halaman ?></h1>
-            <div style="display: flex; gap: 10px;">
-                <a href="personil_tambah.php" class="btn-terima" style="margin: 0; width: auto; padding: 8px 15px;">+ Tambah Personil</a>
-                <a href="admin.php" class="btn-detail" style="background-color: #95a5a6; margin: 0; width: auto; padding: 8px 15px;">Kembali</a>
-            </div>
-        </div>
+    <nav class="site-navbar">
+        <a href="admin.php" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <nav>
+            <a href="admin.php">&#128203; Dashboard</a>
+            <a href="personil_tambah.php">+ Tambah Personil</a>
+            <a href="logout.php" class="btn-logout">Keluar</a>
+        </nav>
+    </nav>
+
+    <div class="page-header">
+        <h1>&#128101; <?= $judul_halaman ?></h1>
+        <p>Kelola data akun admin dan petugas di sistem LaporFasum.</p>
+    </div>
+
+    <div class="page-body" style="max-width:1100px;">
+    <div class="card">
+        <div class="card-title"><?= $judul_halaman ?></div>
+        <div style="overflow-x:auto;">
 
         <table>
             <thead>
@@ -92,6 +102,11 @@ $result = mysqli_query($koneksi, $query);
                 <?php endwhile; ?>
             </tbody>
         </table>
+        </div>
+        </div>
+        </div>
     </div>
+
+    <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
 </body>
 </html>

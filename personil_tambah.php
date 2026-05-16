@@ -19,15 +19,26 @@ $query_semua_instansi = mysqli_query($koneksi, "SELECT * FROM instansi WHERE id_
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Tambah Petugas - LaporFasum</title>
+    <title>Tambah Petugas – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
 </head>
 <body>
-    <div class="container admin-detail-container" style="max-width: 600px;">
-        <div class="header-admin">
-            <h1 style="margin: 0;">Tambah Petugas Lapangan</h1>
-            <a href="personil.php" class="btn-detail" style="background-color: #95a5a6;">Batal</a>
-        </div>
+    <nav class="site-navbar">
+        <a href="admin.php" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <nav>
+            <a href="admin.php">&#128203; Dashboard</a>
+            <a href="personil.php">&#128101; Personil</a>
+            <a href="logout.php" class="btn-logout">Keluar</a>
+        </nav>
+    </nav>
+
+    <div class="page-header">
+        <h1>&#128101; Tambah Petugas Lapangan</h1>
+        <p>Daftarkan akun petugas baru ke dalam sistem.</p>
+    </div>
+
+    <div class="page-body-narrow">
+    <div class="card">
 
         <div class="form-section" style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #eee;">
             
@@ -80,5 +91,8 @@ $query_semua_instansi = mysqli_query($koneksi, "SELECT * FROM instansi WHERE id_
             </form>
         </div>
     </div>
+    </div>
+
+    <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
 </body>
 </html>

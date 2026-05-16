@@ -15,15 +15,24 @@ $user = mysqli_fetch_assoc($query);
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Pengaturan Akun - LaporFasum</title>
+    <title>Pengaturan Akun – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
 </head>
 <body>
-    <div class="container admin-detail-container" style="max-width: 800px;">
-        <div class="header-admin">
-            <h1 style="margin: 0;">Pengaturan Akun</h1>
-            <a href="<?= ($_SESSION['role'] == 'admin') ? 'admin.php' : 'petugas.php' ?>" class="btn-detail" style="background-color: #95a5a6; padding: 8px 15px;">Kembali</a>
-        </div>
+    <nav class="site-navbar">
+        <a href="<?= ($_SESSION['role'] == 'admin') ? 'admin.php' : 'petugas.php' ?>" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <nav>
+            <a href="<?= ($_SESSION['role'] == 'admin') ? 'admin.php' : 'petugas.php' ?>">&#128203; Dashboard</a>
+            <a href="logout.php" class="btn-logout">Keluar</a>
+        </nav>
+    </nav>
+
+    <div class="page-header">
+        <h1>&#9881; Pengaturan Akun</h1>
+        <p>Kelola informasi profil dan keamanan akun Anda.</p>
+    </div>
+
+    <div class="page-body-narrow">
 
         <div class="form-section">
             <h3 class="section-title">Foto Profil</h3>
@@ -88,5 +97,7 @@ $user = mysqli_fetch_assoc($query);
             </form>
         </div>
     </div>
+
+    <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
 </body>
 </html>

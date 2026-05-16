@@ -34,43 +34,66 @@ if (isset($_GET['kode'])) {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Cek Status Laporan - LaporFasum</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Status Laporan – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
 </head>
 <body>
-    <div class="container" style="max-width: 700px;">
-        <h1>Cek Status Laporan</h1>
-        
-        <form action="" method="GET" style="margin-bottom: 30px;">
-            <input type="text" name="kode" placeholder="Masukkan Kode Lacak (Contoh: LP-XXXXXX)" required value="<?= isset($_GET['kode']) ? $_GET['kode'] : '' ?>">
-            <button type="submit" class="btn">Cari Laporan</button>
-        </form>
+
+    <!-- NAVBAR -->
+    <nav class="site-navbar">
+        <a href="index.html" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <nav>
+            <a href="lapor.php">Buat Laporan</a>
+            <a href="cek_status.php" class="active">Cek Status</a>
+            <a href="login.html">Login Petugas</a>
+        </nav>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h1>&#128269; Cek Status Laporan</h1>
+        <p>Masukkan kode lacak yang Anda terima setelah membuat laporan.</p>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="page-body-narrow">
+
+        <!-- FORM CEK -->
+        <div class="card">
+            <form action="" method="GET" style="display:flex;gap:12px;flex-wrap:wrap;">
+                <input type="text" name="kode" placeholder="Masukkan Kode Lacak (Contoh: LP-XXXXXX)" required
+                       value="<?= isset($_GET['kode']) ? htmlspecialchars($_GET['kode']) : '' ?>"
+                       style="flex:1;min-width:200px;margin-bottom:0;">
+                <button type="submit" class="btn" style="width:auto;margin-top:0;padding:11px 28px;">&#128269; Cari</button>
+            </form>
+        </div>
 
         <?php if ($error): ?>
-            <p style="color: #e74c3c; font-weight: bold; background: #fee; padding: 10px; border-radius: 5px;"><?= $error ?></p>
+            <div style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:14px 18px;border-radius:10px;font-weight:600;margin-bottom:20px;">
+                &#9888; <?= $error ?>
+            </div>
         <?php endif; ?>
 
         <?php if ($data_laporan): ?>
             <div class="detail-box">
-                <div class="header-admin" style="border: none; padding: 0; margin-bottom: 15px;">
-                    <h2 style="margin: 0;">Laporan #<?= $data_laporan['kode_lacak'] ?></h2>
+                <div class="header-admin" style="border:none;padding:0;margin-bottom:16px;">
+                    <h2 style="margin:0;color:#0d47a1;">Laporan #<?= $data_laporan['kode_lacak'] ?></h2>
                     <span class="badge <?= $badge_class ?>"><?= $tampilan_status ?></span>
                 </div>
-                <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+                <hr style="margin:0 0 18px;border:0;border-top:1px solid #dbeafe;">
                 
                 <div class="detail-item"><strong>Instansi Penanggung Jawab:</strong> <?= $data_laporan['nama_instansi'] ?></div>
                 <div class="detail-item"><strong>Kategori:</strong> <?= $data_laporan['nama_kategori'] ?></div>
                 <div class="detail-item"><strong>Keluhan Anda:</strong> <?= $data_laporan['keluhan'] ?></div>
                 
                 <div class="detail-item">
-                    <strong>Lokasi / Alamat:</strong><br>
+                    <strong>Lokasi / Alamat:</strong>
                     <?= !empty($data_laporan['alamat_manual']) ? $data_laporan['alamat_manual'] : 'Lokasi berdasarkan titik GPS' ?>
-                    
                     <?php if(!empty($data_laporan['latitude']) && !empty($data_laporan['longitude'])): ?>
                         <a href="https://www.google.com/maps?q=<?= $data_laporan['latitude'] ?>,<?= $data_laporan['longitude'] ?>" target="_blank" class="btn-map"> Buka Lokasi di Google Maps</a>
                     <?php endif; ?>
@@ -82,8 +105,8 @@ if (isset($_GET['kode'])) {
                         <img src="uploads/<?= $data_laporan['foto'] ?>" class="foto-laporan">
                     </div>
                     <?php if ($status_asli == 'selesai' && !empty($data_laporan['foto_bukti'])): ?>
-                    <div class="foto-box" style="border-color: #2ecc71;">
-                        <span style="color: #27ae60;">Hasil Perbaikan</span>
+                    <div class="foto-box" style="border-color:#2ecc71;">
+                        <span style="color:#16a34a;">Hasil Perbaikan</span>
                         <img src="uploads/<?= $data_laporan['foto_bukti'] ?>" class="foto-laporan">
                     </div>
                     <?php endif; ?>
@@ -93,5 +116,7 @@ if (isset($_GET['kode'])) {
 
         <a href="index.html" class="back-link">← Kembali ke Halaman Utama</a>
     </div>
+
+    <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
 </body>
 </html>
