@@ -65,15 +65,30 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Laporan - LaporFasum</title>
+    <title>Detail Laporan – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
 </head>
 <body>
 
-    <div class="container admin-detail-container">
-        
-        <div class="header-admin">
-            <h1 style="margin-bottom: 0;">Detail Laporan #<?= $row['id_laporan'] ?></h1>
+    <nav class="site-navbar">
+        <a href="admin.php" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <nav>
+            <a href="admin.php">&#128203; Dashboard</a>
+            <a href="personil.php">&#128101; Personil</a>
+            <a href="pengaturan_akun.php">&#9881; Akun</a>
+            <a href="logout.php" class="btn-logout">Keluar</a>
+        </nav>
+    </nav>
+
+    <div class="page-header">
+        <h1>&#128203; Detail Laporan #<?= $row['id_laporan'] ?></h1>
+        <p>Tinjau dan ambil tindakan atas laporan ini.</p>
+    </div>
+
+    <div class="page-body-narrow">
+
+        <div class="detail-box" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+            <h2 style="margin:0;color:#0d47a1;">Status Laporan</h2>
             <span class="badge <?= $badge_class ?>">Status: <?= ucfirst($row['status']) ?></span>
         </div>
 
@@ -262,10 +277,12 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
             </table>
         </div>
 
-        <div style="margin-top: 20px;">
-            <a href="admin.php" class="btn-kembali" style="margin-top: 0;">← Kembali ke Dashboard</a>
+        <div style="margin-top:20px;">
+            <a href="admin.php" class="btn-kembali" style="margin-top:0;">← Kembali ke Dashboard</a>
         </div>
 
     </div>
+
+    <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
 </body>
 </html>
