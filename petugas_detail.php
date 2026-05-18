@@ -102,6 +102,18 @@ if ($row['status'] == 'menunggu verifikasi') {
         }
         .catatan-admin-box h3 { color: #e74c3c; margin: 0 0 6px; font-size: 0.92rem; }
         .catatan-admin-box p { color: #333; font-weight: 600; font-style: italic; margin: 0; font-size: 0.92rem; }
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--white);
+            border: 1px solid #dbeafe;
+            border-radius: 10px;
+            padding: 12px 18px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow-sm);
+        }
+        .status-bar h2 { margin: 0; font-size: 1rem; color: #0d47a1; }
         .page-body-narrow { padding: 24px 40px; }
         @media (max-width: 600px) {
             .info-grid-detail { grid-template-columns: 1fr; }
