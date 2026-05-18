@@ -174,5 +174,10 @@ $result = mysqli_query($koneksi, $query);
     sortSelect.addEventListener('change', applyAll);
 })();
 </script>
+    <?php if (isset($_SESSION['popup_notif'])): ?>
+    <script>
+        alert("<?= $_SESSION['popup_notif'] ?>");
+    </script>
+    <?php unset($_SESSION['popup_notif']); endif; ?>
 </body>
 </html>

@@ -199,6 +199,12 @@ $jumlah_notif = mysqli_num_rows($q_notif);
         </div>
     </div>
     <script src="assets/js/notif.js?v=<?= time(); ?>"></script>
+    
+    <?php if (isset($_SESSION['popup_notif'])): ?>
+    <script>
+        alert("<?= $_SESSION['popup_notif'] ?>");
+    </script>
+    <?php unset($_SESSION['popup_notif']); endif; ?>
 </body>
 
 </html>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'koneksi.php';
-
+require 'helper_notif.php';
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') { 
     die("Akses Ditolak!"); 
 }
@@ -49,11 +49,15 @@ if ($aksi == 'setujui') {
     $user_baru = mysqli_real_escape_string($koneksi, $data['pending_username']);
 
     $query = "UPDATE users SET nama_lengkap = '$nama_baru', username = '$user_baru', pending_nama = NULL, pending_username = NULL WHERE id_user = $id_target";
-    if (mysqli_query($koneksi, $query)) { echo "<script>alert('Perubahan profil telah disetujui!'); window.location.href='personil_detail.php?id=$id_target';</script>"; }
+    if (mysqli_query($koneksi, $query)){
+        kirim_notif($koneksi, $id_target, null, "Perubahan Disetujui", "Pengajuan perubahan nama/username Anda telah disetujui.", "akun_disetujui");
+        echo "<script>alert('Perubahan profil telah disetujui!'); window.location.href='personil_detail.php?id=$id_target';</script>"; }
 
 } elseif ($aksi == 'tolak') {
     $query = "UPDATE users SET pending_nama = NULL, pending_username = NULL WHERE id_user = $id_target";
-    if (mysqli_query($koneksi, $query)) { echo "<script>alert('Perubahan profil berhasil ditolak.'); window.location.href='personil_detail.php?id=$id_target';</script>"; }
+    if (mysqli_query($koneksi, $query)) { 
+        kirim_notif($koneksi, $id_target, null, "Perubahan Ditolak", "Pengajuan perubahan profil Anda ditolak oleh Admin.", "akun_ditolak");
+        echo "<script>alert('Perubahan profil berhasil ditolak.'); window.location.href='personil_detail.php?id=$id_target';</script>"; }
 
 } elseif ($aksi == 'status') {
     $status_baru = $_GET['status'] == 'aktif' ? 'aktif' : 'nonaktif';

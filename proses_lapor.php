@@ -1,5 +1,6 @@
 <?php
 require 'koneksi.php';
+require 'helper_notif.php';
 require 'helper_gambar.php'; // untuk kecilkan ukuruan file
 
 $keluhan       = mysqli_real_escape_string($koneksi, $_POST['keluhan']);
@@ -44,6 +45,11 @@ if ($upload_sukses) {
     $query = "INSERT INTO laporan (kode_lacak, foto, keluhan, id_kategori, metode_lokasi, latitude, longitude, alamat_manual) 
               VALUES ('$kode_lacak', '$nama_foto_baru', '$keluhan', $id_kategori, '$metode_lokasi', '$latitude', '$longitude', $alamat_manual)";
     
+              $id_laporan_baru = mysqli_insert_id($koneksi);
+              $q_instansi = mysqli_query($koneksi, "SELECT id_instansi, nama_kategori FROM kategori WHERE id_kategori = $id_kategori");
+              $dt_inst = mysqli_fetch_assoc($q_instansi);
+              kirim_notif_ke_admin_instansi($koneksi, $dt_inst['id_instansi'], $id_laporan_baru, "Laporan Baru Masuk", "Laporan #$id_laporan_baru kategori ".$dt_inst['nama_kategori']." menunggu tindak lanjut Anda.", "laporan_baru");
+
     $simpan = mysqli_query($koneksi, $query);
     if ($simpan) {
         echo "<script>

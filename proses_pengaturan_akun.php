@@ -1,6 +1,7 @@
 <?php
 session_start();
 require 'koneksi.php';
+require 'helper_notif.php';
 
 if (!isset($_SESSION['id_user'])) { 
     die("Akses Ilegal!"); 
@@ -50,7 +51,10 @@ if ($aksi == 'update_foto') {
 } elseif ($aksi == 'ajukan_perubahan') {
     $nama = mysqli_real_escape_string($koneksi, trim($_POST['nama_lengkap']));
     $user_baru = mysqli_real_escape_string($koneksi, trim($_POST['username']));
-
+    
+    $id_inst_user = $_SESSION['id_instansi'];
+    kirim_notif_ke_admin_instansi($koneksi, $id_inst_user, 'NULL', "Pengajuan Perubahan Akun", "Petugas (ID: $id_user) mengajukan perubahan data diri.", "akun_pengajuan");
+    
     mysqli_query($koneksi, "UPDATE users SET pending_nama = '$nama', pending_username = '$user_baru' WHERE id_user = $id_user");
     echo "<script>alert('Permintaan perubahan data telah dikirim ke Admin dan menunggu persetujuan.'); window.location.href='pengaturan_akun.php';</script>";
 

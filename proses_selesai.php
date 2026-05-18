@@ -1,5 +1,6 @@
 <?php
 session_start();
+require 'helper_notif.php';
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'petugas') {
     echo "<script>alert('Akses Ditolak!'); window.location.href = 'login.html';</script>";
@@ -49,6 +50,9 @@ if (isset($_POST['id_laporan']) && isset($_FILES['foto_bukti'])) {
                         VALUES ('$id_laporan', '$id_user', 'kirim_bukti', '$log_keterangan')";
             mysqli_query($koneksi, $sql_log);
             
+            $id_instansi_petugas = $_SESSION['id_instansi'];
+            kirim_notif_ke_admin_instansi($koneksi, $id_instansi_petugas, $id_laporan, "Bukti Perbaikan Dikirim", "Petugas telah mengirim bukti perbaikan laporan #$id_laporan.", "bukti_dikirim");
+
             echo "<script>
                     alert('Bukti perbaikan berhasil dikirim! Menunggu verifikasi dari Admin.');
                     window.location.href = 'petugas.php';

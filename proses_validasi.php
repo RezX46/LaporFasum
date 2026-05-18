@@ -1,6 +1,7 @@
 <?php
 session_start();
 require 'koneksi.php';
+require 'helper_notif.php';
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
     die("Akses Ditolak!");
@@ -28,7 +29,7 @@ if (isset($_POST['aksi']) && isset($_POST['id_laporan'])) {
     } elseif ($aksi == 'forward') {
         $id_kat = mysqli_real_escape_string($koneksi, $_POST['id_kategori_baru']);
         $query = "UPDATE laporan SET id_kategori = '$id_kat' WHERE id_laporan = '$id_laporan'";
-        $log_keterangan = "Laporan diteruskan ke kategori/dinas baru.";
+        $log_keterangan = "Laporan diteruskan ke dinas baru.";
 
     } elseif ($aksi == 'tolak') {
         $query = "UPDATE laporan SET status = 'ditolak' WHERE id_laporan = '$id_laporan'";
@@ -65,7 +66,43 @@ if (isset($_POST['aksi']) && isset($_POST['id_laporan'])) {
             $sql_log = "INSERT INTO riwayat_laporan (id_laporan, id_user, id_petugas_penerima, aksi, keterangan) 
                         VALUES ('$id_laporan', '$id_admin', " . ($id_petugas_penerima ? "'$id_petugas_penerima'" : "NULL") . ", '$aksi', '$log_keterangan')";
             mysqli_query($koneksi, $sql_log);
+
+            if ($aksi == 'terima') {
+                $id_ptg = mysqli_real_escape_string($koneksi, $_POST['id_petugas']); 
+                kirim_notif($koneksi, $id_ptg, $id_laporan, "Tugas Baru", "Anda ditugaskan menangani laporan #$id_laporan.", "tugas_baru");
             
+            } elseif ($aksi == 'forward') {
+                $id_kat_tujuan = mysqli_real_escape_string($koneksi, $_POST['id_kategori_baru']);
+                $q_inst = mysqli_query($koneksi, "SELECT id_instansi FROM kategori WHERE id_kategori = '$id_kat_tujuan'");
+                $id_inst_baru = mysqli_fetch_assoc($q_inst)['id_instansi'];
+                kirim_notif_ke_admin_instansi($koneksi, $id_inst_baru, $id_laporan, "Laporan Diteruskan", "Laporan #$id_laporan diteruskan ke instansi Anda.", "laporan_baru");
+            
+            } elseif ($aksi == 'kembalikan') {
+                kirim_notif_ke_admin_instansi($koneksi, 1, $id_laporan, "Laporan Dikembalikan", "Laporan #$id_laporan diserahkan ke pusat. Alasan: $keterangan", "laporan_baru");
+            
+            } elseif ($aksi == 'update_petugas') {
+                $id_ptg_baru = mysqli_real_escape_string($koneksi, $_POST['id_petugas']);
+                kirim_notif($koneksi, $id_ptg_baru, $id_laporan, "Tugas Dialihkan", "Anda ditugaskan menggantikan petugas sebelumnya untuk laporan #$id_laporan.", "tugas_baru");
+                if (!empty($id_petugas_lama)) {
+                    kirim_notif($koneksi, $id_petugas_lama, $id_laporan, "Tugas Dibatalkan", "Tugas laporan #$id_laporan dialihkan ke petugas lain.", "laporan_ditolak");
+                }
+            
+            } elseif ($aksi == 'verifikasi_terima') {
+                kirim_notif($koneksi, $id_petugas_lama, $id_laporan, "Tugas Selesai", "Pekerjaan Anda untuk laporan #$id_laporan telah diverifikasi dan disetujui Admin.", "tugas_selesai");
+
+            } elseif ($aksi == 'verifikasi_tolak') {
+                $id_ptg_alihan = isset($_POST['id_petugas_baru']) ? mysqli_real_escape_string($koneksi, $_POST['id_petugas_baru']) : '';
+                
+                if (!empty($id_ptg_alihan)) {
+                    // Ditolak dan Dialihkan
+                    kirim_notif($koneksi, $id_petugas_lama, $id_laporan, "Bukti Ditolak & Dialihkan", "Bukti perbaikan laporan #$id_laporan ditolak dan tugas ditarik. Alasan: $keterangan", "laporan_ditolak");
+                    kirim_notif($koneksi, $id_ptg_alihan, $id_laporan, "Tugas Baru (Alihan)", "Anda ditugaskan menangani laporan #$id_laporan melanjutkan petugas sebelumnya.", "tugas_baru");
+                } else {
+                    // Ditolak tapi tetap dikerjakan petugas lama
+                    kirim_notif($koneksi, $id_petugas_lama, $id_laporan, "Bukti Ditolak", "Bukti perbaikan laporan #$id_laporan ditolak Admin. Alasan: $keterangan", "laporan_ditolak");
+                }
+            }
+
             echo "<script>alert('Aksi berhasil diproses!'); window.location.href = 'admin.php';</script>";
         } else {
             echo "Gagal memperbarui data: " . mysqli_error($koneksi);
