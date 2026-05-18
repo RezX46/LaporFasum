@@ -72,8 +72,6 @@ $result = mysqli_query($koneksi, $query);
                     <option value="">Urutan Default</option>
                     <option value="nama-asc">Nama A-Z</option>
                     <option value="nama-desc">Nama Z-A</option>
-                    <option value="peran-asc">Peran A-Z</option>
-                    <option value="peran-desc">Peran Z-A</option>
                 </select>
             </div>
 
