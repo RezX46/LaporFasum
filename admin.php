@@ -52,7 +52,7 @@ $result = mysqli_query($koneksi, $query);
             <!-- Toolbar Search / Filter / Sort -->
             <div class="table-toolbar">
                 <div class="toolbar-search">
-                    <span class="search-icon">&#128269;</span>
+                    <span class="search-icon"></span>
                     <input type="text" id="adminSearch" placeholder="Cari ID, kategori, status...">
                 </div>
                 <select class="toolbar-select" id="adminFilterStatus">

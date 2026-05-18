@@ -137,7 +137,7 @@ if ($row['status'] == 'menunggu verifikasi') {
         <!-- CATATAN ADMIN -->
         <?php if (!empty($row['pesan_admin'])): ?>
         <div class="catatan-admin-box">
-            <h3>&#9888; Catatan Admin:</h3>
+            <h3>Catatan Admin:</h3>
             <p>"<?= $row['pesan_admin'] ?>"</p>
         </div>
         <?php endif; ?>

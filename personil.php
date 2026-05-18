@@ -60,7 +60,7 @@ $result = mysqli_query($koneksi, $query);
             <!-- Toolbar Search / Filter / Sort -->
             <div class="table-toolbar">
                 <div class="toolbar-search">
-                    <span class="search-icon">&#128269;</span>
+                    <span class="search-icon"></span>
                     <input type="text" id="personilSearch" placeholder="Cari nama, username, peran, instansi...">
                 </div>
                 <select class="toolbar-select" id="personilFilterPeran">
@@ -154,7 +154,7 @@ $result = mysqli_query($koneksi, $query);
             var emptyMsg = document.createElement('p');
             emptyMsg.className = 'toolbar-empty-msg';
             emptyMsg.id = 'personilEmptyMsg';
-            emptyMsg.innerHTML = '&#128270; Tidak ada personil yang cocok dengan pencarian/filter Anda.';
+            emptyMsg.innerHTML = 'Tidak ada personil yang cocok dengan pencarian/filter Anda.';
             table.parentNode.insertBefore(emptyMsg, table.nextSibling);
 
             function getRows() {

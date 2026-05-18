@@ -38,9 +38,6 @@ $query_semua_instansi = mysqli_query($koneksi, "SELECT * FROM instansi WHERE id_
     </div>
 
     <div class="page-body-narrow">
-    <div style="margin-bottom: 12px;">
-        <button type="button" onclick="history.back()" style="padding: 8px 18px; background: #f0f0f0; color: #333; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; cursor: pointer;">← Kembali</button>
-    </div>
     <div class="card">
 
         <div class="form-section" style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #eee;">
@@ -93,6 +90,9 @@ $query_semua_instansi = mysqli_query($koneksi, "SELECT * FROM instansi WHERE id_
                 </div>
             </form>
         </div>
+    </div>
+    <div style="margin-top: 16px;">
+        <button type="button" onclick="history.back()" class="btn-kembali" style="margin-top:0;">&#8592; Kembali</button>
     </div>
     </div>
 

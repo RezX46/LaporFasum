@@ -58,7 +58,7 @@ $jumlah_notif = mysqli_num_rows($q_notif);
             <!-- Toolbar Search / Filter / Sort -->
             <div class="table-toolbar">
                 <div class="toolbar-search">
-                    <span class="search-icon">&#128269;</span>
+                    <span class="search-icon"></span>
                     <input type="text" id="petugasSearch" placeholder="Cari ID, kategori, status...">
                 </div>
                 <select class="toolbar-select" id="petugasFilterStatus">

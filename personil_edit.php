@@ -42,9 +42,6 @@ if (!$user || ($id_instansi_admin != 1 && $user['id_instansi'] != $id_instansi_a
     </div>
 
     <div class="page-body-narrow">
-    <div style="margin-bottom: 12px;">
-        <button type="button" onclick="history.back()" style="padding: 8px 18px; background: #f0f0f0; color: #333; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; cursor: pointer;">&#8592; Kembali</button>
-    </div>
     <div class="card">
 
         <div class="form-section" style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #eee;">
@@ -71,6 +68,9 @@ if (!$user || ($id_instansi_admin != 1 && $user['id_instansi'] != $id_instansi_a
             </form>
         </div>
         
+    </div>
+    <div style="margin-top: 16px;">
+        <button type="button" onclick="history.back()" class="btn-kembali" style="margin-top:0;">&#8592; Kembali</button>
     </div>
     </div>
 

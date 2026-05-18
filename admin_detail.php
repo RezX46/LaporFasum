@@ -357,7 +357,7 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
                     <div class="serahkan-panel" id="panel-serahkan" style="margin-top:8px;">
                         <form action="proses_validasi.php" method="POST">
                             <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
-                            <label>&#9888; Alasan menyerahkan ke pusat:</label>
+                            <label>Alasan menyerahkan ke pusat:</label>
                             <textarea name="keterangan" id="textarea-serahkan"
                                 placeholder="Tuliskan alasan menyerahkan laporan ini ke pusat..."
                                 required></textarea>

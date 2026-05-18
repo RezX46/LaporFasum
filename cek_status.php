@@ -120,7 +120,7 @@ if (isset($_GET['kode'])) {
 
         <?php if ($error): ?>
             <div style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:12px 16px;border-radius:10px;font-weight:600;margin-bottom:14px;font-size:0.92rem;">
-                &#9888; <?= $error ?>
+                <?= $error ?>
             </div>
         <?php endif; ?>
 
