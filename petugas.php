@@ -186,15 +186,30 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
                         $url = "#";
                         $onclick = "";
                         
-                        // Logika Pengalihan Halaman & Keamanan Akses
                         if ($n['kategori_notif'] == 'akun_disetujui' || $n['kategori_notif'] == 'akun_ditolak') {
                             $url = "pengaturan_akun.php";
-                        } elseif ($n['kategori_notif'] == 'laporan_ditolak') {
-                            // Kunci link jika laporan ditarik/dialihkan
-                            $url = "javascript:void(0)";
-                            $onclick = "onclick=\"alert('Laporan ini telah ditolak dan ditarik atau dialihkan ke petugas lain. Anda tidak bisa lagi mengaksesnya.'); return false;\"";
                         } else {
-                            $url = "petugas_detail.php?id=" . $n['id_laporan'];
+                            // cek apakah tugas ini MASIH milik petugas yang sedang login?
+                            $id_lap = $n['id_laporan'];
+                            if (empty($id_lap)) {
+                                $url = "javascript:void(0)";
+                                $onclick = "onclick=\"alert('Data laporan tidak valid.'); return false;\"";
+                            } else {
+                                $cek_lap = mysqli_query($koneksi, "SELECT id_petugas FROM laporan WHERE id_laporan = '$id_lap'");
+                                $data_lap = mysqli_fetch_assoc($cek_lap);
+
+                                if (!$data_lap) {
+                                    $url = "javascript:void(0)";
+                                    $onclick = "onclick=\"alert('Laporan ini sudah tidak tersedia atau telah dihapus permanen.'); return false;\"";
+                                } elseif ($data_lap['id_petugas'] != $id_petugas_asli) {
+                                    // Jika ID Petugas di database sudah berubah (tugas ditarik / dialihkan admin)
+                                    $url = "javascript:void(0)";
+                                    $onclick = "onclick=\"alert('Akses Ditolak! Tugas ini telah ditarik atau dialihkan ke petugas lain.'); return false;\"";
+                                } else {
+                                    // Masih aman (Masih ditugaskan ke petugas ini)
+                                    $url = "petugas_detail.php?id=" . $id_lap;
+                                }
+                            }
                         }
                     ?>
                         <a href="<?= $url ?>" <?= $onclick ?> class="notif-item-link <?= $n['is_read'] == '0' ? 'unread' : '' ?>">
