@@ -15,14 +15,10 @@ $query = "SELECT l.*, k.nama_kategori
           ORDER BY l.status = 'diproses' DESC, l.id_laporan DESC";
 $result = mysqli_query($koneksi, $query);
 
-$query_notif = "SELECT r.*, l.id_laporan, k.nama_kategori 
-                FROM riwayat_laporan r 
-                JOIN laporan l ON r.id_laporan = l.id_laporan 
-                JOIN kategori k ON l.id_kategori = k.id_kategori
-                WHERE r.id_petugas_penerima = '$id_petugas_asli' 
-                ORDER BY r.tanggal_aksi DESC";
-$q_notif = mysqli_query($koneksi, $query_notif);
-$jumlah_notif = mysqli_num_rows($q_notif);
+// Kueri Notifikasi Baru dari tabel `notifikasi`
+$query_notif = mysqli_query($koneksi, "SELECT * FROM notifikasi WHERE id_user = '$id_petugas_asli' ORDER BY tanggal DESC LIMIT 15");
+$jumlah_notif = mysqli_query($koneksi, "SELECT COUNT(*) as jml FROM notifikasi WHERE id_user = '$id_petugas_asli' AND is_read = '0'");
+$jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
 ?>
 
 <!DOCTYPE html>
@@ -40,7 +36,7 @@ $jumlah_notif = mysqli_num_rows($q_notif);
     <nav class="site-navbar">
         <a href="petugas.php" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
-            <button class="btn-notif" onclick="bukaNotif()">Notifikasi (<?= $jumlah_notif ?>)</button>
+            <button class="btn-notif" onclick="bukaNotif()">Notifikasi (<?= $jml_notif ?>)</button>
             <a href="pengaturan_akun.php">Pengaturan Akun</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
         </nav>
@@ -55,7 +51,6 @@ $jumlah_notif = mysqli_num_rows($q_notif);
         <div class="card">
             <div class="card-title">Daftar Tugas Lapangan</div>
 
-            <!-- Toolbar Search / Filter / Sort -->
             <div class="table-toolbar">
                 <div class="toolbar-search">
                     <span class="search-icon"></span>
@@ -110,14 +105,12 @@ $jumlah_notif = mysqli_num_rows($q_notif);
                                 <td><?= date('d M Y', strtotime($row['tanggal_lapor'])) ?></td>
                                 <td><?= $row['nama_kategori'] ?></td>
                                 <td><span class="badge <?= $badge_class ?>"><?= ucfirst($row['status']) ?></span></td>
-                                <td><a href="petugas_detail.php?id=<?= $row['id_laporan'] ?>" class="btn-detail">Lihat
-                                        Detail</a></td>
+                                <td><a href="petugas_detail.php?id=<?= $row['id_laporan'] ?>" class="btn-detail">Lihat Detail</a></td>
                             </tr>
                         <?php } ?>
                     </tbody>
                 </table>
-                <p class="toolbar-empty-msg" id="petugasEmptyMsg">Tidak ada data yang cocok dengan
-                    pencarian/filter Anda.</p>
+                <p class="toolbar-empty-msg" id="petugasEmptyMsg">Tidak ada data yang cocok dengan pencarian/filter Anda.</p>
             </div>
         </div>
     </div>
@@ -178,26 +171,45 @@ $jumlah_notif = mysqli_num_rows($q_notif);
     </script>
 
     <div id="notifModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="tutupNotif()">&times;</span>
-            <h2
-                style="margin-top: 0; margin-bottom: 20px; color: #34495e; border-bottom: 2px solid #f39c12; padding-bottom: 10px;">
-                Pesan / Instruksi Admin
-            </h2>
-
-            <?php if ($jumlah_notif == 0): ?>
-                <p style="text-align: center; color: #7f8c8d; padding: 20px 0;">Tidak ada pesan baru.</p>
-            <?php else: ?>
-                <?php while ($n = mysqli_fetch_assoc($q_notif)): ?>
-                    <div class="notif-item">
-                        <span class="notif-time"><?= date('d M Y, H:i', strtotime($n['tanggal_aksi'])) ?> WITA</span>
-                        <span class="notif-title">Laporan #<?= $n['id_laporan'] ?> (<?= $n['nama_kategori'] ?>)</span>
-                        <p class="notif-msg">"<?= $n['keterangan'] ?>"</p>
-                    </div>
-                <?php endwhile; ?>
-            <?php endif; ?>
+        <div class="modal-content" style="padding: 0;">
+            <div style="padding: 20px 24px; border-bottom: 2px solid #f39c12; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #fff; border-radius: 12px 12px 0 0; z-index: 10;">
+                <h2 style="margin: 0; color: #34495e; font-size: 1.2rem;">Pusat Pemberitahuan</h2>
+                <span class="close-btn" onclick="tutupNotif()" style="margin: 0; line-height: 1;">&times;</span>
+            </div>
+            
+            <div style="max-height: 60vh; overflow-y: auto; padding: 0;">
+                <?php if (mysqli_num_rows($query_notif) == 0): ?>
+                    <p style="text-align: center; color: #7f8c8d; padding: 30px;">Tidak ada pesan baru.</p>
+                <?php else: ?>
+                    <?php while ($n = mysqli_fetch_assoc($query_notif)): 
+                        
+                        $url = "#";
+                        $onclick = "";
+                        
+                        // Logika Pengalihan Halaman & Keamanan Akses
+                        if ($n['kategori_notif'] == 'akun_disetujui' || $n['kategori_notif'] == 'akun_ditolak') {
+                            $url = "pengaturan_akun.php";
+                        } elseif ($n['kategori_notif'] == 'laporan_ditolak') {
+                            // Kunci link jika laporan ditarik/dialihkan
+                            $url = "javascript:void(0)";
+                            $onclick = "onclick=\"alert('Laporan ini telah ditolak dan ditarik atau dialihkan ke petugas lain. Anda tidak bisa lagi mengaksesnya.'); return false;\"";
+                        } else {
+                            $url = "petugas_detail.php?id=" . $n['id_laporan'];
+                        }
+                    ?>
+                        <a href="<?= $url ?>" <?= $onclick ?> class="notif-item-link <?= $n['is_read'] == '0' ? 'unread' : '' ?>">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span class="notif-title"><?= htmlspecialchars($n['judul']) ?></span>
+                                <span class="notif-time"><?= date('d M, H:i', strtotime($n['tanggal'])) ?></span>
+                            </div>
+                            <p class="notif-msg" style="color: #555; font-style: normal; margin-top: 4px;"><?= htmlspecialchars($n['pesan']) ?></p>
+                        </a>
+                    <?php endwhile; ?>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
+    
     <script src="assets/js/notif.js?v=<?= time(); ?>"></script>
     
     <?php if (isset($_SESSION['popup_notif'])): ?>

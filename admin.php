@@ -9,8 +9,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
 }
 require 'koneksi.php';
 
-// Mengambil ID Instansi dari Admin yang sedang login
 $id_instansi_admin = $_SESSION['id_instansi'];
+$id_admin_aktif = $_SESSION['id_user'];
 
 $query = "SELECT l.*, k.nama_kategori 
           FROM laporan l 
@@ -19,6 +19,10 @@ $query = "SELECT l.*, k.nama_kategori
           ORDER BY l.id_laporan DESC";
           
 $result = mysqli_query($koneksi, $query);
+
+$query_notif = mysqli_query($koneksi, "SELECT * FROM notifikasi WHERE id_user = '$id_admin_aktif' ORDER BY tanggal DESC LIMIT 15");
+$jumlah_notif = mysqli_query($koneksi, "SELECT COUNT(*) as jml FROM notifikasi WHERE id_user = '$id_admin_aktif' AND is_read = '0'");
+$jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
 ?>
 
 <!DOCTYPE html>
@@ -27,13 +31,14 @@ $result = mysqli_query($koneksi, $query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin – LaporFasum</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
 </head>
 <body>
 
     <nav class="site-navbar">
         <a href="admin.php" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
+            <button class="btn-notif" onclick="bukaNotif()">Notifikasi (<?= $jml_notif ?>)</button>
             <a href="personil.php">Manajemen Personil</a>
             <a href="pengaturan_akun.php">Pengaturan Akun</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
@@ -49,7 +54,6 @@ $result = mysqli_query($koneksi, $query);
         <div class="card">
             <div class="card-title">Daftar Laporan Masuk</div>
 
-            <!-- Toolbar Search / Filter / Sort -->
             <div class="table-toolbar">
                 <div class="toolbar-search">
                     <span class="search-icon"></span>
@@ -127,18 +131,14 @@ $result = mysqli_query($koneksi, $query);
     const table        = document.getElementById('adminTable');
     const emptyMsg     = document.getElementById('adminEmptyMsg');
 
-    function getRows() {
-        return Array.from(table.querySelectorAll('tbody tr'));
-    }
+    function getRows() { return Array.from(table.querySelectorAll('tbody tr')); }
 
     function applyAll() {
         const keyword = searchInput.value.toLowerCase().trim();
         const status  = filterSelect.value.toLowerCase();
         const sort    = sortSelect.value;
-
         let rows = getRows();
 
-        // Filter & Search
         rows.forEach(function(row) {
             const text = row.textContent.toLowerCase();
             const matchSearch = !keyword || text.includes(keyword);
@@ -146,7 +146,6 @@ $result = mysqli_query($koneksi, $query);
             row.style.display = (matchSearch && matchStatus) ? '' : 'none';
         });
 
-        // Sort
         if (sort) {
             const tbody = table.querySelector('tbody');
             const visible = rows.filter(r => r.style.display !== 'none');
@@ -164,7 +163,6 @@ $result = mysqli_query($koneksi, $query);
             visible.forEach(function(r) { tbody.appendChild(r); });
         }
 
-        // Empty message
         const anyVisible = rows.some(r => r.style.display !== 'none');
         emptyMsg.style.display = anyVisible ? 'none' : 'block';
     }
@@ -174,6 +172,78 @@ $result = mysqli_query($koneksi, $query);
     sortSelect.addEventListener('change', applyAll);
 })();
 </script>
+
+    <div id="notifModal" class="modal">
+        <div class="modal-content" style="padding: 0;"> 
+            <div style="padding: 20px 24px; border-bottom: 2px solid #f39c12; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #fff; border-radius: 12px 12px 0 0; z-index: 10;">
+                <h2 style="margin: 0; color: #34495e; font-size: 1.2rem;">Pusat Notifikasi Admin</h2>
+                <span class="close-btn" onclick="tutupNotif()" style="margin: 0; line-height: 1;">&times;</span>
+            </div>
+            
+            <div style="max-height: 60vh; overflow-y: auto; padding: 0;">
+                <?php if (mysqli_num_rows($query_notif) == 0): ?>
+                    <p style="text-align: center; color: #7f8c8d; padding: 30px;">Belum ada notifikasi.</p>
+                <?php else: ?>
+                    <?php while ($n = mysqli_fetch_assoc($query_notif)): 
+                        
+                        $url = "#";
+                        $onclick = "";
+                        
+                        if ($n['kategori_notif'] == 'akun_pengajuan') {
+                            $id_petugas_pengaju = $n['id_laporan']; 
+                            
+                            // Cek apakah ini notifikasi lama yang ID-nya kosong
+                            if (empty($id_petugas_pengaju)) {
+                                $url = "javascript:void(0)";
+                                $onclick = "onclick=\"alert('Ini adalah notifikasi versi lama (Data ID kosong). Silakan cek menu Manajemen Personil secara manual.'); return false;\"";
+                            } else {
+                                // Cek apakah pengajuannya masih pending (belum diurus)
+                                $cek_user = mysqli_query($koneksi, "SELECT pending_nama FROM users WHERE id_user = '$id_petugas_pengaju'");
+                                $data_user = mysqli_fetch_assoc($cek_user);
+                                
+                                if (!$data_user || empty($data_user['pending_nama'])) {
+                                    $url = "javascript:void(0)";
+                                    $onclick = "onclick=\"alert('Pengajuan perubahan data diri ini sudah Anda setujui atau tolak sebelumnya.'); return false;\"";
+                                } else {
+                                    $url = "personil_detail.php?id=" . $id_petugas_pengaju;
+                                }
+                            }
+                            
+                        } else {
+                            // Cek kewenangan laporan saat ini di database
+                            $id_lap = $n['id_laporan'];
+                            $cek_lap = mysqli_query($koneksi, "SELECT k.id_instansi FROM laporan l JOIN kategori k ON l.id_kategori = k.id_kategori WHERE l.id_laporan = '$id_lap'");
+                            $data_lap = mysqli_fetch_assoc($cek_lap);
+
+                            if (!$data_lap) {
+                                // Jika laporan sudah dihapus permanen
+                                $url = "javascript:void(0)";
+                                $onclick = "onclick=\"alert('Laporan ini sudah tidak tersedia atau telah dihapus permanen.'); return false;\"";
+                            } elseif ($data_lap['id_instansi'] != $id_instansi_admin) {
+                                // Jika instansi sudah berbeda (karena diteruskan/dikembalikan)
+                                $url = "javascript:void(0)";
+                                $onclick = "onclick=\"alert('Akses Ditolak! Laporan ini telah diteruskan ke instansi lain atau diserahkan ke pusat.'); return false;\"";
+                            } else {
+                                // Jika masih aman
+                                $url = "admin_detail.php?id=" . $n['id_laporan'];
+                            }
+                        }
+                    ?>
+                        <a href="<?= $url ?>" <?= $onclick ?> class="notif-item-link <?= $n['is_read'] == '0' ? 'unread' : '' ?>">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span class="notif-title"><?= htmlspecialchars($n['judul']) ?></span>
+                                <span class="notif-time"><?= date('d M, H:i', strtotime($n['tanggal'])) ?></span>
+                            </div>
+                            <p class="notif-msg" style="color: #555; font-style: normal; margin-top: 4px;"><?= htmlspecialchars($n['pesan']) ?></p>
+                        </a>
+                    <?php endwhile; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+    
+    <script src="assets/js/notif.js?v=<?= time(); ?>"></script>
+
     <?php if (isset($_SESSION['popup_notif'])): ?>
     <script>
         alert("<?= $_SESSION['popup_notif'] ?>");
