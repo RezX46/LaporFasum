@@ -91,7 +91,7 @@ if (isset($_GET['kode'])) {
 
     <!-- NAVBAR -->
     <nav class="site-navbar">
-        <a href="index.html" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <a href="index.html" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
             <a href="lapor.php">Buat Laporan</a>
             <a href="cek_status.php" class="active">Cek Status</a>
@@ -101,7 +101,7 @@ if (isset($_GET['kode'])) {
 
     <!-- PAGE HEADER -->
     <div class="page-header" style="padding:20px 40px;">
-        <h1 style="font-size:1.4rem;">&#128269; Cek Status Laporan</h1>
+        <h1 style="font-size:1.4rem;">Cek Status Laporan</h1>
         <p>Masukkan kode lacak yang Anda terima setelah membuat laporan.</p>
     </div>
 
@@ -114,7 +114,7 @@ if (isset($_GET['kode'])) {
                 <input type="text" name="kode" placeholder="Masukkan Kode Lacak (Contoh: LP-XXXXXX)" required
                        value="<?= isset($_GET['kode']) ? htmlspecialchars($_GET['kode']) : '' ?>"
                        style="flex:1;min-width:200px;margin-bottom:0;">
-                <button type="submit" class="btn" style="width:auto;margin-top:0;padding:11px 24px;">&#128269; Cari</button>
+                <button type="submit" class="btn" style="width:auto;margin-top:0;padding:11px 24px;">Cari</button>
             </form>
         </div>
 

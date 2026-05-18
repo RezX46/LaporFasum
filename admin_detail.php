@@ -216,17 +216,17 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
 <body>
 
     <nav class="site-navbar">
-        <a href="admin.php" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <a href="admin.php" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
-            <a href="admin.php">&#128203; Dashboard</a>
-            <a href="personil.php">&#128101; Personil</a>
-            <a href="pengaturan_akun.php">&#9881; Akun</a>
+            <a href="admin.php">Dashboard</a>
+            <a href="personil.php">Personil</a>
+            <a href="pengaturan_akun.php">Akun</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
         </nav>
     </nav>
 
     <div class="page-header" style="padding:20px 40px;">
-        <h1 style="font-size:1.4rem;">&#128203; Detail Laporan #<?= $row['id_laporan'] ?></h1>
+        <h1 style="font-size:1.4rem;">Detail Laporan #<?= $row['id_laporan'] ?></h1>
         <p>Tinjau dan ambil tindakan atas laporan ini.</p>
     </div>
 
@@ -484,7 +484,7 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
         </div>
 
         <div style="margin-top:16px;">
-            <a href="admin.php" class="btn-kembali" style="margin-top:0;">← Kembali ke Dashboard</a>
+            <button type="button" onclick="history.back()" class="btn-kembali" style="margin-top:0;">← Kembali</button>
         </div>
 
     </div>

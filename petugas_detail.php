@@ -113,20 +113,26 @@ if ($row['status'] == 'menunggu verifikasi') {
 <body>
 
     <nav class="site-navbar">
-        <a href="petugas.php" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <a href="petugas.php" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
-            <a href="petugas.php">&#128203; Dashboard</a>
-            <a href="pengaturan_akun.php">&#9881; Akun</a>
+            <a href="petugas.php">Dashboard</a>
+            <a href="pengaturan_akun.php">Akun</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
         </nav>
     </nav>
 
     <div class="page-header" style="padding:20px 40px;">
-        <h1 style="font-size:1.4rem;">&#128203; Tugas #<?= $row['id_laporan'] ?></h1>
+        <h1 style="font-size:1.4rem;">Tugas #<?= $row['id_laporan'] ?></h1>
         <p>Tinjau detail dan kirim bukti penyelesaian pekerjaan.</p>
     </div>
 
     <div class="page-body-narrow">
+
+        <!-- STATUS BAR -->
+        <div class="status-bar">
+            <h2>Status Tugas</h2>
+            <span class="badge <?= $badge_class ?>"><?= $teks_status ?></span>
+        </div>
 
         <!-- CATATAN ADMIN -->
         <?php if (!empty($row['pesan_admin'])): ?>
@@ -162,15 +168,15 @@ if ($row['status'] == 'menunggu verifikasi') {
                 </div>
             </div>
 
-            <!-- FOTO GRID — posisi tetap sama -->
+            <!-- FOTO GRID -->
             <div class="foto-grid" style="margin-top:14px;">
                 <div class="foto-box">
-                    <span>🔴 Kondisi Kerusakan</span>
+                    <span>Kondisi Kerusakan</span>
                     <img src="uploads/<?= $row['foto'] ?>" class="foto-laporan">
                 </div>
                 <?php if (!empty($row['foto_bukti'])): ?>
                 <div class="foto-box" style="border-color:#2ecc71;background:#f0fdf4;">
-                    <span style="color:#27ae60;">🟢 Hasil Perbaikan Anda</span>
+                    <span style="color:#27ae60;">Hasil Perbaikan Anda</span>
                     <img src="uploads/<?= $row['foto_bukti'] ?>" class="foto-laporan">
                 </div>
                 <?php endif; ?>
@@ -192,10 +198,9 @@ if ($row['status'] == 'menunggu verifikasi') {
         </div>
         <?php endif; ?>
 
-        <!-- STATUS + KEMBALI -->
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px;">
-            <span class="badge <?= $badge_class ?>">Status: <?= $teks_status ?></span>
-            <a href="petugas.php" class="btn-kembali" style="margin-top:0;">← Kembali ke Dashboard</a>
+        <!-- TOMBOL KEMBALI -->
+        <div style="margin-top:16px;">
+            <button type="button" onclick="history.back()" class="btn-kembali" style="margin-top:0;">&#8592; Kembali</button>
         </div>
 
     </div>

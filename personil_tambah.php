@@ -24,20 +24,23 @@ $query_semua_instansi = mysqli_query($koneksi, "SELECT * FROM instansi WHERE id_
 </head>
 <body>
     <nav class="site-navbar">
-        <a href="admin.php" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <a href="admin.php" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
-            <a href="admin.php">&#128203; Dashboard</a>
-            <a href="personil.php">&#128101; Personil</a>
+            <a href="admin.php">Dashboard</a>
+            <a href="personil.php">Personil</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
         </nav>
     </nav>
 
     <div class="page-header">
-        <h1>&#128101; Tambah Petugas Lapangan</h1>
+        <h1>Tambah Petugas Lapangan</h1>
         <p>Daftarkan akun petugas baru ke dalam sistem.</p>
     </div>
 
     <div class="page-body-narrow">
+    <div style="margin-bottom: 12px;">
+        <button type="button" onclick="history.back()" style="padding: 8px 18px; background: #f0f0f0; color: #333; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; cursor: pointer;">← Kembali</button>
+    </div>
     <div class="card">
 
         <div class="form-section" style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #eee;">

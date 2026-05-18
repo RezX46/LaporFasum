@@ -20,15 +20,15 @@ $user = mysqli_fetch_assoc($query);
 </head>
 <body>
     <nav class="site-navbar">
-        <a href="<?= ($_SESSION['role'] == 'admin') ? 'admin.php' : 'petugas.php' ?>" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <a href="<?= ($_SESSION['role'] == 'admin') ? 'admin.php' : 'petugas.php' ?>" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
-            <a href="<?= ($_SESSION['role'] == 'admin') ? 'admin.php' : 'petugas.php' ?>">&#128203; Dashboard</a>
+            <a href="<?= ($_SESSION['role'] == 'admin') ? 'admin.php' : 'petugas.php' ?>">Dashboard</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
         </nav>
     </nav>
 
     <div class="page-header">
-        <h1>&#9881; Pengaturan Akun</h1>
+        <h1>Pengaturan Akun</h1>
         <p>Kelola informasi profil dan keamanan akun Anda.</p>
     </div>
 
@@ -95,6 +95,10 @@ $user = mysqli_fetch_assoc($query);
                 </div>
                 <button type="submit" name="aksi" value="update_password" class="btn-terima" style="width: auto;">Perbarui Password</button>
             </form>
+        </div>
+
+        <div style="margin-top: 16px;">
+            <button type="button" onclick="history.back()" style="padding: 8px 18px; background: #f0f0f0; color: #333; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; cursor: pointer;">&#8592; Kembali</button>
         </div>
     </div>
 

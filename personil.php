@@ -40,16 +40,16 @@ $result = mysqli_query($koneksi, $query);
 
 <body>
     <nav class="site-navbar">
-        <a href="admin.php" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <a href="admin.php" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
-            <a href="admin.php">&#128203; Dashboard</a>
+            <a href="admin.php">Dashboard</a>
             <a href="personil_tambah.php">+ Tambah Personil</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
         </nav>
     </nav>
 
     <div class="page-header">
-        <h1>&#128101; <?= $judul_halaman ?></h1>
+        <h1><?= $judul_halaman ?></h1>
         <p>Kelola data akun admin dan petugas di sistem LaporFasum.</p>
     </div>
 
@@ -64,12 +64,12 @@ $result = mysqli_query($koneksi, $query);
                     <input type="text" id="personilSearch" placeholder="Cari nama, username, peran, instansi...">
                 </div>
                 <select class="toolbar-select" id="personilFilterPeran">
-                    <option value="">&#127937; Semua Peran</option>
+                    <option value="">Semua Peran</option>
                     <option value="admin">Admin</option>
                     <option value="petugas">Petugas</option>
                 </select>
                 <select class="toolbar-select" id="personilSort">
-                    <option value="">&#8645; Urutan Default</option>
+                    <option value="">Urutan Default</option>
                     <option value="nama-asc">Nama A-Z</option>
                     <option value="nama-desc">Nama Z-A</option>
                     <option value="peran-asc">Peran A-Z</option>
@@ -129,6 +129,9 @@ $result = mysqli_query($koneksi, $query);
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div style="margin-top: 16px;">
+            <button type="button" onclick="history.back()" style="padding: 8px 18px; background: #f0f0f0; color: #333; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; cursor: pointer;">&#8592; Kembali</button>
         </div>
     </div>
     </div>

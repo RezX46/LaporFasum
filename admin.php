@@ -32,16 +32,16 @@ $result = mysqli_query($koneksi, $query);
 <body>
 
     <nav class="site-navbar">
-        <a href="admin.php" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <a href="admin.php" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
-            <a href="personil.php">&#128101; Manajemen Personil</a>
-            <a href="pengaturan_akun.php">&#9881; Pengaturan Akun</a>
+            <a href="personil.php">Manajemen Personil</a>
+            <a href="pengaturan_akun.php">Pengaturan Akun</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
         </nav>
     </nav>
 
     <div class="page-header">
-        <h1>&#128203; Dashboard Admin</h1>
+        <h1>Dashboard Admin</h1>
         <p>Selamat datang, <strong><?= $_SESSION['nama_lengkap'] ?></strong></p>
     </div>
 
@@ -56,7 +56,7 @@ $result = mysqli_query($koneksi, $query);
                     <input type="text" id="adminSearch" placeholder="Cari ID, kategori, status...">
                 </div>
                 <select class="toolbar-select" id="adminFilterStatus">
-                    <option value="">&#127937; Semua Status</option>
+                    <option value="">Semua Status</option>
                     <option value="menunggu">Menunggu</option>
                     <option value="diproses">Diproses</option>
                     <option value="menunggu verifikasi">Menunggu Verifikasi</option>
@@ -64,7 +64,7 @@ $result = mysqli_query($koneksi, $query);
                     <option value="ditolak">Ditolak</option>
                 </select>
                 <select class="toolbar-select" id="adminSort">
-                    <option value="">&#8645; Urutan Default</option>
+                    <option value="">Urutan Default</option>
                     <option value="id-desc">ID Terbaru</option>
                     <option value="id-asc">ID Terlama</option>
                     <option value="tanggal-desc">Tanggal Terbaru</option>
@@ -112,7 +112,7 @@ $result = mysqli_query($koneksi, $query);
                     <?php } ?>
                 </tbody>
             </table>
-            <p class="toolbar-empty-msg" id="adminEmptyMsg">&#128270; Tidak ada data yang cocok dengan pencarian/filter Anda.</p>
+            <p class="toolbar-empty-msg" id="adminEmptyMsg">Tidak ada data yang cocok dengan pencarian/filter Anda.</p>
             </div>
         </div>
     </div>

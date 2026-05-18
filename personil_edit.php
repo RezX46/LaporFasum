@@ -28,20 +28,23 @@ if (!$user || ($id_instansi_admin != 1 && $user['id_instansi'] != $id_instansi_a
 </head>
 <body>
     <nav class="site-navbar">
-        <a href="admin.php" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <a href="admin.php" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
-            <a href="admin.php">&#128203; Dashboard</a>
-            <a href="personil.php">&#128101; Personil</a>
+            <a href="admin.php">Dashboard</a>
+            <a href="personil.php">Personil</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
         </nav>
     </nav>
 
     <div class="page-header">
-        <h1>&#9998; Edit Data Personil</h1>
+        <h1>Edit Data Personil</h1>
         <p>Ubah informasi akun personil: <strong><?= htmlspecialchars($user['nama_lengkap']) ?></strong></p>
     </div>
 
     <div class="page-body-narrow">
+    <div style="margin-bottom: 12px;">
+        <button type="button" onclick="history.back()" style="padding: 8px 18px; background: #f0f0f0; color: #333; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; cursor: pointer;">&#8592; Kembali</button>
+    </div>
     <div class="card">
 
         <div class="form-section" style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #eee;">
@@ -64,6 +67,7 @@ if (!$user || ($id_instansi_admin != 1 && $user['id_instansi'] != $id_instansi_a
                 <div style="margin-top: 20px;">
                     <button type="submit" class="btn-terima" style="width: 100%;">Simpan Perubahan</button>
                 </div>
+
             </form>
         </div>
         

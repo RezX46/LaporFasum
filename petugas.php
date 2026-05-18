@@ -38,16 +38,16 @@ $jumlah_notif = mysqli_num_rows($q_notif);
 <body>
 
     <nav class="site-navbar">
-        <a href="petugas.php" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <a href="petugas.php" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
-            <button class="btn-notif" onclick="bukaNotif()">&#128276; Notifikasi (<?= $jumlah_notif ?>)</button>
-            <a href="pengaturan_akun.php">&#9881; Pengaturan Akun</a>
+            <button class="btn-notif" onclick="bukaNotif()">Notifikasi (<?= $jumlah_notif ?>)</button>
+            <a href="pengaturan_akun.php">Pengaturan Akun</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
         </nav>
     </nav>
 
     <div class="page-header">
-        <h1>&#128203; Dashboard Petugas</h1>
+        <h1>Dashboard Petugas</h1>
         <p>Selamat datang, <strong><?= $_SESSION['nama_lengkap'] ?></strong></p>
     </div>
 
@@ -62,14 +62,14 @@ $jumlah_notif = mysqli_num_rows($q_notif);
                     <input type="text" id="petugasSearch" placeholder="Cari ID, kategori, status...">
                 </div>
                 <select class="toolbar-select" id="petugasFilterStatus">
-                    <option value="">&#127937; Semua Status</option>
+                    <option value="">Semua Status</option>
                     <option value="menunggu">Menunggu</option>
                     <option value="diproses">Diproses</option>
                     <option value="menunggu verifikasi">Menunggu Verifikasi</option>
                     <option value="selesai">Selesai</option>
                 </select>
                 <select class="toolbar-select" id="petugasSort">
-                    <option value="">&#8645; Urutan Default</option>
+                    <option value="">Urutan Default</option>
                     <option value="id-desc">ID Terbaru</option>
                     <option value="id-asc">ID Terlama</option>
                     <option value="tanggal-desc">Tanggal Terbaru</option>
@@ -116,7 +116,7 @@ $jumlah_notif = mysqli_num_rows($q_notif);
                         <?php } ?>
                     </tbody>
                 </table>
-                <p class="toolbar-empty-msg" id="petugasEmptyMsg">&#128270; Tidak ada data yang cocok dengan
+                <p class="toolbar-empty-msg" id="petugasEmptyMsg">Tidak ada data yang cocok dengan
                     pencarian/filter Anda.</p>
             </div>
         </div>

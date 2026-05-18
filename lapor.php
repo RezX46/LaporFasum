@@ -14,7 +14,7 @@ require 'koneksi.php';
 
     <!-- NAVBAR -->
     <nav class="site-navbar">
-        <a href="index.html" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <a href="index.html" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
             <a href="lapor.php" class="active">Buat Laporan</a>
             <a href="cek_status.php">Cek Status</a>
@@ -24,7 +24,7 @@ require 'koneksi.php';
 
     <!-- PAGE HEADER -->
     <div class="page-header">
-        <h1>&#128204; Formulir Laporan Baru</h1>
+        <h1>Formulir Laporan Baru</h1>
         <p>Laporan Anda bersifat anonim. Isi data di bawah ini dengan lengkap dan benar.</p>
     </div>
 
@@ -59,7 +59,7 @@ require 'koneksi.php';
                 <div class="form-group">
                     <label>4. Titik Lokasi</label>
                     <p style="font-size:0.82rem;color:#78909c;margin-bottom:10px;">*Klik tombol GPS atau tandai manual pada peta.</p>
-                    <button type="button" class="btn-gps" onclick="getLocation()">&#128204; Gunakan Lokasi Saya Saat Ini</button>
+                    <button type="button" class="btn-gps" onclick="getLocation()">Gunakan Lokasi Saya Saat Ini</button>
                     <div id="map"></div>
                     <div class="koordinat-box">
                         <input type="text" id="latitude" name="latitude" placeholder="Latitude" readonly required>
@@ -70,7 +70,7 @@ require 'koneksi.php';
                     <textarea id="alamat_manual" name="alamat_manual" rows="2" placeholder="Contoh: Jalan Serayu V/08...."></textarea>
                 </div>
 
-                <button type="submit" class="btn">&#128228; Kirim Laporan</button>
+                <button type="submit" class="btn">Kirim Laporan</button>
             </form>
         </div>
 

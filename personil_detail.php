@@ -40,16 +40,16 @@ $tugas_selesai = $stat_selesai['total'];
 </head>
 <body>
     <nav class="site-navbar">
-        <a href="admin.php" class="brand">&#128205; <span>Lapor</span>Fasum</a>
+        <a href="admin.php" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
-            <a href="admin.php">&#128203; Dashboard</a>
-            <a href="personil.php">&#128101; Personil</a>
+            <a href="admin.php">Dashboard</a>
+            <a href="personil.php">Personil</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
         </nav>
     </nav>
 
     <div class="page-header">
-        <h1>&#128101; Profil Personil</h1>
+        <h1>Profil Personil</h1>
         <p>Detail informasi dan manajemen akun personil.</p>
     </div>
 
@@ -57,7 +57,7 @@ $tugas_selesai = $stat_selesai['total'];
 
         <?php if (!empty($user['pending_nama']) || !empty($user['pending_username'])): ?>
         <div class="action-box" style="border-style: solid; background-color: #fff9db; border-color: #f1c40f; margin-bottom: 25px;">
-            <h3 style="margin-top: 0; color: #856404;">📝 Permintaan Perubahan Profil</h3>
+            <h3 style="margin-top: 0; color: #856404;">Permintaan Perubahan Profil</h3>
             <p style="font-size: 0.9em; color: #666;">Petugas ini mengajukan perubahan data diri sebagai berikut:</p>
             
             <table class="table-pengajuan">
@@ -158,6 +158,10 @@ $tugas_selesai = $stat_selesai['total'];
                     <?php endif; ?>
                 <?php endif; ?>
                 </div>
+        </div>
+
+        <div style="margin-top:20px;">
+            <button type="button" onclick="history.back()" class="btn-kembali" style="margin-top:0;">← Kembali</button>
         </div>
 
     </div>
