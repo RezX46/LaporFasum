@@ -173,11 +173,18 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
 })();
 </script>
 
-    <div id="notifModal" class="modal">
+   <div id="notifModal" class="modal">
         <div class="modal-content" style="padding: 0;"> 
             <div style="padding: 20px 24px; border-bottom: 2px solid #f39c12; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #fff; border-radius: 12px 12px 0 0; z-index: 10;">
                 <h2 style="margin: 0; color: #34495e; font-size: 1.2rem;">Pusat Notifikasi Admin</h2>
-                <span class="close-btn" onclick="tutupNotif()" style="margin: 0; line-height: 1;">&times;</span>
+                <div class="notif-header-actions">
+                    <?php if (mysqli_num_rows($query_notif) > 0): ?>
+                    <form action="proses_hapus_notif.php" method="POST" style="margin: 0;">
+                        <button type="submit" name="aksi" value="hapus_semua" class="btn-bersihkan-notif" onclick="return confirm('Yakin ingin menghapus semua notifikasi?')">Bersihkan Semua</button>
+                    </form>
+                    <?php endif; ?>
+                    <span class="close-btn" onclick="tutupNotif()" style="margin: 0; line-height: 1;">&times;</span>
+                </div>
             </div>
             
             <div style="max-height: 60vh; overflow-y: auto; padding: 0;">
@@ -185,22 +192,17 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
                     <p style="text-align: center; color: #7f8c8d; padding: 30px;">Belum ada notifikasi.</p>
                 <?php else: ?>
                     <?php while ($n = mysqli_fetch_assoc($query_notif)): 
-                        
                         $url = "#";
                         $onclick = "";
                         
                         if ($n['kategori_notif'] == 'akun_pengajuan') {
                             $id_petugas_pengaju = $n['id_laporan']; 
-                            
-                            // Cek apakah ini notifikasi lama yang ID-nya kosong
                             if (empty($id_petugas_pengaju)) {
                                 $url = "javascript:void(0)";
                                 $onclick = "onclick=\"alert('Ini adalah notifikasi versi lama (Data ID kosong). Silakan cek menu Manajemen Personil secara manual.'); return false;\"";
                             } else {
-                                // Cek apakah pengajuannya masih pending (belum diurus)
                                 $cek_user = mysqli_query($koneksi, "SELECT pending_nama FROM users WHERE id_user = '$id_petugas_pengaju'");
                                 $data_user = mysqli_fetch_assoc($cek_user);
-                                
                                 if (!$data_user || empty($data_user['pending_nama'])) {
                                     $url = "javascript:void(0)";
                                     $onclick = "onclick=\"alert('Pengajuan perubahan data diri ini sudah Anda setujui atau tolak sebelumnya.'); return false;\"";
@@ -208,34 +210,35 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
                                     $url = "personil_detail.php?id=" . $id_petugas_pengaju;
                                 }
                             }
-                            
                         } else {
-                            // Cek kewenangan laporan saat ini di database
                             $id_lap = $n['id_laporan'];
                             $cek_lap = mysqli_query($koneksi, "SELECT k.id_instansi FROM laporan l JOIN kategori k ON l.id_kategori = k.id_kategori WHERE l.id_laporan = '$id_lap'");
                             $data_lap = mysqli_fetch_assoc($cek_lap);
 
                             if (!$data_lap) {
-                                // Jika laporan sudah dihapus permanen
                                 $url = "javascript:void(0)";
                                 $onclick = "onclick=\"alert('Laporan ini sudah tidak tersedia atau telah dihapus permanen.'); return false;\"";
                             } elseif ($data_lap['id_instansi'] != $id_instansi_admin) {
-                                // Jika instansi sudah berbeda (karena diteruskan/dikembalikan)
                                 $url = "javascript:void(0)";
                                 $onclick = "onclick=\"alert('Akses Ditolak! Laporan ini telah diteruskan ke instansi lain atau diserahkan ke pusat.'); return false;\"";
                             } else {
-                                // Jika masih aman
                                 $url = "admin_detail.php?id=" . $n['id_laporan'];
                             }
                         }
                     ?>
-                        <a href="<?= $url ?>" <?= $onclick ?> class="notif-item-link <?= $n['is_read'] == '0' ? 'unread' : '' ?>">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                <span class="notif-title"><?= htmlspecialchars($n['judul']) ?></span>
-                                <span class="notif-time"><?= date('d M, H:i', strtotime($n['tanggal'])) ?></span>
-                            </div>
-                            <p class="notif-msg" style="color: #555; font-style: normal; margin-top: 4px;"><?= htmlspecialchars($n['pesan']) ?></p>
-                        </a>
+                        <div class="notif-wrapper">
+                            <a href="<?= $url ?>" <?= $onclick ?> class="notif-item-link <?= $n['is_read'] == '0' ? 'unread' : '' ?>">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span class="notif-title"><?= htmlspecialchars($n['judul']) ?></span>
+                                    <span class="notif-time"><?= date('d M, H:i', strtotime($n['tanggal'])) ?></span>
+                                </div>
+                                <p class="notif-msg" style="color: #555; font-style: normal; margin-top: 4px;"><?= htmlspecialchars($n['pesan']) ?></p>
+                            </a>
+                            <form action="proses_hapus_notif.php" method="POST" style="margin: 0;">
+                                <input type="hidden" name="id_notifikasi" value="<?= $n['id_notifikasi'] ?>">
+                                <button type="submit" name="aksi" value="hapus_satu" class="btn-hapus-notif-single" title="Hapus Notifikasi">&times;</button>
+                            </form>
+                        </div>
                     <?php endwhile; ?>
                 <?php endif; ?>
             </div>

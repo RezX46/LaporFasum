@@ -591,3 +591,56 @@ tr:hover td { background: #f0f6ff; }
 .notif-item-link.unread { background-color: #f0fdf4; border-left: 4px solid #2ecc71; }
 .notif-item-link.unread .notif-title { color: #16a34a; }
 .notif-item-link:last-child { border-bottom: none; }
+
+/* ============ TOMBOL HAPUS NOTIFIKASI ============ */
+.notif-header-actions { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+}
+.btn-bersihkan-notif { 
+    background: #fef2f2; 
+    color: #e74c3c; 
+    border: 1px solid #fecaca; 
+    padding: 6px 12px; 
+    border-radius: 6px; 
+    font-size: 0.8rem; 
+    font-weight: 700; 
+    cursor: pointer; 
+    transition: all 0.2s; 
+}
+.btn-bersihkan-notif:hover { 
+    background: #fee2e2; 
+    border-color: #f87171; 
+}
+.notif-wrapper { 
+    position: relative; 
+    border-bottom: 1px solid var(--gray-light); 
+}
+.notif-wrapper:last-child { 
+    border-bottom: none; 
+}
+.notif-item-link { 
+    border-bottom: none !important; 
+    padding-right: 45px !important; /* Memberi ruang agar teks tidak tertimpa tombol silang */
+}
+.btn-hapus-notif-single {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #fff;
+    border: 1px solid #fecaca;
+    color: #e74c3c;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1;
+    padding: 3px 6px;
+    border-radius: 5px;
+    z-index: 2;
+}
+.btn-hapus-notif-single:hover { 
+    background: #e74c3c; 
+    color: #fff; 
+}
