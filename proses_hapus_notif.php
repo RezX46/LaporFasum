@@ -1,26 +1,28 @@
 <?php
 session_start();
 require 'koneksi.php';
+// mengirim respon berupa JSON
+header('Content-Type: application/json');
 
 if (!isset($_SESSION['id_user'])) {
-    die("Akses Ditolak!");
+    echo json_encode(['status' => 'error', 'message' => 'Akses Ditolak!']);
+    exit();
 }
 
 $id_user = $_SESSION['id_user'];
 $aksi = $_POST['aksi'] ?? '';
 
-// Jika tombol "Bersihkan Semua" ditekan
 if ($aksi == 'hapus_semua') {
     mysqli_query($koneksi, "DELETE FROM notifikasi WHERE id_user = '$id_user'");
+    echo json_encode(['status' => 'success']);
 } 
-// Jika tombol "silang (x)" pada satu notifikasi ditekan
 elseif ($aksi == 'hapus_satu') {
     $id_notif = (int)$_POST['id_notifikasi'];
     mysqli_query($koneksi, "DELETE FROM notifikasi WHERE id_notifikasi = '$id_notif' AND id_user = '$id_user'");
+    echo json_encode(['status' => 'success']);
+} 
+else {
+    echo json_encode(['status' => 'error', 'message' => 'Aksi tidak valid!']);
 }
-
-// Kembali ke halaman sebelumnya secara otomatis
-$referer = $_SERVER['HTTP_REFERER'] ?? 'index.html';
-header("Location: " . $referer);
 exit();
 ?>

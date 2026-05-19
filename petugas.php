@@ -23,20 +23,18 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
 
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Petugas – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
 </head>
-
 <body>
 
     <nav class="site-navbar">
         <a href="petugas.php" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
-            <button class="btn-notif" onclick="bukaNotif()">Notifikasi (<?= $jml_notif ?>)</button>
+            <button class="btn-notif" onclick="bukaNotif()">Notifikasi (<span id="notifBadgeCount"><?= $jml_notif ?></span>)</button>
             <a href="pengaturan_akun.php">Pengaturan Akun</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
         </nav>
@@ -125,15 +123,12 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
             const table = document.getElementById('petugasTable');
             const emptyMsg = document.getElementById('petugasEmptyMsg');
 
-            function getRows() {
-                return Array.from(table.querySelectorAll('tbody tr'));
-            }
+            function getRows() { return Array.from(table.querySelectorAll('tbody tr')); }
 
             function applyAll() {
                 const keyword = searchInput.value.toLowerCase().trim();
                 const status = filterSelect.value.toLowerCase();
                 const sort = sortSelect.value;
-
                 let rows = getRows();
 
                 rows.forEach(function (row) {
@@ -176,19 +171,18 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
                 <h2 style="margin: 0; color: #34495e; font-size: 1.2rem;">Pusat Pemberitahuan</h2>
                 <div class="notif-header-actions">
                     <?php if (mysqli_num_rows($query_notif) > 0): ?>
-                    <form action="proses_hapus_notif.php" method="POST" style="margin: 0;">
-                        <button type="submit" name="aksi" value="hapus_semua" class="btn-bersihkan-notif" onclick="return confirm('Yakin ingin menghapus semua notifikasi?')">Bersihkan Semua</button>
-                    </form>
+                        <button type="button" id="btnBersihkanSemua" class="btn-bersihkan-notif" onclick="hapusSemuaNotif()">Bersihkan Semua</button>
                     <?php endif; ?>
                     <span class="close-btn" onclick="tutupNotif()" style="margin: 0; line-height: 1;">&times;</span>
                 </div>
             </div>
             
-            <div style="max-height: 60vh; overflow-y: auto; padding: 0;">
+            <div id="notifContainer" style="max-height: 60vh; overflow-y: auto; padding: 0;">
                 <?php if (mysqli_num_rows($query_notif) == 0): ?>
                     <p style="text-align: center; color: #7f8c8d; padding: 30px;">Tidak ada pesan baru.</p>
                 <?php else: ?>
                     <?php while ($n = mysqli_fetch_assoc($query_notif)): 
+                     
                         $url = "#";
                         $onclick = "";
                         
@@ -215,7 +209,7 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
                             }
                         }
                     ?>
-                        <div class="notif-wrapper">
+                        <div class="notif-wrapper" style="transition: opacity 0.2s;">
                             <a href="<?= $url ?>" <?= $onclick ?> class="notif-item-link <?= $n['is_read'] == '0' ? 'unread' : '' ?>">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                                     <span class="notif-title"><?= htmlspecialchars($n['judul']) ?></span>
@@ -223,10 +217,7 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
                                 </div>
                                 <p class="notif-msg" style="color: #555; font-style: normal; margin-top: 4px;"><?= htmlspecialchars($n['pesan']) ?></p>
                             </a>
-                            <form action="proses_hapus_notif.php" method="POST" style="margin: 0;">
-                                <input type="hidden" name="id_notifikasi" value="<?= $n['id_notifikasi'] ?>">
-                                <button type="submit" name="aksi" value="hapus_satu" class="btn-hapus-notif-single" title="Hapus Notifikasi">&times;</button>
-                            </form>
+                            <button type="button" class="btn-hapus-notif-single" title="Hapus Notifikasi" onclick="hapusNotif(<?= $n['id_notifikasi'] ?>, this.closest('.notif-wrapper'))">&times;</button>
                         </div>
                     <?php endwhile; ?>
                 <?php endif; ?>
@@ -242,5 +233,4 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
     </script>
     <?php unset($_SESSION['popup_notif']); endif; ?>
 </body>
-
 </html>

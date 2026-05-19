@@ -38,7 +38,7 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
     <nav class="site-navbar">
         <a href="admin.php" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
-            <button class="btn-notif" onclick="bukaNotif()">Notifikasi (<?= $jml_notif ?>)</button>
+            <button class="btn-notif" onclick="bukaNotif()">Notifikasi (<span id="notifBadgeCount"><?= $jml_notif ?></span>)</button>
             <a href="personil.php">Manajemen Personil</a>
             <a href="pengaturan_akun.php">Pengaturan Akun</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
@@ -173,36 +173,37 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
 })();
 </script>
 
-   <div id="notifModal" class="modal">
+    <div id="notifModal" class="modal">
         <div class="modal-content" style="padding: 0;"> 
             <div style="padding: 20px 24px; border-bottom: 2px solid #f39c12; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #fff; border-radius: 12px 12px 0 0; z-index: 10;">
                 <h2 style="margin: 0; color: #34495e; font-size: 1.2rem;">Pusat Notifikasi Admin</h2>
                 <div class="notif-header-actions">
                     <?php if (mysqli_num_rows($query_notif) > 0): ?>
-                    <form action="proses_hapus_notif.php" method="POST" style="margin: 0;">
-                        <button type="submit" name="aksi" value="hapus_semua" class="btn-bersihkan-notif" onclick="return confirm('Yakin ingin menghapus semua notifikasi?')">Bersihkan Semua</button>
-                    </form>
+                        <button type="button" id="btnBersihkanSemua" class="btn-bersihkan-notif" onclick="hapusSemuaNotif()">Bersihkan Semua</button>
                     <?php endif; ?>
                     <span class="close-btn" onclick="tutupNotif()" style="margin: 0; line-height: 1;">&times;</span>
                 </div>
             </div>
             
-            <div style="max-height: 60vh; overflow-y: auto; padding: 0;">
+            <div id="notifContainer" style="max-height: 60vh; overflow-y: auto; padding: 0;">
                 <?php if (mysqli_num_rows($query_notif) == 0): ?>
                     <p style="text-align: center; color: #7f8c8d; padding: 30px;">Belum ada notifikasi.</p>
                 <?php else: ?>
                     <?php while ($n = mysqli_fetch_assoc($query_notif)): 
+                        
                         $url = "#";
                         $onclick = "";
                         
                         if ($n['kategori_notif'] == 'akun_pengajuan') {
                             $id_petugas_pengaju = $n['id_laporan']; 
+                            
                             if (empty($id_petugas_pengaju)) {
                                 $url = "javascript:void(0)";
                                 $onclick = "onclick=\"alert('Ini adalah notifikasi versi lama (Data ID kosong). Silakan cek menu Manajemen Personil secara manual.'); return false;\"";
                             } else {
                                 $cek_user = mysqli_query($koneksi, "SELECT pending_nama FROM users WHERE id_user = '$id_petugas_pengaju'");
                                 $data_user = mysqli_fetch_assoc($cek_user);
+                                
                                 if (!$data_user || empty($data_user['pending_nama'])) {
                                     $url = "javascript:void(0)";
                                     $onclick = "onclick=\"alert('Pengajuan perubahan data diri ini sudah Anda setujui atau tolak sebelumnya.'); return false;\"";
@@ -210,6 +211,7 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
                                     $url = "personil_detail.php?id=" . $id_petugas_pengaju;
                                 }
                             }
+                            
                         } else {
                             $id_lap = $n['id_laporan'];
                             $cek_lap = mysqli_query($koneksi, "SELECT k.id_instansi FROM laporan l JOIN kategori k ON l.id_kategori = k.id_kategori WHERE l.id_laporan = '$id_lap'");
@@ -226,7 +228,7 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
                             }
                         }
                     ?>
-                        <div class="notif-wrapper">
+                        <div class="notif-wrapper" style="transition: opacity 0.2s;">
                             <a href="<?= $url ?>" <?= $onclick ?> class="notif-item-link <?= $n['is_read'] == '0' ? 'unread' : '' ?>">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                                     <span class="notif-title"><?= htmlspecialchars($n['judul']) ?></span>
@@ -234,10 +236,7 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
                                 </div>
                                 <p class="notif-msg" style="color: #555; font-style: normal; margin-top: 4px;"><?= htmlspecialchars($n['pesan']) ?></p>
                             </a>
-                            <form action="proses_hapus_notif.php" method="POST" style="margin: 0;">
-                                <input type="hidden" name="id_notifikasi" value="<?= $n['id_notifikasi'] ?>">
-                                <button type="submit" name="aksi" value="hapus_satu" class="btn-hapus-notif-single" title="Hapus Notifikasi">&times;</button>
-                            </form>
+                            <button type="button" class="btn-hapus-notif-single" title="Hapus Notifikasi" onclick="hapusNotif(<?= $n['id_notifikasi'] ?>, this.closest('.notif-wrapper'))">&times;</button>
                         </div>
                     <?php endwhile; ?>
                 <?php endif; ?>
