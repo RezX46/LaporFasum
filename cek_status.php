@@ -1,6 +1,13 @@
 <?php
 require 'koneksi.php';
 
+// FUNGSI AUTO-LINK UNTUK KODE LACAK (Regex format: LP-YYYYMM-XXXX)
+function buatLinkKodeLacak($teks) {
+    $pola = '/(LP-\d{6}-[A-Z0-9]{4})/i';
+    $ganti = '<a href="cek_status.php?kode=$1" style="color:#2980b9; font-weight:bold; text-decoration:underline; background:#e8f4f8; padding:2px 6px; border-radius:4px;">$1</a>';
+    return preg_replace($pola, $ganti, $teks);
+}
+
 $data_laporan = null;
 $error = "";
 
@@ -42,54 +49,20 @@ if (isset($_GET['kode'])) {
     <title>Cek Status Laporan – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
     <style>
-        .info-grid-detail {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px 20px;
-            margin-bottom: 14px;
-        }
+        .info-grid-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px; margin-bottom: 14px; }
         .info-grid-detail .full-width { grid-column: 1 / -1; }
-        .info-row {
-            background: var(--blue-pale);
-            border: 1px solid #dbeafe;
-            border-radius: 8px;
-            padding: 10px 14px;
-        }
-        .info-row strong {
-            display: block;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--blue-dark);
-            margin-bottom: 3px;
-        }
+        .info-row { background: var(--blue-pale); border: 1px solid #dbeafe; border-radius: 8px; padding: 10px 14px; }
+        .info-row strong { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--blue-dark); margin-bottom: 3px; }
         .info-row span { font-size: 0.92rem; color: var(--gray-text); }
-        .status-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 14px;
-        }
+        .status-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
         .status-bar h2 { margin: 0; font-size: 1rem; color: #0d47a1; }
-        .compact-result-box {
-            background: var(--white);
-            border-radius: var(--radius);
-            border: 1px solid #dbeafe;
-            padding: 16px 18px;
-            margin-bottom: 14px;
-            box-shadow: var(--shadow-sm);
-        }
+        .compact-result-box { background: var(--white); border-radius: var(--radius); border: 1px solid #dbeafe; padding: 16px 18px; margin-bottom: 14px; box-shadow: var(--shadow-sm); }
         .page-body-narrow { padding: 24px 40px; }
-        @media (max-width: 600px) {
-            .info-grid-detail { grid-template-columns: 1fr; }
-            .info-grid-detail .full-width { grid-column: 1; }
-            .page-body-narrow { padding: 16px; }
-        }
+        @media (max-width: 600px) { .info-grid-detail { grid-template-columns: 1fr; } .info-grid-detail .full-width { grid-column: 1; } .page-body-narrow { padding: 16px; } }
     </style>
 </head>
 <body>
 
-    <!-- NAVBAR -->
     <nav class="site-navbar">
         <a href="index.html" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
@@ -99,19 +72,16 @@ if (isset($_GET['kode'])) {
         </nav>
     </nav>
 
-    <!-- PAGE HEADER -->
     <div class="page-header" style="padding:20px 40px;">
         <h1 style="font-size:1.4rem;">Cek Status Laporan</h1>
         <p>Masukkan kode lacak yang Anda terima setelah membuat laporan.</p>
     </div>
 
-    <!-- CONTENT -->
     <div class="page-body-narrow">
 
-        <!-- FORM CEK -->
         <div class="card" style="padding:14px 18px;margin-bottom:14px;">
             <form action="" method="GET" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-                <input type="text" name="kode" placeholder="Masukkan Kode Lacak (Contoh: LP-XXXXXX)" required
+                <input type="text" name="kode" placeholder="Masukkan Kode Lacak (Contoh: LP-XXXXXX-XXXX)" required
                        value="<?= isset($_GET['kode']) ? htmlspecialchars($_GET['kode']) : '' ?>"
                        style="flex:1;min-width:200px;margin-bottom:0;">
                 <button type="submit" class="btn" style="width:auto;margin-top:0;padding:11px 24px;">Cari</button>
@@ -156,7 +126,6 @@ if (isset($_GET['kode'])) {
                     </div>
                 </div>
 
-                <!-- FOTO GRID — posisi tetap sama -->
                 <div class="foto-grid">
                     <div class="foto-box">
                         <span>Foto Laporan</span>
@@ -169,12 +138,34 @@ if (isset($_GET['kode'])) {
                     </div>
                     <?php endif; ?>
                 </div>
+
+                <?php if ($status_asli == 'ditolak'): ?>
+                    <?php 
+                        $id_laporan_ini = $data_laporan['id_laporan'];
+                        $q_tolak = mysqli_query($koneksi, "SELECT keterangan FROM riwayat_laporan WHERE id_laporan = '$id_laporan_ini' AND aksi = 'tolak' ORDER BY tanggal_aksi DESC LIMIT 1");
+                        
+                        if ($q_tolak && mysqli_num_rows($q_tolak) > 0) {
+                            $data_tolak = mysqli_fetch_assoc($q_tolak);
+                            // Terapkan fungsi Auto-Link pada teks keterangan
+                            $alasan_terformat = buatLinkKodeLacak(htmlspecialchars($data_tolak['keterangan']));
+                        } else {
+                            $alasan_terformat = "Laporan tidak memenuhi kriteria pelaporan fasilitas umum.";
+                        }
+                    ?>
+                    <div style="background-color: #fee2e2; border-left: 5px solid #ef4444; padding: 15px; border-radius: 6px; margin-top: 15px;">
+                        <strong style="color: #b91c1c; font-size: 0.9rem; display: block; margin-bottom: 5px;">Alasan Penolakan:</strong>
+                        <span style="color: #7f1d1d; line-height: 1.5;">
+                            <?= $alasan_terformat ?>
+                        </span>
+                    </div>
+                <?php endif; ?>
+
             </div>
         <?php endif; ?>
 
         <a href="index.html" class="back-link">← Kembali ke Halaman Utama</a>
     </div>
 
-    <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
+    <footer class="site-footer">© 2025 <span>LaporFasum</span> — Sistem Pelaporan Fasilitas Umum</footer>
 </body>
 </html>
