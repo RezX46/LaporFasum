@@ -274,6 +274,10 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
 
             <form action="proses_validasi.php" method="POST">
                 <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
+                
+                <label style="font-weight:700;font-size:0.88rem;margin-bottom:8px;display:block;">Keterangan / Pesan untuk Warga (Opsional):</label>
+                <textarea name="keterangan" placeholder="Contoh: Perbaikan telah selesai. Terima kasih atas laporannya..." style="width:100%; padding:10px; border-radius:6px; border:1px solid #dbeafe; margin-bottom:10px; box-sizing:border-box; min-height:70px; font-family:inherit;"></textarea>
+                
                 <button type="submit" name="aksi" value="verifikasi_terima" class="btn-terima"> Verifikasi & Selesaikan</button>
             </form>
             <form action="proses_validasi.php" method="POST" style="margin-top:12px;padding-top:12px;border-top:1px solid #eee;">

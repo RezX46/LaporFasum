@@ -1,6 +1,5 @@
 <?php
 require 'koneksi.php';
-
 // FUNGSI AUTO-LINK UNTUK KODE LACAK (Regex format: LP-YYYYMM-XXXX)
 function buatLinkKodeLacak($teks) {
     $pola = '/(LP-\d{6}-[A-Z0-9]{4})/i';
@@ -48,18 +47,6 @@ if (isset($_GET['kode'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cek Status Laporan – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
-    <style>
-        .info-grid-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px; margin-bottom: 14px; }
-        .info-grid-detail .full-width { grid-column: 1 / -1; }
-        .info-row { background: var(--blue-pale); border: 1px solid #dbeafe; border-radius: 8px; padding: 10px 14px; }
-        .info-row strong { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--blue-dark); margin-bottom: 3px; }
-        .info-row span { font-size: 0.92rem; color: var(--gray-text); }
-        .status-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-        .status-bar h2 { margin: 0; font-size: 1rem; color: #0d47a1; }
-        .compact-result-box { background: var(--white); border-radius: var(--radius); border: 1px solid #dbeafe; padding: 16px 18px; margin-bottom: 14px; box-shadow: var(--shadow-sm); }
-        .page-body-narrow { padding: 24px 40px; }
-        @media (max-width: 600px) { .info-grid-detail { grid-template-columns: 1fr; } .info-grid-detail .full-width { grid-column: 1; } .page-body-narrow { padding: 16px; } }
-    </style>
 </head>
 <body>
 
@@ -158,6 +145,29 @@ if (isset($_GET['kode'])) {
                             <?= $alasan_terformat ?>
                         </span>
                     </div>
+                <?php endif; ?>
+
+                <?php if ($status_asli == 'selesai'): ?>
+                    <?php 
+                        $id_laporan_ini = $data_laporan['id_laporan'];
+                        $q_selesai = mysqli_query($koneksi, "SELECT keterangan FROM riwayat_laporan WHERE id_laporan = '$id_laporan_ini' AND aksi = 'verifikasi_terima' ORDER BY tanggal_aksi DESC LIMIT 1");
+                        
+                        if ($q_selesai && mysqli_num_rows($q_selesai) > 0) {
+                            $data_selesai = mysqli_fetch_assoc($q_selesai);
+                            $keterangan_admin = $data_selesai['keterangan'];                         
+                            // Hanya tampilkan kotak pesan JIKA admin mengisi keterangannya 
+                            if (!empty(trim($keterangan_admin)) && $keterangan_admin !== 'Bukti perbaikan disetujui. Tugas selesai.') {
+                                ?>
+                                <div style="background-color: #f0fdf4; border-left: 5px solid #22c55e; padding: 15px; border-radius: 6px; margin-top: 15px;">
+                                    <strong style="color: #16a34a; font-size: 0.9rem; display: block; margin-bottom: 5px;">Pesan dari Admin:</strong>
+                                    <span style="color: #15803d; line-height: 1.5; font-style: italic;">
+                                        "<?= htmlspecialchars($keterangan_admin) ?>"
+                                    </span>
+                                </div>
+                                <?php
+                            }
+                        }
+                    ?>
                 <?php endif; ?>
 
             </div>

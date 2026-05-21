@@ -1467,3 +1467,48 @@ tr:hover td {
 .section-label { font-size: 0.9rem; font-weight: 700; color: var(--blue-dark); border-left: 3px solid var(--blue-mid); padding-left: 8px; margin: 16px 0 10px; }
 .page-body-narrow { padding: 24px 40px; }
 @media (max-width: 600px) { .info-grid-detail { grid-template-columns: 1fr; } .info-grid-detail .full-width { grid-column: 1; } .page-body-narrow { padding: 16px; } }
+
+/*cek_status.php*/
+.info-grid-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 20px;
+    margin-bottom: 14px;
+}
+.info-grid-detail .full-width { grid-column: 1 / -1; }
+.info-row {
+    background: var(--blue-pale);
+    border: 1px solid #dbeafe;
+    border-radius: 8px;
+    padding: 10px 14px;
+}
+.info-row strong {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--blue-dark);
+    margin-bottom: 3px;
+}
+.info-row span { font-size: 0.92rem; color: var(--gray-text); }
+.status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+.status-bar h2 { margin: 0; font-size: 1rem; color: #0d47a1; }
+.compact-result-box {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid #dbeafe;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-sm);
+}
+.page-body-narrow { padding: 24px 40px; }
+@media (max-width: 600px) {
+    .info-grid-detail { grid-template-columns: 1fr; }
+    .info-grid-detail .full-width { grid-column: 1; }
+    .page-body-narrow { padding: 16px; }
+}

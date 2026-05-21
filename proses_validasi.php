@@ -46,8 +46,13 @@ if (isset($_POST['aksi']) && isset($_POST['id_laporan'])) {
         $id_petugas_penerima = $id_petugas_lama;
 
     } elseif ($aksi == 'verifikasi_terima') {
-        $query = "UPDATE laporan SET status = 'selesai' WHERE id_laporan = '$id_laporan'";
-        $log_keterangan = "Bukti perbaikan disetujui. Tugas selesai.";
+        $query = "UPDATE laporan SET status = 'selesai' WHERE id_laporan = '$id_laporan'";    
+        // Memeriksa apakah keterangan opsional dari admin diisi
+        if (!empty(trim($_POST['keterangan']))) {
+            $log_keterangan = $keterangan;
+        } else {
+            $log_keterangan = "Bukti perbaikan disetujui. Tugas selesai.";
+        }
 
     } elseif ($aksi == 'verifikasi_tolak') {
         $id_petugas_baru = isset($_POST['id_petugas_baru']) ? mysqli_real_escape_string($koneksi, $_POST['id_petugas_baru']) : '';
