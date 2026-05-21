@@ -50,77 +50,6 @@ if ($row['status'] == 'menunggu verifikasi') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Tugas – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
-    <style>
-        .info-grid-detail {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px 20px;
-        }
-        .info-grid-detail .full-width { grid-column: 1 / -1; }
-        .info-row {
-            background: var(--blue-pale);
-            border: 1px solid #dbeafe;
-            border-radius: 8px;
-            padding: 10px 14px;
-        }
-        .info-row strong {
-            display: block;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--blue-dark);
-            margin-bottom: 3px;
-        }
-        .info-row span { font-size: 0.92rem; color: var(--gray-text); }
-        .compact-detail-box {
-            background: var(--white);
-            border-radius: var(--radius);
-            border: 1px solid #dbeafe;
-            padding: 16px 18px;
-            margin-bottom: 14px;
-            box-shadow: var(--shadow-sm);
-        }
-        .compact-action-box {
-            background: var(--white);
-            border-radius: var(--radius);
-            border: 2px dashed var(--blue-mid);
-            padding: 16px 18px;
-            margin-bottom: 14px;
-            box-shadow: var(--shadow-sm);
-        }
-        .compact-action-box h2 { margin: 0 0 12px; font-size: 1rem; }
-        .compact-action-box textarea { min-height: 70px; }
-        .foto-compact { max-width: 100%; height: auto; border-radius: 8px; margin-top: 8px; border: 2px solid #dbeafe; }
-        .foto-section { margin-top: 10px; }
-        .foto-section strong { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--blue-dark); display: block; margin-bottom: 4px; }
-        .catatan-admin-box {
-            background: #fff5f5;
-            border: 1.5px solid #e74c3c;
-            border-radius: 10px;
-            padding: 12px 16px;
-            margin-bottom: 14px;
-        }
-        .catatan-admin-box h3 { color: #e74c3c; margin: 0 0 6px; font-size: 0.92rem; }
-        .catatan-admin-box p { color: #333; font-weight: 600; font-style: italic; margin: 0; font-size: 0.92rem; }
-        .status-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--white);
-            border: 1px solid #dbeafe;
-            border-radius: 10px;
-            padding: 12px 18px;
-            margin-bottom: 14px;
-            box-shadow: var(--shadow-sm);
-        }
-        .status-bar h2 { margin: 0; font-size: 1rem; color: #0d47a1; }
-        .page-body-narrow { padding: 24px 40px; }
-        @media (max-width: 600px) {
-            .info-grid-detail { grid-template-columns: 1fr; }
-            .info-grid-detail .full-width { grid-column: 1; }
-            .page-body-narrow { padding: 16px; }
-        }
-    </style>
 </head>
 <body>
 
@@ -140,13 +69,11 @@ if ($row['status'] == 'menunggu verifikasi') {
 
     <div class="page-body-narrow">
 
-        <!-- STATUS BAR -->
         <div class="status-bar">
             <h2>Status Tugas</h2>
             <span class="badge <?= $badge_class ?>"><?= $teks_status ?></span>
         </div>
 
-        <!-- CATATAN ADMIN -->
         <?php if (!empty($row['pesan_admin'])): ?>
         <div class="catatan-admin-box">
             <h3>Catatan Admin:</h3>
@@ -154,7 +81,6 @@ if ($row['status'] == 'menunggu verifikasi') {
         </div>
         <?php endif; ?>
 
-        <!-- INFO LAPORAN -->
         <div class="compact-detail-box">
             <div class="info-grid-detail">
                 <div class="info-row">
@@ -180,7 +106,6 @@ if ($row['status'] == 'menunggu verifikasi') {
                 </div>
             </div>
 
-            <!-- FOTO GRID -->
             <div class="foto-grid" style="margin-top:14px;">
                 <div class="foto-box">
                     <span>Kondisi Kerusakan</span>
@@ -195,14 +120,19 @@ if ($row['status'] == 'menunggu verifikasi') {
             </div>
         </div>
 
-        <!-- ACTION: KIRIM BUKTI -->
         <?php if ($row['status'] == 'diproses'): ?>
         <div class="compact-action-box">
             <h2 style="color:#27ae60;">Kirim Laporan Selesai</h2>
             <form action="proses_selesai.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
+                
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label style="font-size:0.88rem; font-weight:bold; display:block; margin-bottom:6px;">Catatan / Keterangan Lapangan:</label>
+                    <textarea name="keterangan_petugas" placeholder="Contoh: Perbaikan selesai, fasilitas sudah dapat digunakan kembali..." required style="width:100%; padding:10px; border-radius:6px; border:1px solid #dbeafe; box-sizing:border-box; min-height:80px; font-family:inherit; font-size:0.9rem;"></textarea>
+                </div>
+
                 <div class="form-group" style="margin-bottom:10px;">
-                    <label style="font-size:0.88rem;">Unggah Foto Bukti Perbaikan (Maks 10 MB):</label>
+                    <label style="font-size:0.88rem; font-weight:bold; display:block; margin-bottom:6px;">Unggah Foto Bukti Perbaikan (Maks 10 MB):</label>
                     <input type="file" name="foto_bukti" accept="image/*" required>
                 </div>
                 <button type="submit" class="btn-terima"> Kirim Bukti ke Admin</button>
@@ -210,13 +140,12 @@ if ($row['status'] == 'menunggu verifikasi') {
         </div>
         <?php endif; ?>
 
-        <!-- TOMBOL KEMBALI -->
         <div style="margin-top:16px;">
-            <button type="button" onclick="history.back()" class="btn-kembali" style="margin-top:0;">&#8592; Kembali</button>
+            <button type="button" onclick="history.back()" class="btn-kembali" style="margin-top:0;">← Kembali</button>
         </div>
 
     </div>
 
-    <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
+    <footer class="site-footer">© 2025 <span>LaporFasum</span> — Sistem Pelaporan Fasilitas Umum</footer>
 </body>
 </html>
