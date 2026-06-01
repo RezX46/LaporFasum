@@ -34,7 +34,7 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
     <nav class="site-navbar">
         <a href="petugas.php" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
-            <button class="btn-notif" onclick="bukaNotif()">Notifikasi<span id="notifBadgeCount" style="display: none;"><?= $jml_notif ?></span></button>
+            <button class="btn-notif" onclick="bukaNotif()">Notifikasi</button>
             <a href="pengaturan_akun.php">Pengaturan Akun</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
         </nav>

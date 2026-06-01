@@ -80,15 +80,7 @@ function hapusSemuaNotif() {
 }
 
 function updateBadgeNotif(isReset = false) {
-    var badge = document.getElementById('notifBadgeCount');
-    if (badge) {
-        if (isReset) {
-            badge.innerText = '0';
-        } else {
-            var current = parseInt(badge.innerText);
-            if (current > 0) badge.innerText = current - 1;
-        }
-    }
+    // Angka badge telah dihilangkan sesuai permintaan, fungsi ini sengaja dikosongkan
 }
 
 function cekNotifKosong() {
@@ -100,28 +92,27 @@ function cekNotifKosong() {
     }
 }
 
+// Variabel untuk melacak jumlah notifikasi (agar tidak perlu ambil dari DOM)
+var currentNotifCount = -1;
+
 // Auto-polling notifikasi baru setiap 10 detik
 setInterval(function() {
     fetch('cek_notif_baru.php')
     .then(res => res.json())
     .then(data => {
         if(data.status === 'success') {
-            var badge = document.getElementById('notifBadgeCount');
-            if (badge) {
-                var oldJml = parseInt(badge.innerText) || 0;
-                var newJml = parseInt(data.jumlah) || 0;
-                
-                // Update badge and HTML if there's a difference
-                if (oldJml !== newJml) {
-                    badge.innerText = newJml;
-                    var container = document.getElementById('notifContainer');
-                    if (container && data.html) {
-                        container.innerHTML = data.html;
-                    }
-                    var btnBersih = document.getElementById('btnBersihkanSemua');
-                    if (btnBersih) {
-                        btnBersih.style.display = data.html.includes('notif-wrapper') ? 'inline-block' : 'none';
-                    }
+            var newJml = parseInt(data.jumlah) || 0;
+            
+            // Jika ada perubahan jumlah notifikasi, perbarui isi modal
+            if (currentNotifCount !== newJml) {
+                currentNotifCount = newJml;
+                var container = document.getElementById('notifContainer');
+                if (container && data.html) {
+                    container.innerHTML = data.html;
+                }
+                var btnBersih = document.getElementById('btnBersihkanSemua');
+                if (btnBersih) {
+                    btnBersih.style.display = data.html.includes('notif-wrapper') ? 'inline-block' : 'none';
                 }
             }
         }
