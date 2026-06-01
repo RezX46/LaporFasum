@@ -54,11 +54,11 @@ if ($row['status'] == 'menunggu verifikasi') {
 <body>
 
     <nav class="site-navbar">
-        <a href="petugas.php" class="brand"><span>Lapor</span>Fasum</a>
+        <a href="petugas.php" class="brand"><span class="brand-lapor">Lapor</span><span class="brand-fasum">Fasum</span></a>
         <nav>
             <a href="petugas.php">Dashboard</a>
             <a href="pengaturan_akun.php">Akun</a>
-            <a href="logout.php" class="btn-logout">Keluar</a>
+            <a href="logout.php" class="btn-logout" onclick="return confirm('Apakah Anda yakin ingin keluar?');">Keluar</a>
         </nav>
     </nav>
 

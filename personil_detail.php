@@ -40,11 +40,11 @@ $tugas_selesai = $stat_selesai['total'];
 </head>
 <body>
     <nav class="site-navbar">
-        <a href="admin.php" class="brand"><span>Lapor</span>Fasum</a>
+        <a href="admin.php" class="brand"><span class="brand-lapor">Lapor</span><span class="brand-fasum">Fasum</span></a>
         <nav>
             <a href="admin.php">Dashboard</a>
             <a href="personil.php">Personil</a>
-            <a href="logout.php" class="btn-logout">Keluar</a>
+            <a href="logout.php" class="btn-logout" onclick="return confirm('Apakah Anda yakin ingin keluar?');">Keluar</a>
         </nav>
     </nav>
 
@@ -145,16 +145,9 @@ $tugas_selesai = $stat_selesai['total'];
 
                 <?php if ($bisa_dinonaktifkan): ?>
                     <?php if ($user['status_akun'] == 'aktif'): ?>
-                        <a href="proses_personil.php?aksi=status&status=nonaktif&id=<?= $user['id_user'] ?>" 
-                           class="btn-tolak" style="width: auto; flex: 1; margin-top: 0; text-decoration: none; text-align: center;"
-                           onclick="return confirm('Yakin ingin MENONAKTIFKAN akun ini? ')">
-                           Nonaktifkan Akun
-                        </a>
+                        <a href="proses_personil.php?aksi=status&status=nonaktif&id=<?= $user['id_user'] ?>" class="btn-tolak" style="width: auto; flex: 1; margin-top: 0; text-decoration: none; text-align: center;" onclick="return confirm('Yakin ingin MENONAKTIFKAN akun ini?')">Nonaktifkan Akun</a>
                     <?php else: ?>
-                        <a href="proses_personil.php?aksi=status&status=aktif&id=<?= $user['id_user'] ?>" 
-                           class="btn-terima" style="width: auto; flex: 1; margin-top: 0; text-decoration: none; text-align: center;">
-                           Aktifkan Kembali
-                        </a>
+                        <a href="proses_personil.php?aksi=status&status=aktif&id=<?= $user['id_user'] ?>" class="btn-terima" style="width: auto; flex: 1; margin-top: 0; text-decoration: none; text-align: center;">Aktifkan Kembali</a>
                     <?php endif; ?>
                 <?php endif; ?>
                 </div>

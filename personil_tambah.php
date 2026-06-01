@@ -24,11 +24,11 @@ $query_semua_instansi = mysqli_query($koneksi, "SELECT * FROM instansi WHERE id_
 </head>
 <body>
     <nav class="site-navbar">
-        <a href="admin.php" class="brand"><span>Lapor</span>Fasum</a>
+        <a href="admin.php" class="brand"><span class="brand-lapor">Lapor</span><span class="brand-fasum">Fasum</span></a>
         <nav>
             <a href="admin.php">Dashboard</a>
             <a href="personil.php">Personil</a>
-            <a href="logout.php" class="btn-logout">Keluar</a>
+            <a href="logout.php" class="btn-logout" onclick="return confirm('Apakah Anda yakin ingin keluar?');">Keluar</a>
         </nav>
     </nav>
 

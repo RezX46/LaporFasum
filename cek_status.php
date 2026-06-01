@@ -51,7 +51,7 @@ if (isset($_GET['kode'])) {
 <body>
 
     <nav class="site-navbar">
-        <a href="index.html" class="brand"><span>Lapor</span>Fasum</a>
+        <a href="index.html" class="brand"><span class="brand-lapor">Lapor</span><span class="brand-fasum">Fasum</span></a>
         <nav>
             <a href="lapor.php">Buat Laporan</a>
             <a href="cek_status.php" class="active">Cek Status</a>

@@ -71,12 +71,12 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
 <body>
 
     <nav class="site-navbar">
-        <a href="admin.php" class="brand"><span>Lapor</span>Fasum</a>
+        <a href="admin.php" class="brand"><span class="brand-lapor">Lapor</span><span class="brand-fasum">Fasum</span></a>
         <nav>
             <a href="admin.php">Dashboard</a>
             <a href="personil.php">Personil</a>
             <a href="pengaturan_akun.php">Akun</a>
-            <a href="logout.php" class="btn-logout">Keluar</a>
+            <a href="logout.php" class="btn-logout" onclick="return confirm('Apakah Anda yakin ingin keluar?');">Keluar</a>
         </nav>
     </nav>
 
@@ -187,15 +187,23 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
                     </div>
                 </form>
 
-                <form action="proses_validasi.php" method="POST" style="margin-top:15px; padding:15px; border:1.5px dashed #e74c3c; border-radius:8px; background:#fdf0ed;">
-                    <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
-                    <label style="font-weight:700; color:#c0392b; font-size:0.88rem; display:block; margin-bottom:8px;">Alasan Penolakan (Sertakan Kode Lacak Utama jika duplikat):</label>
-                    <textarea name="keterangan" placeholder="Contoh: Laporan duplikat. Silakan pantau laporan utama dengan kode LP-XXXXXX-XXXX" required style="width:100%; padding:10px; border-radius:6px; border:1px solid #e74c3c; margin-bottom:10px; box-sizing:border-box; min-height:70px;"></textarea>
-                    <button type="submit" name="aksi" value="tolak" class="btn-tolak-merah" onclick="return confirm('Yakin ingin menolak laporan ini?')">
+                <div style="margin-top:10px;">
+                    <button type="button" class="btn-tolak-merah" id="btn-toggle-tolak" onclick="toggleTolak()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                         Tolak Laporan
                     </button>
-                </form>
+                    <div class="serahkan-panel" id="panel-tolak" style="margin-top:8px;">
+                        <form action="proses_validasi.php" method="POST">
+                            <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
+                            <label style="font-weight:700; color:#c0392b; font-size:0.88rem; display:block; margin-bottom:8px;">Alasan Penolakan (Sertakan Kode Lacak Utama jika duplikat):</label>
+                            <textarea name="keterangan" id="textarea-tolak" placeholder="Contoh: Laporan duplikat. Silakan pantau laporan utama dengan kode LP-XXXXXX-XXXX" required style="width:100%; padding:10px; border-radius:6px; border:1px solid #e74c3c; margin-bottom:10px; box-sizing:border-box; min-height:70px;"></textarea>
+                            <button type="submit" name="aksi" value="tolak" class="btn-tolak-merah" onclick="return confirm('Yakin ingin menolak laporan ini?')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                Konfirmasi Tolak Laporan
+                            </button>
+                        </form>
+                    </div>
+                </div>
 
                 <div style="margin-top:10px;">
                     <button type="button" class="btn-serahkan-kuning" id="btn-toggle-serahkan" onclick="toggleSerahkan()">
@@ -226,6 +234,18 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
                         panel.classList.add('open');
                         btn.style.opacity = '0.8';
                         setTimeout(function(){ document.getElementById('textarea-serahkan').focus(); }, 420);
+                    }
+                }
+                function toggleTolak() {
+                    var panel = document.getElementById('panel-tolak');
+                    var btn   = document.getElementById('btn-toggle-tolak');
+                    if (panel.classList.contains('open')) {
+                        panel.classList.remove('open');
+                        btn.style.opacity = '1';
+                    } else {
+                        panel.classList.add('open');
+                        btn.style.opacity = '0.8';
+                        setTimeout(function(){ document.getElementById('textarea-tolak').focus(); }, 420);
                     }
                 }
                 </script>
@@ -280,23 +300,31 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
                 
                 <button type="submit" name="aksi" value="verifikasi_terima" class="btn-terima"> Verifikasi & Selesaikan</button>
             </form>
-            <form action="proses_validasi.php" method="POST" style="margin-top:12px;padding-top:12px;border-top:1px solid #eee;">
-                <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
-                <label style="font-weight:700;color:#e74c3c;font-size:0.88rem;">Opsi Tolak Bukti:</label>
-                <select name="id_petugas_baru" id="select_petugas_baru" onchange="updateTombolTolak()">
-                    <option value="">-- Tetap di Petugas Lama (<?= $row['nama_petugas'] ?>) --</option>
-                    <?php foreach($opsi_data as $p): ?>
-                        <?php if($p['id_petugas'] == $row['id_petugas']): ?>
-                            <option value="" disabled><?= $p['nama_lengkap'] ?> (Petugas Saat Ini)</option>
-                        <?php else: ?>
-                            <option value="<?= $p['id_petugas'] ?>"><?= $p['nama_lengkap'] ?> (Alihkan)</option>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                </select>
-                <label style="font-weight:700;font-size:0.88rem;margin-top:8px;display:block;">Alasan Penolakan:</label>
-                <textarea name="keterangan" placeholder="Berikan alasan mengapa bukti ditolak..." required></textarea>
-                <button type="submit" name="aksi" value="verifikasi_tolak" id="btn_tolak" class="btn-tolak"> Tolak Bukti & Kembalikan</button>
-            </form>
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid #eee;">
+                <button type="button" class="btn-tolak" id="btn-toggle-tolak-bukti" onclick="toggleTolakBukti()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    Tolak Bukti & Kembalikan
+                </button>
+                <div class="serahkan-panel" id="panel-tolak-bukti" style="margin-top:8px;">
+                    <form action="proses_validasi.php" method="POST">
+                        <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
+                        <label style="font-weight:700;color:#e74c3c;font-size:0.88rem;">Opsi Tolak Bukti:</label>
+                        <select name="id_petugas_baru" id="select_petugas_baru" onchange="updateTombolTolak()">
+                            <option value="">-- Tetap di Petugas Lama (<?= $row['nama_petugas'] ?>) --</option>
+                            <?php foreach($opsi_data as $p): ?>
+                                <?php if($p['id_petugas'] == $row['id_petugas']): ?>
+                                    <option value="" disabled><?= $p['nama_lengkap'] ?> (Petugas Saat Ini)</option>
+                                <?php else: ?>
+                                    <option value="<?= $p['id_petugas'] ?>"><?= $p['nama_lengkap'] ?> (Alihkan)</option>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </select>
+                        <label style="font-weight:700;font-size:0.88rem;margin-top:8px;display:block;">Alasan Penolakan:</label>
+                        <textarea name="keterangan" id="textarea-tolak-bukti" placeholder="Berikan alasan mengapa bukti ditolak..." required></textarea>
+                        <button type="submit" name="aksi" value="verifikasi_tolak" id="btn_tolak" class="btn-tolak"> Tolak Bukti & Kembalikan</button>
+                    </form>
+                </div>
+            </div>
         </div>
         <script>
         function updateTombolTolak() {
@@ -304,6 +332,18 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
             var btn = document.getElementById('btn_tolak');
             if (select.value === "") { btn.innerHTML = " Tolak Bukti & Kembalikan"; } 
             else { var nama = select.options[select.selectedIndex].text.split(' (')[0]; btn.innerHTML = " Tolak & Alihkan Tugas ke " + nama; }
+        }
+        function toggleTolakBukti() {
+            var panel = document.getElementById('panel-tolak-bukti');
+            var btn   = document.getElementById('btn-toggle-tolak-bukti');
+            if (panel.classList.contains('open')) {
+                panel.classList.remove('open');
+                btn.style.opacity = '1';
+            } else {
+                panel.classList.add('open');
+                btn.style.opacity = '0.8';
+                setTimeout(function(){ document.getElementById('textarea-tolak-bukti').focus(); }, 420);
+            }
         }
         </script>
         <?php endif; ?>

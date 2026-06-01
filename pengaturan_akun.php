@@ -20,10 +20,10 @@ $user = mysqli_fetch_assoc($query);
 </head>
 <body>
     <nav class="site-navbar">
-        <a href="<?= ($_SESSION['role'] == 'admin') ? 'admin.php' : 'petugas.php' ?>" class="brand"><span>Lapor</span>Fasum</a>
+        <a href="<?= ($_SESSION['role'] == 'admin') ? 'admin.php' : 'petugas.php' ?>" class="brand"><span class="brand-lapor">Lapor</span><span class="brand-fasum">Fasum</span></a>
         <nav>
             <a href="<?= ($_SESSION['role'] == 'admin') ? 'admin.php' : 'petugas.php' ?>">Dashboard</a>
-            <a href="logout.php" class="btn-logout">Keluar</a>
+            <a href="logout.php" class="btn-logout" onclick="return confirm('Apakah Anda yakin ingin keluar?');">Keluar</a>
         </nav>
     </nav>
 

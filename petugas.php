@@ -32,11 +32,11 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
 <body>
 
     <nav class="site-navbar">
-        <a href="petugas.php" class="brand"><span>Lapor</span>Fasum</a>
+        <a href="petugas.php" class="brand"><span class="brand-lapor">Lapor</span><span class="brand-fasum">Fasum</span></a>
         <nav>
             <button class="btn-notif" onclick="bukaNotif()">Notifikasi</button>
             <a href="pengaturan_akun.php">Pengaturan Akun</a>
-            <a href="logout.php" class="btn-logout">Keluar</a>
+            <a href="logout.php" class="btn-logout" onclick="return confirm('Apakah Anda yakin ingin keluar?');">Keluar</a>
         </nav>
     </nav>
 
