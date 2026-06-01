@@ -155,28 +155,17 @@ $result = mysqli_query($koneksi, $query);
             emptyMsg.innerHTML = 'Tidak ada personil yang cocok dengan pencarian/filter Anda.';
             table.parentNode.insertBefore(emptyMsg, table.nextSibling);
 
-            function getRows() {
-                return Array.from(table.querySelectorAll('tbody tr'));
-            }
+            const initialRows = Array.from(table.querySelectorAll('tbody tr'));
 
             function applyAll() {
                 const keyword = searchInput.value.toLowerCase().trim();
                 const peran = filterSelect.value.toLowerCase();
                 const sort = sortSelect.value;
 
-                let rows = getRows();
-
-                rows.forEach(function (row) {
-                    const text = row.textContent.toLowerCase();
-                    const matchSearch = !keyword || text.includes(keyword);
-                    const matchPeran = !peran || text.includes(peran);
-                    row.style.display = (matchSearch && matchPeran) ? '' : 'none';
-                });
+                let rows = initialRows.slice();
 
                 if (sort) {
-                    const tbody = table.querySelector('tbody');
-                    const visible = rows.filter(r => r.style.display !== 'none');
-                    visible.sort(function (a, b) {
+                    rows.sort(function (a, b) {
                         const cells_a = a.querySelectorAll('td');
                         const cells_b = b.querySelectorAll('td');
                         if (sort === 'nama-asc') return cells_a[namaCol].textContent.trim().localeCompare(cells_b[namaCol].textContent.trim());
@@ -185,10 +174,25 @@ $result = mysqli_query($koneksi, $query);
                         if (sort === 'peran-desc') return cells_b[peranCol].textContent.trim().localeCompare(cells_a[peranCol].textContent.trim());
                         return 0;
                     });
-                    visible.forEach(function (r) { tbody.appendChild(r); });
                 }
 
-                const anyVisible = rows.some(r => r.style.display !== 'none');
+                const tbody = table.querySelector('tbody');
+                let anyVisible = false;
+
+                rows.forEach(function (row) {
+                    const text = row.textContent.toLowerCase();
+                    const matchSearch = !keyword || text.includes(keyword);
+                    const matchPeran = !peran || text.includes(peran);
+                    
+                    if (matchSearch && matchPeran) {
+                        row.style.display = '';
+                        anyVisible = true;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                    tbody.appendChild(row);
+                });
+
                 emptyMsg.style.display = anyVisible ? 'none' : 'block';
             }
 

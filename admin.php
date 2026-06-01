@@ -131,25 +131,16 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
     const table        = document.getElementById('adminTable');
     const emptyMsg     = document.getElementById('adminEmptyMsg');
 
-    function getRows() { return Array.from(table.querySelectorAll('tbody tr')); }
+    const initialRows = Array.from(table.querySelectorAll('tbody tr'));
 
     function applyAll() {
         const keyword = searchInput.value.toLowerCase().trim();
         const status  = filterSelect.value.toLowerCase();
         const sort    = sortSelect.value;
-        let rows = getRows();
-
-        rows.forEach(function(row) {
-            const text = row.textContent.toLowerCase();
-            const matchSearch = !keyword || text.includes(keyword);
-            const matchStatus = !status  || text.includes(status);
-            row.style.display = (matchSearch && matchStatus) ? '' : 'none';
-        });
+        let rows = initialRows.slice();
 
         if (sort) {
-            const tbody = table.querySelector('tbody');
-            const visible = rows.filter(r => r.style.display !== 'none');
-            visible.sort(function(a, b) {
+            rows.sort(function(a, b) {
                 const cells_a = a.querySelectorAll('td');
                 const cells_b = b.querySelectorAll('td');
                 if (sort === 'id-asc')          return parseInt(cells_a[0].textContent.replace('#','')) - parseInt(cells_b[0].textContent.replace('#',''));
@@ -160,10 +151,25 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
                 if (sort === 'kategori-desc')   return cells_b[2].textContent.trim().localeCompare(cells_a[2].textContent.trim());
                 return 0;
             });
-            visible.forEach(function(r) { tbody.appendChild(r); });
         }
 
-        const anyVisible = rows.some(r => r.style.display !== 'none');
+        const tbody = table.querySelector('tbody');
+        let anyVisible = false;
+
+        rows.forEach(function(row) {
+            const text = row.textContent.toLowerCase();
+            const matchSearch = !keyword || text.includes(keyword);
+            const matchStatus = !status  || text.includes(status);
+            
+            if (matchSearch && matchStatus) {
+                row.style.display = '';
+                anyVisible = true;
+            } else {
+                row.style.display = 'none';
+            }
+            tbody.appendChild(row);
+        });
+
         emptyMsg.style.display = anyVisible ? 'none' : 'block';
     }
 
