@@ -33,7 +33,7 @@ if (isset($_POST['aksi']) && isset($_POST['id_laporan'])) {
 
     } elseif ($aksi == 'tolak') {
         $query = "UPDATE laporan SET status = 'ditolak' WHERE id_laporan = '$id_laporan'";
-        $log_keterangan = "Laporan ditolak oleh admin.";
+        $log_keterangan = $keterangan;
 
     } elseif ($aksi == 'kembalikan') {
         $query = "UPDATE laporan SET id_kategori = 1, status = 'menunggu', id_petugas = NULL, pesan_admin = '$keterangan' WHERE id_laporan = '$id_laporan'";
@@ -46,8 +46,13 @@ if (isset($_POST['aksi']) && isset($_POST['id_laporan'])) {
         $id_petugas_penerima = $id_petugas_lama;
 
     } elseif ($aksi == 'verifikasi_terima') {
-        $query = "UPDATE laporan SET status = 'selesai', pesan_admin = NULL WHERE id_laporan = '$id_laporan'";
-        $log_keterangan = "Bukti perbaikan disetujui. Tugas selesai.";
+        $query = "UPDATE laporan SET status = 'selesai' WHERE id_laporan = '$id_laporan'";    
+        // Memeriksa apakah keterangan opsional dari admin diisi
+        if (!empty(trim($_POST['keterangan']))) {
+            $log_keterangan = $keterangan;
+        } else {
+            $log_keterangan = "Bukti perbaikan disetujui. Tugas selesai.";
+        }
 
     } elseif ($aksi == 'verifikasi_tolak') {
         $id_petugas_baru = isset($_POST['id_petugas_baru']) ? mysqli_real_escape_string($koneksi, $_POST['id_petugas_baru']) : '';
@@ -94,11 +99,9 @@ if (isset($_POST['aksi']) && isset($_POST['id_laporan'])) {
                 $id_ptg_alihan = isset($_POST['id_petugas_baru']) ? mysqli_real_escape_string($koneksi, $_POST['id_petugas_baru']) : '';
                 
                 if (!empty($id_ptg_alihan)) {
-                    // Ditolak dan Dialihkan
                     kirim_notif($koneksi, $id_petugas_lama, $id_laporan, "Bukti Ditolak & Dialihkan", "Bukti perbaikan laporan #$id_laporan ditolak dan tugas ditarik. Alasan: $keterangan", "laporan_ditolak");
                     kirim_notif($koneksi, $id_ptg_alihan, $id_laporan, "Tugas Baru (Alihan)", "Anda ditugaskan menangani laporan #$id_laporan melanjutkan petugas sebelumnya.", "tugas_baru");
                 } else {
-                    // Ditolak tapi tetap dikerjakan petugas lama
                     kirim_notif($koneksi, $id_petugas_lama, $id_laporan, "Bukti Ditolak", "Bukti perbaikan laporan #$id_laporan ditolak Admin. Alasan: $keterangan", "laporan_ditolak");
                 }
             }
@@ -110,7 +113,6 @@ if (isset($_POST['aksi']) && isset($_POST['id_laporan'])) {
     } else {
         echo "Aksi tidak dikenal.";
     }
-
 } else {
     echo "Akses tidak sah!";
 }

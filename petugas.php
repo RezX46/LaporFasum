@@ -23,20 +23,18 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
 
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Petugas – LaporFasum</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?= time(); ?>">
 </head>
-
 <body>
 
     <nav class="site-navbar">
         <a href="petugas.php" class="brand"><span>Lapor</span>Fasum</a>
         <nav>
-            <button class="btn-notif" onclick="bukaNotif()">Notifikasi (<?= $jml_notif ?>)</button>
+            <button class="btn-notif" onclick="bukaNotif()">Notifikasi (<span id="notifBadgeCount"><?= $jml_notif ?></span>)</button>
             <a href="pengaturan_akun.php">Pengaturan Akun</a>
             <a href="logout.php" class="btn-logout">Keluar</a>
         </nav>
@@ -178,22 +176,26 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
         <div class="modal-content" style="padding: 0;">
             <div style="padding: 20px 24px; border-bottom: 2px solid #f39c12; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #fff; border-radius: 12px 12px 0 0; z-index: 10;">
                 <h2 style="margin: 0; color: #34495e; font-size: 1.2rem;">Pusat Pemberitahuan</h2>
-                <span class="close-btn" onclick="tutupNotif()" style="margin: 0; line-height: 1;">&times;</span>
+                <div class="notif-header-actions">
+                    <?php if (mysqli_num_rows($query_notif) > 0): ?>
+                        <button type="button" id="btnBersihkanSemua" class="btn-bersihkan-notif" onclick="hapusSemuaNotif()">Bersihkan Semua</button>
+                    <?php endif; ?>
+                    <span class="close-btn" onclick="tutupNotif()" style="margin: 0; line-height: 1;">&times;</span>
+                </div>
             </div>
             
-            <div style="max-height: 60vh; overflow-y: auto; padding: 0;">
+            <div id="notifContainer" style="max-height: 60vh; overflow-y: auto; padding: 0;">
                 <?php if (mysqli_num_rows($query_notif) == 0): ?>
                     <p style="text-align: center; color: #7f8c8d; padding: 30px;">Tidak ada pesan baru.</p>
                 <?php else: ?>
                     <?php while ($n = mysqli_fetch_assoc($query_notif)): 
-                        
+                     
                         $url = "#";
                         $onclick = "";
                         
                         if ($n['kategori_notif'] == 'akun_disetujui' || $n['kategori_notif'] == 'akun_ditolak') {
                             $url = "pengaturan_akun.php";
                         } else {
-                            // cek apakah tugas ini MASIH milik petugas yang sedang login?
                             $id_lap = $n['id_laporan'];
                             if (empty($id_lap)) {
                                 $url = "javascript:void(0)";
@@ -206,23 +208,24 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
                                     $url = "javascript:void(0)";
                                     $onclick = "onclick=\"alert('Laporan ini sudah tidak tersedia atau telah dihapus permanen.'); return false;\"";
                                 } elseif ($data_lap['id_petugas'] != $id_petugas_asli) {
-                                    // Jika ID Petugas di database sudah berubah (tugas ditarik / dialihkan admin)
                                     $url = "javascript:void(0)";
                                     $onclick = "onclick=\"alert('Akses Ditolak! Tugas ini telah ditarik atau dialihkan ke petugas lain.'); return false;\"";
                                 } else {
-                                    // Masih aman (Masih ditugaskan ke petugas ini)
                                     $url = "petugas_detail.php?id=" . $id_lap;
                                 }
                             }
                         }
                     ?>
-                        <a href="<?= $url ?>" <?= $onclick ?> class="notif-item-link <?= $n['is_read'] == '0' ? 'unread' : '' ?>">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                <span class="notif-title"><?= htmlspecialchars($n['judul']) ?></span>
-                                <span class="notif-time"><?= date('d M, H:i', strtotime($n['tanggal'])) ?></span>
-                            </div>
-                            <p class="notif-msg" style="color: #555; font-style: normal; margin-top: 4px;"><?= htmlspecialchars($n['pesan']) ?></p>
-                        </a>
+                        <div class="notif-wrapper" style="transition: opacity 0.2s;">
+                            <a href="<?= $url ?>" <?= $onclick ?> class="notif-item-link <?= $n['is_read'] == '0' ? 'unread' : '' ?>">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span class="notif-title"><?= htmlspecialchars($n['judul']) ?></span>
+                                    <span class="notif-time"><?= date('d M, H:i', strtotime($n['tanggal'])) ?></span>
+                                </div>
+                                <p class="notif-msg" style="color: #555; font-style: normal; margin-top: 4px;"><?= htmlspecialchars($n['pesan']) ?></p>
+                            </a>
+                            <button type="button" class="btn-hapus-notif-single" title="Hapus Notifikasi" onclick="hapusNotif(<?= $n['id_notifikasi'] ?>, this.closest('.notif-wrapper'))">&times;</button>
+                        </div>
                     <?php endwhile; ?>
                 <?php endif; ?>
             </div>
@@ -237,5 +240,4 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
     </script>
     <?php unset($_SESSION['popup_notif']); endif; ?>
 </body>
-
 </html>

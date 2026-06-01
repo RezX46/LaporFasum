@@ -21,7 +21,7 @@ if (isset($_POST['id_laporan']) && isset($_FILES['foto_bukti'])) {
     $batas_ukuran = 10 * 1024 * 1024;
     if ($ukuran_file > $batas_ukuran) {
         echo "<script>
-                alert('Ukuran foto terlalu besar! Maksimal unggahan adalah 5 MB.');
+                alert('Ukuran foto terlalu besar! Maksimal unggahan adalah 10 MB.');
                 window.history.back();
               </script>";
         exit();
@@ -45,9 +45,11 @@ if (isset($_POST['id_laporan']) && isset($_FILES['foto_bukti'])) {
         $simpan = mysqli_query($koneksi, $query);
         
         if ($simpan) {
-            $log_keterangan = "Petugas telah menyelesaikan pekerjaan dan mengirimkan foto bukti perbaikan.";
+            // Menangkap keterangan_petugas dari form (atau fallback ke default)
+            $keterangan_petugas = isset($_POST['keterangan_petugas']) ? mysqli_real_escape_string($koneksi, $_POST['keterangan_petugas']) : 'Petugas telah menyelesaikan pekerjaan dan mengirimkan foto bukti perbaikan.';
+            
             $sql_log = "INSERT INTO riwayat_laporan (id_laporan, id_user, aksi, keterangan) 
-                        VALUES ('$id_laporan', '$id_user', 'kirim_bukti', '$log_keterangan')";
+                        VALUES ('$id_laporan', '$id_user', 'kirim_bukti', '$keterangan_petugas')";
             mysqli_query($koneksi, $sql_log);
             
             $id_instansi_petugas = $_SESSION['id_instansi'];
