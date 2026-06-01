@@ -99,3 +99,32 @@ function cekNotifKosong() {
         if(btnBersih) btnBersih.style.display = 'none';
     }
 }
+
+// Auto-polling notifikasi baru setiap 10 detik
+setInterval(function() {
+    fetch('cek_notif_baru.php')
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success') {
+            var badge = document.getElementById('notifBadgeCount');
+            if (badge) {
+                var oldJml = parseInt(badge.innerText) || 0;
+                var newJml = parseInt(data.jumlah) || 0;
+                
+                // Update badge and HTML if there's a difference
+                if (oldJml !== newJml) {
+                    badge.innerText = newJml;
+                    var container = document.getElementById('notifContainer');
+                    if (container && data.html) {
+                        container.innerHTML = data.html;
+                    }
+                    var btnBersih = document.getElementById('btnBersihkanSemua');
+                    if (btnBersih) {
+                        btnBersih.style.display = data.html.includes('notif-wrapper') ? 'inline-block' : 'none';
+                    }
+                }
+            }
+        }
+    })
+    .catch(err => console.error('Error fetching new notif:', err));
+}, 10000);
