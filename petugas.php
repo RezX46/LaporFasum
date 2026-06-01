@@ -217,7 +217,7 @@ $jml_notif = mysqli_fetch_assoc($jumlah_notif)['jml'];
                         }
                     ?>
                         <div class="notif-wrapper" style="transition: opacity 0.2s;">
-                            <a href="<?= $url ?>" <?= $onclick ?> class="notif-item-link <?= $n['is_read'] == '0' ? 'unread' : '' ?>">
+                            <a href="<?= $url ?>" <?= $onclick ?> data-id="<?= $n['id_notifikasi'] ?>" class="notif-item-link <?= $n['is_read'] == '0' ? 'unread' : '' ?>">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                                     <span class="notif-title"><?= htmlspecialchars($n['judul']) ?></span>
                                     <span class="notif-time"><?= date('d M, H:i', strtotime($n['tanggal'])) ?></span>

@@ -48,7 +48,7 @@ if (mysqli_num_rows($result) > 0) {
         if (count($ringkasan) > 0) {
             $pesan_popup = "Pemberitahuan Sistem:\\n\\n- " . implode("\\n- ", $ringkasan);
             $_SESSION['popup_notif'] = $pesan_popup;
-            mysqli_query($koneksi, "UPDATE notifikasi SET is_read = '1' WHERE id_user = $id_u AND is_read = '0'");
+            // Removed automatic is_read = 1 update to allow badge count to persist
         }
 
         if ($akun['role'] == 'admin') {

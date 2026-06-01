@@ -21,6 +21,11 @@ elseif ($aksi == 'hapus_satu') {
     mysqli_query($koneksi, "DELETE FROM notifikasi WHERE id_notifikasi = '$id_notif' AND id_user = '$id_user'");
     echo json_encode(['status' => 'success']);
 } 
+elseif ($aksi == 'baca_satu') {
+    $id_notif = (int)$_POST['id_notifikasi'];
+    mysqli_query($koneksi, "UPDATE notifikasi SET is_read = '1' WHERE id_notifikasi = '$id_notif' AND id_user = '$id_user'");
+    echo json_encode(['status' => 'success']);
+}
 else {
     echo json_encode(['status' => 'error', 'message' => 'Aksi tidak valid!']);
 }

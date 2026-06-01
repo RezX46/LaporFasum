@@ -15,6 +15,23 @@ window.onclick = function(event) {
     }
 }
 
+document.addEventListener('click', function(e) {
+    var link = e.target.closest('.notif-item-link');
+    if (link && link.classList.contains('unread')) {
+        var id_notifikasi = link.getAttribute('data-id');
+        if (id_notifikasi) {
+            // Kita biarkan navigasi default berjalan, tapi panggil fetch di background
+            fetch('proses_hapus_notif.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'aksi=baca_satu&id_notifikasi=' + id_notifikasi
+            });
+            link.classList.remove('unread');
+            updateBadgeNotif();
+        }
+    }
+});
+
 function hapusNotif(id_notifikasi, element) {
     fetch('proses_hapus_notif.php', {
         method: 'POST',
