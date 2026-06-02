@@ -112,7 +112,9 @@ LaporFasum/
 │
 ├── assets/
 │   ├── css/
+        ├── style.css
 │   ├── js/
+        ├── notif.js
 │   ├── img/
 │   └── uploads/
 │
@@ -186,6 +188,22 @@ Stores all public facility reports submitted by citizens.
 | id_petugas |
 | foto_bukti |
 | pesan_admin |
+
+---
+
+### riwayat_laporan
+
+Stores activity logs and report history records to track every important action performed on a report throughout its lifecycle. This table supports transparency, accountability, and notification generation.
+
+| Field | Description |
+|---------|-------------|
+| id_riwayat | Primary Key |
+| id_laporan | Related report ID |
+| id_user | User who performed the action |
+| id_petugas_penerima | Assigned field officer (if applicable) |
+| aksi | Type of action performed |
+| keterangan | Additional action details |
+| tanggal_aksi | Timestamp of the action |
 
 ---
 
@@ -303,8 +321,3 @@ http://localhost/LaporFasum
 | Field Officer | Handles assigned repair tasks and uploads repair evidence. |
 | Public User | Submits reports and tracks report progress using a tracking code. |
 
----
-
-## License
-
-This project was developed for academic purposes as part of a university software development project.
