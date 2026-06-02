@@ -35,7 +35,7 @@ The application supports report management, officer assignment, repair verificat
 - Manage agency-specific categories.
 - Send and receive notifications.
 - Approve account profile updates.
-- Activate or deactivate field administrator accounts.
+- Activate or deactivate field officers accounts.
 
 ### Field Officers
 - View assigned repair tasks.
@@ -75,6 +75,10 @@ The application supports report management, officer assignment, repair verificat
 ### Mapping Service
 - Leaflet.js
 - OpenStreetMap
+
+### AI Usage
+- Google Gemini
+- Antigravity
 
 ---
 
