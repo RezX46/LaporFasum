@@ -112,9 +112,9 @@ LaporFasum/
 │
 ├── assets/
 │   ├── css/
-        ├── style.css
+|       ├── style.css
 │   ├── js/
-        ├── notif.js
+|       ├── notif.js
 │   ├── img/
 │   └── uploads/
 │
