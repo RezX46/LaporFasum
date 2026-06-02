@@ -80,7 +80,7 @@ function hapusSemuaNotif() {
 }
 
 function updateBadgeNotif(isReset = false) {
-    // Angka badge telah dihilangkan sesuai permintaan, fungsi ini sengaja dikosongkan
+    // 
 }
 
 function cekNotifKosong() {
