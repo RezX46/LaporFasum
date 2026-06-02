@@ -74,6 +74,6 @@ if (!$user || ($id_instansi_admin != 1 && $user['id_instansi'] != $id_instansi_a
     </div>
     </div>
 
-    <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
+    <footer class="site-footer">&copy; 2026 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
 </body>
 </html>

@@ -397,6 +397,6 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
             <button type="button" onclick="history.back()" class="btn-kembali" style="margin-top:0;">← Kembali</button>
         </div>
     </div>
-    <footer class="site-footer">© 2025 <span>LaporFasum</span> — Sistem Pelaporan Fasilitas Umum</footer>
+    <footer class="site-footer">© 2026 <span>LaporFasum</span> — Sistem Pelaporan Fasilitas Umum</footer>
 </body>
 </html>

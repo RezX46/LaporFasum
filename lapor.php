@@ -77,7 +77,7 @@ require 'koneksi.php';
         <a href="index.html" class="back-link">← Kembali ke Halaman Utama</a>
     </div>
 
-    <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
+    <footer class="site-footer">&copy; 2026 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>

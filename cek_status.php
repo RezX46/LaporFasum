@@ -176,6 +176,6 @@ if (isset($_GET['kode'])) {
         <a href="index.html" class="back-link">← Kembali ke Halaman Utama</a>
     </div>
 
-    <footer class="site-footer">© 2025 <span>LaporFasum</span> — Sistem Pelaporan Fasilitas Umum</footer>
+    <footer class="site-footer">© 2026 <span>LaporFasum</span> — Sistem Pelaporan Fasilitas Umum</footer>
 </body>
 </html>

@@ -159,6 +159,6 @@ $tugas_selesai = $stat_selesai['total'];
 
     </div>
 
-    <footer class="site-footer">&copy; 2025 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
+    <footer class="site-footer">&copy; 2026 <span>LaporFasum</span> &mdash; Sistem Pelaporan Fasilitas Umum</footer>
 </body>
 </html>
