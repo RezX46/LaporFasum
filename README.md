@@ -35,7 +35,7 @@ The application supports report management, officer assignment, repair verificat
 - Manage agency-specific categories.
 - Send and receive notifications.
 - Approve account profile updates.
-- Activate or deactivate user accounts.
+- Activate or deactivate field administrator accounts.
 
 ### Field Officers
 - View assigned repair tasks.
