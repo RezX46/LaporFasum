@@ -163,12 +163,37 @@ elseif ($row['status'] == 'ditolak') { $badge_class = 'badge-merah'; }
                     <button type="submit" name="aksi" value="forward" class="btn-terima"> Teruskan ke Dinas Terkait</button>
                 </form>
 
-                <form action="proses_validasi.php" method="POST" style="margin-top:15px; padding:15px; border:1.5px dashed #e74c3c; border-radius:8px; background:#fdf0ed;">
-                    <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
-                    <label style="font-weight:700; color:#c0392b; font-size:0.88rem; display:block; margin-bottom:8px;">Alasan Penolakan (Sertakan Kode Lacak Utama jika duplikat):</label>
-                    <textarea name="keterangan" placeholder="Contoh: Laporan duplikat. Silakan pantau laporan utama dengan kode LP-XXXXXX-XXXX" required style="width:100%; padding:10px; border-radius:6px; border:1px solid #e74c3c; margin-bottom:10px; box-sizing:border-box; min-height:70px;"></textarea>
-                    <button type="submit" name="aksi" value="tolak" class="btn-tolak-merah" onclick="return confirm('Yakin ingin menolak laporan ini?')"> Tolak Laporan </button>
-                </form>
+                <div style="margin-top:15px;">
+                    <button type="button" class="btn-tolak-merah" id="btn-toggle-tolak-pusat" onclick="toggleTolakPusat()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        Tolak Laporan
+                    </button>
+                    <div class="serahkan-panel" id="panel-tolak-pusat" style="margin-top:8px;">
+                        <form action="proses_validasi.php" method="POST" style="padding:15px; border:1.5px dashed #e74c3c; border-radius:8px; background:#fdf0ed;">
+                            <input type="hidden" name="id_laporan" value="<?= $row['id_laporan'] ?>">
+                            <label style="font-weight:700; color:#c0392b; font-size:0.88rem; display:block; margin-bottom:8px;">Alasan Penolakan (Sertakan Kode Lacak Utama jika duplikat):</label>
+                            <textarea name="keterangan" id="textarea-tolak-pusat" placeholder="Contoh: Laporan duplikat. Silakan pantau laporan utama dengan kode LP-XXXXXX-XXXX" required style="width:100%; padding:10px; border-radius:6px; border:1px solid #e74c3c; margin-bottom:10px; box-sizing:border-box; min-height:70px;"></textarea>
+                            <button type="submit" name="aksi" value="tolak" class="btn-tolak-merah" onclick="return confirm('Yakin ingin menolak laporan ini?')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                Konfirmasi Tolak Laporan
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <script>
+                function toggleTolakPusat() {
+                    var panel = document.getElementById('panel-tolak-pusat');
+                    var btn   = document.getElementById('btn-toggle-tolak-pusat');
+                    if (panel.classList.contains('open')) {
+                        panel.classList.remove('open');
+                        btn.style.opacity = '1';
+                    } else {
+                        panel.classList.add('open');
+                        btn.style.opacity = '0.8';
+                        setTimeout(function(){ document.getElementById('textarea-tolak-pusat').focus(); }, 420);
+                    }
+                }
+                </script>
             <?php else: ?>
                 <h2>Tindak Lanjut Laporan</h2>
                 <form action="proses_validasi.php" method="POST" id="form-terima-tugaskan">
