@@ -1,94 +1,306 @@
 # LaporFasum: Public Facility Reporting System
 
-## Short Description
-**LaporFasum** is a web-based platform designed to streamline the reporting of public facility damages such as roads, streetlights, and drainage systems. The system provides an accessible reporting channel for citizens, allowing reports to be routed to specific government agencies and assigned directly to field officers for repair. It features GPS-based location tagging and real-time status tracking to ensure transparency and efficiency in infrastructure maintenance.
+## Overview
+
+LaporFasum is a web-based application designed to facilitate the reporting and management of public facility damages such as damaged roads, broken streetlights, drainage issues, and other public infrastructure problems. The system enables citizens to submit reports with photos and GPS locations, which are then routed to the responsible government agency for handling.
+
+The application supports report management, officer assignment, repair verification, notifications, and personnel management within each agency.
+
+---
 
 ## Team
-* **Reza Muthahhari Purnomo (F1D02410088)**       - Project Leader: Backend Developer
-* **Lalu Taufik Dewo Bayuaji (F1D02410069)**      - Team Member:    Frontend Developer
-* **Halis Ibrahim Kumala Chandra (F1D02410049)**  - Team Member:    Frontend Developer
 
-## Sitemap and Features
+| Name | Student ID | Role |
+|--------|------------|--------|
+| Reza Muthahhari Purnomo | F1D02410088 | Project Leader & Backend Developer |
+| Lalu Taufik Dewo Bayuaji | F1D02410069 | Frontend Developer |
+| Halis Ibrahim Kumala Chandra | F1D02410049 | Frontend Developer |
 
-### 1. Citizen Portal (Public)
-* **Create Report:** Interface for submitting new reports.
-* **Photo Upload:** Attach images of facility damage.
-* **GPS Tagging:** Integration with Leaflet.js and GPS for precise coordinates.
+---
 
-### 2. Admins
-* **Report Management:** Overview and monitoring of all incoming infrastructure reports.
-* **Task Routing & Assignment:** Forwarding reports to specific agencies or assigning them directly to field officers.
-* **Verification:** Reviewing and approving/rejecting completion proofs submitted by officers.
-* **Internal Messaging & Notifications:** Send and receive formal messages or feedback regarding report progress and task assignments.
+## Key Features
 
-### 3. Field Officers
-* **Task List:** View and manage assigned repair tasks.
-* **Message & Notification Center:** Access instructions, task feedback, and internal messages from administrators via an integrated interface.
-* **Evidence Submission:** Upload photos of completed repairs for administrative verification.
+### Public Users
+- Submit public facility damage reports.
+- Upload supporting photos as evidence.
+- Select locations using GPS coordinates or manual address input.
+- Receive a tracking code for report monitoring.
+- Track report progress through the reporting system.
 
-## Tech Stack
-* **Language:** PHP (Native)
-* **Backend:** PHP 8.2+
-* **Frontend:** HTML5, CSS3, JavaScript
-* **Maps API:** Leaflet.js & OpenStreetMap
-* **Database:** MySQL
+### Administrators
+- View and manage incoming reports.
+- Assign reports to field officers.
+- Verify repair completion evidence.
+- Manage personnel accounts.
+- Manage agency-specific categories.
+- Send and receive notifications.
+- Approve account profile updates.
+- Activate or deactivate user accounts.
 
-## DBMS Configuration & Table Specification
+### Field Officers
+- View assigned repair tasks.
+- Upload repair completion evidence.
+- Receive notifications from administrators.
+- Monitor task status and progress.
 
-### Configuration
-* **Database Name:** `db_lapor_fasum`
+---
 
-### Table Specification
-#### 1. `users`
-Stores all account credentials and roles.
-* `id_user` Primary Key
-* `nama_lengkap` 
-* `username`
-* `password` 
-* `role` 
+## Report Workflow
 
-#### 2. `instansi`
-List of government agencies.
-* `id_instansi` Primary Key
-* `nama_instansi` 
+1. A citizen submits a public facility report.
+2. The system generates a tracking code and stores the report with a **Pending** status.
+3. The responsible administrator reviews the report.
+4. The administrator assigns the report to a field officer.
+5. The report status changes to **In Progress**.
+6. The field officer performs the repair and uploads completion evidence.
+7. The administrator reviews the submitted evidence.
+8. The report is marked as **Completed** or returned for revision.
 
-#### 3. `kategori`
-Damage categories linked to specific agencies.
-* `id_kategori` Primary Key
-* `nama_kategori`
-* `id_instansi` 
+---
 
-#### 4. `laporan`
-The core table for reporting data.
-* `id_laporan` Primary Key
-* `tanggal_lapor` 
-* `foto` 
-* `keluhan` 
-* `id_kategori`
-* `latitude`, `longitude` 
-* `status`
-* `id_petugas` 
-* `foto_bukti`
-* `pesan_admin` 
+## Technology Stack
 
-#### 5. `riwayat_laporan`
-Audit logs and notification data.
-* `id_riwayat` Primary Key
-* `id_laporan` 
-* `id_user`
-* `id_petugas_penerima` 
-* `aksi` 
-* `keterangan` 
-* `tanggal_aksi` 
+### Backend
+- PHP Native
+- PHP 8+
 
-#### 6. `admin`
-Stores the specific assignments of Central Operators and Agency Administrators to their respective agencies.
-* `id_admin` Primary Key
-* `id_user` 
-* `id_instansi`
+### Frontend
+- HTML5
+- CSS3
+- JavaScript
 
-#### 7. `petugas`
-Stores the specific assignments of Field Officers to their respective agencies.
-* `id_petugas` Primary Key
-* `id_user`
-* `id_instansi` 
+### Database
+- MySQL
+
+### Mapping Service
+- Leaflet.js
+- OpenStreetMap
+
+---
+
+## Project Structure
+
+```text
+LaporFasum/
+│
+├── index.php
+├── login.php
+├── logout.php
+├── cek_status.php
+├── lapor.php
+│
+├── dashboard_admin.php
+├── dashboard_petugas.php
+│
+├── personil.php
+├── tambah_personil.php
+├── edit_personil.php
+│
+├── kategori.php
+├── instansi.php
+│
+├── detail_laporan.php
+├── validasi_laporan.php
+│
+├── helper_notif.php
+├── helper_gambar.php
+├── koneksi.php
+│
+├── assets/
+│   ├── css/
+│   ├── js/
+│   ├── img/
+│   └── uploads/
+│
+└── database/
+    └── db_lapor_fasum.sql
+```
+
+---
+
+## Database Schema
+
+### users
+
+Stores administrator and field officer accounts.
+
+| Field | Description |
+|---------|-------------|
+| id_user | Primary Key |
+| nama_lengkap | User's full name |
+| username | Login username |
+| password | Hashed password |
+| role | admin / petugas |
+| id_instansi | Assigned agency |
+| foto_profil | Profile picture |
+| status_akun | Active or inactive account |
+| pending_nama | Requested name change |
+| pending_username | Requested username change |
+
+---
+
+### instansi
+
+Stores government agencies responsible for handling reports.
+
+| Field |
+|---------|
+| id_instansi |
+| nama_instansi |
+
+---
+
+### kategori
+
+Stores report categories and their responsible agencies.
+
+| Field |
+|---------|
+| id_kategori |
+| nama_kategori |
+| id_instansi |
+
+---
+
+### laporan
+
+Stores all public facility reports submitted by citizens.
+
+| Field |
+|---------|
+| id_laporan |
+| kode_lacak |
+| tanggal_lapor |
+| foto |
+| keluhan |
+| id_kategori |
+| metode_lokasi |
+| latitude |
+| longitude |
+| alamat_manual |
+| status |
+| id_petugas |
+| foto_bukti |
+| pesan_admin |
+
+---
+
+### notifikasi
+
+Stores notifications for administrators and field officers.
+
+| Field |
+|---------|
+| id_notifikasi |
+| id_user |
+| id_laporan |
+| judul |
+| pesan |
+| kategori_notif |
+| is_read |
+| tanggal |
+
+---
+
+## Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone <repository-url>
+```
+
+### 2. Import the Database
+
+Import the provided database file into phpMyAdmin.
+
+Database name:
+
+```text
+db_lapor_fasum
+```
+
+---
+
+### 3. Enable PHP GD Library
+
+Open the PHP configuration file:
+
+```text
+xampp/php/php.ini
+```
+
+Find the following line:
+
+```ini
+;extension=gd
+```
+
+Remove the semicolon:
+
+```ini
+extension=gd
+```
+
+Save the file and restart Apache from the XAMPP Control Panel.
+
+---
+
+### 4. Configure Database Connection
+
+Open:
+
+```php
+koneksi.php
+```
+
+Configure your database credentials:
+
+```php
+$host = "localhost";
+$user = "root";
+$password = "";
+$database = "db_lapor_fasum";
+```
+
+---
+
+### 5. Move the Project
+
+Place the project folder inside:
+
+```text
+xampp/htdocs/
+```
+
+---
+
+### 6. Start Services
+
+Start Apache and MySQL using the XAMPP Control Panel.
+
+---
+
+### 7. Access the Application
+
+Open your browser and navigate to:
+
+```text
+http://localhost/LaporFasum
+```
+
+---
+
+## User Roles
+
+| Role | Description |
+|--------|-------------|
+| Administrator | Manages reports, personnel, categories, assignments, validations, and notifications. |
+| Field Officer | Handles assigned repair tasks and uploads repair evidence. |
+| Public User | Submits reports and tracks report progress using a tracking code. |
+
+---
+
+## License
+
+This project was developed for academic purposes as part of a university software development project.
